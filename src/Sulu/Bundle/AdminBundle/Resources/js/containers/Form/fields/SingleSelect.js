@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
-import {toJS} from 'mobx';
+import { toJS } from 'mobx';
 import SingleSelectComponent from '../../../components/SingleSelect';
-import type {FieldTypeProps} from '../../../types';
+import type { FieldTypeProps } from '../../../types';
 
 export default class SingleSelect extends React.Component<FieldTypeProps<string | number>> {
     constructor(props: FieldTypeProps<string | number>) {

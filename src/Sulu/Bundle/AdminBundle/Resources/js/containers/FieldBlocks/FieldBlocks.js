@@ -25,6 +25,13 @@ class FieldBlocks extends React.Component<FieldTypeProps<Array<BlockEntry>>> {
     formRef: ?Form;
     @observable blockSettingsOpen: number | typeof undefined = undefined;
     @observable blockSettingsFormStore: FormStoreInterface;
+    @observable value: Object;
+
+    constructor(props: FieldTypeProps<Array<BlockEntry>>) {
+        super(props);
+
+        this.value = this.props.value;
+    }
 
     @action componentDidMount() {
         if (this.settingsFormKey) {
@@ -43,6 +50,8 @@ class FieldBlocks extends React.Component<FieldTypeProps<Array<BlockEntry>>> {
     componentDidUpdate(prevProps: FieldTypeProps<Array<BlockEntry>>) {
         const {defaultType, onChange, types, value} = this.props;
         const {types: oldTypes} = prevProps;
+
+        this.updateValue(value)
 
         if (!types || !oldTypes) {
             throw new Error(MISSING_BLOCK_ERROR_MESSAGE);
@@ -130,13 +139,11 @@ class FieldBlocks extends React.Component<FieldTypeProps<Array<BlockEntry>>> {
     }
 
     @computed get icons(): Array<Array<string>> {
-        const {value} = this.props;
-
-        if (!value) {
+        if (!this.value) {
             return [];
         }
 
-        return value.map((value) => Object.keys(this.iconsMapping).reduce((icons, pointer) => {
+        return this.value.map((value) => Object.keys(this.iconsMapping).reduce((icons, pointer) => {
             if (jsonpointer.has(value, pointer) && jsonpointer.get(value, pointer)) {
                 icons.push(this.iconsMapping[pointer]);
             }
@@ -149,8 +156,13 @@ class FieldBlocks extends React.Component<FieldTypeProps<Array<BlockEntry>>> {
         this.formRef = formRef;
     };
 
+    @action updateValue = (value: Object) => {
+        this.value = value;
+    }
+
     handleBlockChange = (index: number, name: string, value: Object) => {
-        const {onChange, value: oldValues} = this.props;
+        const {onChange} = this.props;
+        const oldValues = this.value;
 
         if (!oldValues) {
             return;
@@ -158,6 +170,8 @@ class FieldBlocks extends React.Component<FieldTypeProps<Array<BlockEntry>>> {
 
         const newValues = toJS(oldValues);
         jsonpointer.set(newValues[index], '/' + name, value);
+
+        this.updateValue(newValues);
 
         onChange(newValues);
     };
@@ -306,14 +320,12 @@ class FieldBlocks extends React.Component<FieldTypeProps<Array<BlockEntry>>> {
     };
 
     @action handleSettingsClick = (index: number) => {
-        const {value} = this.props;
-
-        if (!this.settingsFormKey || !value) {
+        if (!this.settingsFormKey || !this.value) {
             return;
         }
 
         this.blockSettingsOpen = index;
-        this.blockSettingsFormStore.setMultiple(value[index][SETTINGS_KEY] ?? {});
+        this.blockSettingsFormStore.setMultiple(this.value[index][SETTINGS_KEY] ?? {});
         this.blockSettingsFormStore.dirty = false;
     };
 
@@ -331,7 +343,8 @@ class FieldBlocks extends React.Component<FieldTypeProps<Array<BlockEntry>>> {
     };
 
     handleSettingsSubmit = () => {
-        const {onChange, value = []} = this.props;
+        const {onChange} = this.props;
+        const value = this.value || [];
 
         const {blockSettingsFormStore, blockSettingsOpen} = this;
 
@@ -347,7 +360,8 @@ class FieldBlocks extends React.Component<FieldTypeProps<Array<BlockEntry>>> {
     };
 
     render() {
-        const {defaultType, disabled, maxOccurs, minOccurs, onChange, types, value} = this.props;
+        const {defaultType, disabled, maxOccurs, minOccurs, onChange, types} = this.props;
+        const value = this.value || [];
 
         if (!defaultType) {
             throw new Error('The "block" field type needs a defaultType!');
@@ -375,7 +389,7 @@ class FieldBlocks extends React.Component<FieldTypeProps<Array<BlockEntry>>> {
                     onSortEnd={this.handleSortEnd}
                     renderBlockContent={this.renderBlockContent}
                     types={blockTypes}
-                    value={value || []}
+                    value={value}
                 />
                 {this.settingsFormKey &&
                     <Overlay
