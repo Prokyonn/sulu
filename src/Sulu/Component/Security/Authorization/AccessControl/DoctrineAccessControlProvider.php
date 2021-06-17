@@ -81,6 +81,9 @@ class DoctrineAccessControlProvider implements AccessControlProviderInterface
             } else {
                 /** @var RoleInterface|null $role */
                 $role = $this->roleRepository->findRoleById($roleId);
+                if (!$role) {
+                    continue;
+                }
 
                 if (!$role) {
                     continue;
