@@ -14,7 +14,7 @@ namespace Sulu\Bundle\ReferenceBundle\Domain\Model;
 class Reference implements ReferenceInterface
 {
     /**
-     * @var int
+     * @var ?int
      */
     private $id;
 
@@ -93,7 +93,7 @@ class Reference implements ReferenceInterface
      */
     private $referenceContext;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

@@ -13,7 +13,7 @@ namespace Sulu\Bundle\ReferenceBundle\Domain\Model;
 
 interface ReferenceInterface
 {
-    public function getId(): int;
+    public function getId(): ?int;
 
     public function getSourceResourceKey(): string;
 
