@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <mapped-superclass name="Sulu\Bundle\ReferenceBundle\Domain\Model\Reference" table="re_reference">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <indexes>
+            <index columns="sourceResourceKey,sourceResourceId,targetResourceKey,targetResourceId"/>
+        </indexes>
+
+        <field name="sourceResourceKey" column="sourceResourceKey" type="string" nullable="false" length="191"/>
+        <field name="sourceResourceId" column="sourceResourceId" type="string" nullable="false" length="191"/>
+        <field name="sourceLocale" column="sourceLocale" type="string" nullable="false" length="191"/>
+        <field name="sourceWorkflowStage" column="sourceWorkflowStage" type="string" nullable="false" length="191"/>
+        <field name="sourceSecurityContext" column="sourceSecurityContext" type="string" nullable="false" length="191"/>
+        <field name="sourceSecurityObjectType" column="sourceSecurityObjectType" type="string" nullable="false" length="191"/>
+        <field name="sourceSecurityObjectId" column="sourceSecurityObjectId" type="string" nullable="false" length="191"/>
+        <field name="targetResourceKey" column="targetResourceKey" type="string" nullable="false" length="191"/>
+        <field name="targetResourceId" column="targetResourceId" type="string" nullable="false" length="191"/>
+        <field name="targetSecurityContext" column="targetSecurityContext" type="string" nullable="false" length="191"/>
+        <field name="targetSecurityObjectType" column="targetSecurityObjectType" type="string" nullable="false" length="191"/>
+        <field name="targetSecurityObjectId" column="targetSecurityObjectId" type="string" nullable="false" length="191"/>
+        <field name="referenceProperty" column="referenceProperty" type="string" nullable="false" length="191"/>
+        <field name="referenceGroup" column="referenceGroup" type="string" nullable="false" length="191"/>
+        <field name="referenceContext" column="referenceContext" type="string" nullable="false" length="191"/>
+    </mapped-superclass>
+</doctrine-mapping>
