@@ -34,7 +34,7 @@ interface ReferenceRepositoryInterface
 
     public function remove(ReferenceInterface $reference): void;
 
-    public function removeByResourceKeyAndId(string $resourceKey, string $resourceId, string $locale): void;
+    public function removeByReferenceResourceKeyAndId(string $referenceResourceKey, string $referenceResourceId, string $locale): void;
 
     /**
      * @param mixed[] $criteria

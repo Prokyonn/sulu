@@ -256,7 +256,7 @@ class MediaSelectionContentType extends ComplexContentType implements ContentTyp
         return new PropertyMetadata($propertyMetadata->getName(), $mandatory, $mediaSelectionMetadata);
     }
 
-    public function getReferences(PropertyValue $property, ReferenceCollector $collectionPersister): void
+    public function getReferences(PropertyValue $property, ReferenceCollector $referenceCollector): void
     {
         $data = $property->getValue();
         if (!isset($data['ids']) || !\is_array($data['ids'])) {
@@ -264,8 +264,8 @@ class MediaSelectionContentType extends ComplexContentType implements ContentTyp
         }
 
         foreach ($data['ids'] as $id) {
-            $media = $this->mediaManager->getById($id, $collectionPersister->getReferenceLocale());
-            $collectionPersister->addReference(
+            $media = $this->mediaManager->getById($id, $referenceCollector->getReferenceLocale());
+            $referenceCollector->addReference(
                 MediaInterface::RESOURCE_KEY,
                 $id,
                 'id',

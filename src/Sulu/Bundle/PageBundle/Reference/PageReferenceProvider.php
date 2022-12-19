@@ -11,6 +11,7 @@
 
 namespace Sulu\Bundle\PageBundle\Reference;
 
+use Sulu\Bundle\DocumentManagerBundle\Bridge\DocumentInspector;
 use Sulu\Bundle\PageBundle\Admin\PageAdmin;
 use Sulu\Bundle\PageBundle\Document\BasePageDocument;
 use Sulu\Bundle\ReferenceBundle\Application\ReferenceCollector\ReferenceCollector;
@@ -38,14 +39,21 @@ class PageReferenceProvider
      */
     private $referenceRepository;
 
+    /**
+     * @var DocumentInspector
+     */
+    private $documentInspector;
+
     public function __construct(
         ContentTypeManagerInterface $contentTypeManager,
         StructureManagerInterface $structureManager,
-        ReferenceRepositoryInterface $referenceRepository
+        ReferenceRepositoryInterface $referenceRepository,
+        DocumentInspector $documentInspector
     ) {
         $this->contentTypeManager = $contentTypeManager;
         $this->structureManager = $structureManager;
         $this->referenceRepository = $referenceRepository;
+        $this->documentInspector = $documentInspector;
     }
 
     public function collectReferences(BasePageDocument $document, string $locale): ReferenceCollector
@@ -74,5 +82,22 @@ class PageReferenceProvider
         }
 
         return $referenceCollection;
+    }
+
+    public function removeReferences(BasePageDocument $document, ?string $locale = null): void
+    {
+        if ($locale) {
+            $locales = [$locale];
+        } else {
+            $locales = $this->documentInspector->getLocales($document);
+        }
+
+        foreach ($locales as $locale) {
+            $this->referenceRepository->removeByReferenceResourceKeyAndId(
+                BasePageDocument::RESOURCE_KEY,
+                $document->getUuid(),
+                $locale
+            );
+        }
     }
 }

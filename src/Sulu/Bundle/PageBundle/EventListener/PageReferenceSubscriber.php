@@ -16,6 +16,7 @@ use Sulu\Bundle\PageBundle\Document\BasePageDocument;
 use Sulu\Bundle\PageBundle\Reference\PageReferenceProvider;
 use Sulu\Component\DocumentManager\Event\PersistEvent;
 use Sulu\Component\DocumentManager\Event\PublishEvent;
+use Sulu\Component\DocumentManager\Event\RemoveEvent;
 use Sulu\Component\DocumentManager\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -47,10 +48,18 @@ class PageReferenceSubscriber implements EventSubscriberInterface
         return [
             Events::PUBLISH => 'publish',
             Events::PERSIST => 'persist',
+            Events::REMOVE => 'remove',
         ];
     }
 
-    public function publish(PublishEvent $event): void
+    public function updateReferences(BasePageDocument $document, string $locale): void
+    {
+        $this->pageReferenceProvider->collectReferences($document, $locale);
+
+        $this->entityManager->flush();
+    }
+
+    public function onPublish(PublishEvent $event): void
     {
         $document = $event->getDocument();
         $locale = $event->getLocale();
@@ -60,13 +69,6 @@ class PageReferenceSubscriber implements EventSubscriberInterface
         }
 
         $this->updateReferences($document, $locale);
-    }
-
-    public function updateReferences(BasePageDocument $document, string $locale): void
-    {
-        $this->pageReferenceProvider->collectReferences($document, $locale);
-
-        $this->entityManager->flush();
     }
 
     public function persist(PersistEvent $event): void
@@ -79,5 +81,18 @@ class PageReferenceSubscriber implements EventSubscriberInterface
         }
 
         $this->updateReferences($document, $locale);
+    }
+
+    public function remove(RemoveEvent $event): void
+    {
+        $document = $event->getDocument();
+
+        if (!$document instanceof BasePageDocument) {
+            return;
+        }
+
+        $this->pageReferenceProvider->removeReferences($document);
+
+        $this->entityManager->flush();
     }
 }

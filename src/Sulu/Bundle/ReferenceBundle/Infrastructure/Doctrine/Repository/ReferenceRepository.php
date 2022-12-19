@@ -87,7 +87,7 @@ final class ReferenceRepository implements ReferenceRepositoryInterface
         $this->entityManager->remove($reference);
     }
 
-    public function removeByResourceKeyAndId(string $resourceKey, string $resourceId, string $locale): void
+    public function removeByReferenceResourceKeyAndId(string $referenceResourceKey, string $referenceResourceId, string $locale): void
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder
@@ -95,8 +95,8 @@ final class ReferenceRepository implements ReferenceRepositoryInterface
             ->where('reference.resourceKey = :resourceKey')
             ->andWhere('reference.resourceId = :resourceId')
             ->andWhere('reference.locale = :locale')
-            ->setParameter('resourceKey', $resourceKey)
-            ->setParameter('resourceId', $resourceId)
+            ->setParameter('resourceKey', $referenceResourceKey)
+            ->setParameter('resourceId', $referenceResourceId)
             ->setParameter('locale', $locale);
 
         $queryBuilder->getQuery()->execute();

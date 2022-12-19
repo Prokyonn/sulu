@@ -56,7 +56,7 @@ class DoctrineReferenceSubscriber implements EventSubscriber
 
         $references = \array_unique($references, \SORT_REGULAR);
         foreach ($references as $referenceEntry) {
-            $this->referenceRepository->removeByResourceKeyAndId(
+            $this->referenceRepository->removeByReferenceResourceKeyAndId(
                 $referenceEntry['resourceKey'],
                 $referenceEntry['resourceId'],
                 $referenceEntry['locale']
