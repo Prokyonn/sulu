@@ -8,23 +8,22 @@
         </id>
 
         <indexes>
-            <index columns="sourceResourceKey,sourceResourceId,targetResourceKey,targetResourceId"/>
+            <index columns="resourceKey,resourceId,referenceResourceKey,referenceResourceId"/>
         </indexes>
 
-        <field name="sourceResourceKey" column="sourceResourceKey" type="string" nullable="false" length="191"/>
-        <field name="sourceResourceId" column="sourceResourceId" type="string" nullable="false" length="191"/>
-        <field name="sourceLocale" column="sourceLocale" type="string" nullable="false" length="191"/>
-        <field name="sourceWorkflowStage" column="sourceWorkflowStage" type="string" nullable="false" length="191"/>
-        <field name="sourceSecurityContext" column="sourceSecurityContext" type="string" nullable="false" length="191"/>
-        <field name="sourceSecurityObjectType" column="sourceSecurityObjectType" type="string" nullable="false" length="191"/>
-        <field name="sourceSecurityObjectId" column="sourceSecurityObjectId" type="string" nullable="false" length="191"/>
-        <field name="targetResourceKey" column="targetResourceKey" type="string" nullable="false" length="191"/>
-        <field name="targetResourceId" column="targetResourceId" type="string" nullable="false" length="191"/>
-        <field name="targetSecurityContext" column="targetSecurityContext" type="string" nullable="false" length="191"/>
-        <field name="targetSecurityObjectType" column="targetSecurityObjectType" type="string" nullable="false" length="191"/>
-        <field name="targetSecurityObjectId" column="targetSecurityObjectId" type="string" nullable="false" length="191"/>
-        <field name="referenceProperty" column="referenceProperty" type="string" nullable="false" length="191"/>
-        <field name="referenceGroup" column="referenceGroup" type="string" nullable="false" length="191"/>
-        <field name="referenceContext" column="referenceContext" type="string" nullable="false" length="191"/>
+        <field name="resourceKey" column="resourceKey" type="string" nullable="false" length="191"/>
+        <field name="resourceId" column="resourceId" type="string" nullable="false" length="191"/>
+        <field name="locale" column="locale" type="string" nullable="false" length="191"/>
+        <field name="property" column="property" type="string" nullable="false" length="191"/>
+        <field name="securityContext" column="sourceSecurityContext" type="string" nullable="true" length="191"/>
+        <field name="securityObjectType" column="sourceSecurityObjectType" type="string" nullable="true" length="191"/>
+        <field name="securityObjectId" column="sourceSecurityObjectId" type="string" nullable="true" length="191"/>
+        <field name="referenceResourceKey" column="referenceResourceKey" type="string" nullable="false" length="191"/>
+        <field name="referenceResourceId" column="referenceResourceId" type="string" nullable="false" length="191"/>
+        <field name="referenceSecurityContext" column="referenceSecurityContext" type="string" nullable="true" length="191"/>
+        <field name="referenceSecurityObjectType" column="referenceSecurityObjectType" type="string" nullable="true" length="191"/>
+        <field name="referenceSecurityObjectId" column="referenceSecurityObjectId" type="string" nullable="true" length="191"/>
+        <field name="referenceCount" column="referenceCount" type="integer" nullable="false"/>
+        <field name="referenceLiveCount" column="referenceLiveCount" type="integer" nullable="false"/>
     </mapped-superclass>
 </doctrine-mapping>

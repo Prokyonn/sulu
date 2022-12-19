@@ -38,6 +38,7 @@ class SuluReferenceExtension extends Extension implements PrependExtensionInterf
                                 'dir' => __DIR__ . '/../../../Resources/config/doctrine',
                                 'prefix' => 'Sulu\Bundle\ReferenceBundle\Domain\Model',
                                 'alias' => 'SuluReferenceBundle',
+                                'is_bundle' => false,
                             ],
                         ],
                     ],

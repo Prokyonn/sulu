@@ -22,108 +22,105 @@ class ReferenceTest extends TestCase
         static::assertNull($reference->getId());
     }
 
-    public function testGetSetSourceResourceKey(): void
+    public function testGetSetResourceKey(): void
     {
         $reference = new Reference();
-        $reference->setSourceResourceKey('pages');
-        static::assertSame('pages', $reference->getSourceResourceKey());
+        $reference->setResourceKey('pages');
+        static::assertSame('pages', $reference->getResourceKey());
     }
 
-    public function testGetSetSourceResourceId(): void
+    public function testGetSetResourceId(): void
     {
         $reference = new Reference();
-        $reference->setSourceResourceId('pages');
-        static::assertSame('pages', $reference->getSourceResourceId());
+        $reference->setResourceId('123-123');
+        static::assertSame('123-123', $reference->getResourceId());
     }
 
-    public function testGetSetSourceLocale(): void
+    public function testGetSetLocale(): void
     {
         $reference = new Reference();
-        $reference->setSourceLocale('pages');
-        static::assertSame('pages', $reference->getSourceLocale());
+        $reference->setLocale('de');
+        static::assertSame('de', $reference->getLocale());
     }
 
-    public function testGetSetSourceWorkflowStage(): void
+    public function testGetSetSecurityContext(): void
     {
         $reference = new Reference();
-        $reference->setSourceWorkflowStage('pages');
-        static::assertSame('pages', $reference->getSourceWorkflowStage());
+        $reference->setSecurityContext('security-context');
+        static::assertSame('security-context', $reference->getSecurityContext());
     }
 
-    public function testGetSetSourceSecurityContext(): void
+    public function testGetSetSecurityObjectType(): void
     {
         $reference = new Reference();
-        $reference->setSourceSecurityContext('pages');
-        static::assertSame('pages', $reference->getSourceSecurityContext());
+        $reference->setSecurityObjectType('security-type');
+        static::assertSame('security-type', $reference->getSecurityObjectType());
     }
 
-    public function testGetSetSourceSecurityObjectType(): void
+    public function testGetSetSecurityObjectId(): void
     {
         $reference = new Reference();
-        $reference->setSourceSecurityObjectType('pages');
-        static::assertSame('pages', $reference->getSourceSecurityObjectType());
+        $reference->setSecurityObjectId('security-id');
+        static::assertSame('security-id', $reference->getSecurityObjectId());
     }
 
-    public function testGetSetSourceSecurityObjectId(): void
+    public function testGetSetReferenceResourceKey(): void
     {
         $reference = new Reference();
-        $reference->setSourceSecurityObjectId('pages');
-        static::assertSame('pages', $reference->getSourceSecurityObjectId());
+        $reference->setReferenceResourceKey('pages');
+        static::assertSame('pages', $reference->getReferenceResourceKey());
     }
 
-    public function testGetSetTargetResourceKey(): void
+    public function testGetSetReferenceResourceId(): void
     {
         $reference = new Reference();
-        $reference->setTargetResourceKey('pages');
-        static::assertSame('pages', $reference->getTargetResourceKey());
+        $reference->setReferenceResourceId('321-123');
+        static::assertSame('321-123', $reference->getReferenceResourceId());
     }
 
-    public function testGetSetTargetResourceId(): void
+    public function testGetSetReferenceSecurityContext(): void
     {
         $reference = new Reference();
-        $reference->setTargetResourceId('pages');
-        static::assertSame('pages', $reference->getTargetResourceId());
+        $reference->setReferenceSecurityContext('security-context');
+        static::assertSame('security-context', $reference->getReferenceSecurityContext());
     }
 
-    public function testGetSetTargetSecurityContext(): void
+    public function testGetSetReferenceSecurityObjectType(): void
     {
         $reference = new Reference();
-        $reference->setTargetSecurityContext('pages');
-        static::assertSame('pages', $reference->getTargetSecurityContext());
+        $reference->setReferenceSecurityObjectType('security-type');
+        static::assertSame('security-type', $reference->getReferenceSecurityObjectType());
     }
 
-    public function testGetSetTargetSecurityObjectType(): void
+    public function testGetSetReferenceSecurityObjectId(): void
     {
         $reference = new Reference();
-        $reference->setTargetSecurityObjectType('pages');
-        static::assertSame('pages', $reference->getTargetSecurityObjectType());
+        $reference->setReferenceSecurityObjectId('security-id');
+        static::assertSame('security-id', $reference->getReferenceSecurityObjectId());
     }
 
-    public function testGetSetTargetSecurityObjectId(): void
+    public function testGetSetProperty(): void
     {
         $reference = new Reference();
-        $reference->setTargetSecurityObjectId('pages');
-        static::assertSame('pages', $reference->getTargetSecurityObjectId());
+        $reference->setProperty('id');
+        static::assertSame('id', $reference->getProperty());
     }
 
-    public function testGetSetReferenceProperty(): void
+    public function testGetSetReferenceCount(): void
     {
         $reference = new Reference();
-        $reference->setReferenceProperty('pages');
-        static::assertSame('pages', $reference->getReferenceProperty());
+        $reference->setReferenceCount(1);
+        static::assertSame(1, $reference->getReferenceCount());
+        $reference->increaseReferenceCounter();
+        static::assertSame(2, $reference->getReferenceCount());
     }
 
-    public function testGetSetReferenceGroup(): void
+    public function testGetSetReferenceLiveCount(): void
     {
         $reference = new Reference();
-        $reference->setReferenceGroup('pages');
-        static::assertSame('pages', $reference->getReferenceGroup());
-    }
-
-    public function testGetSetReferenceContext(): void
-    {
-        $reference = new Reference();
-        $reference->setReferenceContext('pages');
-        static::assertSame('pages', $reference->getReferenceContext());
+        $reference->setReferenceLiveCount(1);
+        static::assertSame(1, $reference->getReferenceLiveCount());
+        $reference->increaseReferenceLiveCounter();
+        static::assertSame(2, $reference->getReferenceLiveCount());
     }
 }

@@ -11,5 +11,12 @@
         </service>
         <service id="Sulu\Bundle\ReferenceBundle\Domain\Repository\ReferenceRepositoryInterface"
                  alias="sulu_reference.reference_repository"/>
+
+        <!-- Subscriber -->
+        <service id="sulu_reference.doctrine_reference_subscriber"
+                 class="Sulu\Bundle\ReferenceBundle\Infrastructure\Doctrine\Subscriber\DoctrineReferenceSubscriber">
+            <argument type="service" id="sulu_reference.reference_repository"/>
+            <tag name="doctrine.event_subscriber"/>
+        </service>
     </services>
 </container>

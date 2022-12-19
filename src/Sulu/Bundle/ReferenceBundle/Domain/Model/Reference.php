@@ -21,260 +21,270 @@ class Reference implements ReferenceInterface
     /**
      * @var string
      */
-    private $sourceResourceKey;
+    private $resourceKey;
 
     /**
      * @var string
      */
-    private $sourceResourceId;
+    private $resourceId;
 
     /**
      * @var string
      */
-    private $sourceLocale;
+    private $locale;
+
+    /**
+     * @var string|null
+     */
+    private $securityContext;
+
+    /**
+     * @var string|null
+     */
+    private $securityObjectType;
+
+    /**
+     * @var string|null
+     */
+    private $securityObjectId;
 
     /**
      * @var string
      */
-    private $sourceWorkflowStage;
+    private $referenceResourceKey;
 
     /**
      * @var string
      */
-    private $sourceSecurityContext;
+    private $referenceResourceId;
+
+    /**
+     * @var string|null
+     */
+    private $referenceSecurityContext;
+
+    /**
+     * @var string|null
+     */
+    private $referenceSecurityObjectType;
+
+    /**
+     * @var string|null
+     */
+    private $referenceSecurityObjectId;
+
+    /**
+     * @var int
+     */
+    private $referenceCount;
+
+    /**
+     * @var int
+     */
+    private $referenceLiveCount;
 
     /**
      * @var string
      */
-    private $sourceSecurityObjectType;
-
-    /**
-     * @var string
-     */
-    private $sourceSecurityObjectId;
-
-    /**
-     * @var string
-     */
-    private $targetResourceKey;
-
-    /**
-     * @var string
-     */
-    private $targetResourceId;
-
-    /**
-     * @var string
-     */
-    private $targetSecurityContext;
-
-    /**
-     * @var string
-     */
-    private $targetSecurityObjectType;
-
-    /**
-     * @var string
-     */
-    private $targetSecurityObjectId;
-
-    /**
-     * @var string
-     */
-    private $referenceProperty;
-
-    /**
-     * @var string
-     */
-    private $referenceGroup;
-
-    /**
-     * @var string
-     */
-    private $referenceContext;
+    private $property;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getSourceResourceKey(): string
+    public function getResourceKey(): string
     {
-        return $this->sourceResourceKey;
+        return $this->resourceKey;
     }
 
-    public function setSourceResourceKey(string $sourceResourceKey): ReferenceInterface
+    public function setResourceKey(string $resourceKey): ReferenceInterface
     {
-        $this->sourceResourceKey = $sourceResourceKey;
+        $this->resourceKey = $resourceKey;
 
         return $this;
     }
 
-    public function getSourceResourceId(): string
+    public function getResourceId(): string
     {
-        return $this->sourceResourceId;
+        return $this->resourceId;
     }
 
-    public function setSourceResourceId(string $sourceResourceId): ReferenceInterface
+    public function setResourceId(string $resourceId): ReferenceInterface
     {
-        $this->sourceResourceId = $sourceResourceId;
+        $this->resourceId = $resourceId;
 
         return $this;
     }
 
-    public function getSourceLocale(): string
+    public function getLocale(): string
     {
-        return $this->sourceLocale;
+        return $this->locale;
     }
 
-    public function setSourceLocale(string $sourceLocale): ReferenceInterface
+    public function setLocale(string $locale): ReferenceInterface
     {
-        $this->sourceLocale = $sourceLocale;
+        $this->locale = $locale;
 
         return $this;
     }
 
-    public function getSourceWorkflowStage(): string
+    public function getSecurityContext(): ?string
     {
-        return $this->sourceWorkflowStage;
+        return $this->securityContext;
     }
 
-    public function setSourceWorkflowStage(string $sourceWorkflowStage): ReferenceInterface
+    public function setSecurityContext(?string $securityContext): ReferenceInterface
     {
-        $this->sourceWorkflowStage = $sourceWorkflowStage;
+        $this->securityContext = $securityContext;
 
         return $this;
     }
 
-    public function getSourceSecurityContext(): string
+    public function getSecurityObjectType(): ?string
     {
-        return $this->sourceSecurityContext;
+        return $this->securityObjectType;
     }
 
-    public function setSourceSecurityContext(string $sourceSecurityContext): ReferenceInterface
+    public function setSecurityObjectType(?string $securityObjectType): ReferenceInterface
     {
-        $this->sourceSecurityContext = $sourceSecurityContext;
+        $this->securityObjectType = $securityObjectType;
 
         return $this;
     }
 
-    public function getSourceSecurityObjectType(): string
+    public function getSecurityObjectId(): ?string
     {
-        return $this->sourceSecurityObjectType;
+        return $this->securityObjectId;
     }
 
-    public function setSourceSecurityObjectType(string $sourceSecurityObjectType): ReferenceInterface
+    public function setSecurityObjectId(?string $securityObjectId): ReferenceInterface
     {
-        $this->sourceSecurityObjectType = $sourceSecurityObjectType;
+        $this->securityObjectId = $securityObjectId;
 
         return $this;
     }
 
-    public function getSourceSecurityObjectId(): string
+    public function getReferenceResourceKey(): string
     {
-        return $this->sourceSecurityObjectId;
+        return $this->referenceResourceKey;
     }
 
-    public function setSourceSecurityObjectId(string $sourceSecurityObjectId): ReferenceInterface
+    public function setReferenceResourceKey(string $referenceResourceKey): ReferenceInterface
     {
-        $this->sourceSecurityObjectId = $sourceSecurityObjectId;
+        $this->referenceResourceKey = $referenceResourceKey;
 
         return $this;
     }
 
-    public function getTargetResourceKey(): string
+    public function getReferenceResourceId(): string
     {
-        return $this->targetResourceKey;
+        return $this->referenceResourceId;
     }
 
-    public function setTargetResourceKey(string $targetResourceKey): ReferenceInterface
+    public function setReferenceResourceId(string $referenceResourceId): ReferenceInterface
     {
-        $this->targetResourceKey = $targetResourceKey;
+        $this->referenceResourceId = $referenceResourceId;
 
         return $this;
     }
 
-    public function getTargetResourceId(): string
+    public function getReferenceSecurityContext(): ?string
     {
-        return $this->targetResourceId;
+        return $this->referenceSecurityContext;
     }
 
-    public function setTargetResourceId(string $targetResourceId): ReferenceInterface
+    public function setReferenceSecurityContext(?string $referenceSecurityContext): ReferenceInterface
     {
-        $this->targetResourceId = $targetResourceId;
+        $this->referenceSecurityContext = $referenceSecurityContext;
 
         return $this;
     }
 
-    public function getTargetSecurityContext(): string
+    public function getReferenceSecurityObjectType(): ?string
     {
-        return $this->targetSecurityContext;
+        return $this->referenceSecurityObjectType;
     }
 
-    public function setTargetSecurityContext(string $targetSecurityContext): ReferenceInterface
+    public function setReferenceSecurityObjectType(?string $referenceSecurityObjectType): ReferenceInterface
     {
-        $this->targetSecurityContext = $targetSecurityContext;
+        $this->referenceSecurityObjectType = $referenceSecurityObjectType;
 
         return $this;
     }
 
-    public function getTargetSecurityObjectType(): string
+    public function getReferenceSecurityObjectId(): ?string
     {
-        return $this->targetSecurityObjectType;
+        return $this->referenceSecurityObjectId;
     }
 
-    public function setTargetSecurityObjectType(string $targetSecurityObjectType): ReferenceInterface
+    public function setReferenceSecurityObjectId(?string $referenceSecurityObjectId): ReferenceInterface
     {
-        $this->targetSecurityObjectType = $targetSecurityObjectType;
+        $this->referenceSecurityObjectId = $referenceSecurityObjectId;
 
         return $this;
     }
 
-    public function getTargetSecurityObjectId(): string
+    public function getProperty(): string
     {
-        return $this->targetSecurityObjectId;
+        return $this->property;
     }
 
-    public function setTargetSecurityObjectId(string $targetSecurityObjectId): ReferenceInterface
+    public function setProperty(string $property): ReferenceInterface
     {
-        $this->targetSecurityObjectId = $targetSecurityObjectId;
+        $this->property = $property;
 
         return $this;
     }
 
-    public function getReferenceProperty(): string
+    public function getReferenceCount(): int
     {
-        return $this->referenceProperty;
+        return $this->referenceCount;
     }
 
-    public function setReferenceProperty(string $referenceProperty): ReferenceInterface
+    public function setReferenceCount(int $referenceCount): ReferenceInterface
     {
-        $this->referenceProperty = $referenceProperty;
+        $this->referenceCount = $referenceCount;
 
         return $this;
     }
 
-    public function getReferenceGroup(): string
+    public function getReferenceLiveCount(): int
     {
-        return $this->referenceGroup;
+        return $this->referenceLiveCount;
     }
 
-    public function setReferenceGroup(string $referenceGroup): ReferenceInterface
+    public function setReferenceLiveCount(int $referenceLiveCount): ReferenceInterface
     {
-        $this->referenceGroup = $referenceGroup;
+        $this->referenceLiveCount = $referenceLiveCount;
 
         return $this;
     }
 
-    public function getReferenceContext(): string
+    public function increaseReferenceCounter(): int
     {
-        return $this->referenceContext;
+        return ++$this->referenceCount;
     }
 
-    public function setReferenceContext(string $referenceContext): ReferenceInterface
+    public function increaseReferenceLiveCounter(): int
     {
-        $this->referenceContext = $referenceContext;
+        return ++$this->referenceLiveCount;
+    }
 
-        return $this;
+    public function equals(ReferenceInterface $reference): bool
+    {
+        return
+            $this->resourceKey === $reference->getResourceKey() &&
+            $this->resourceId === $reference->getResourceId() &&
+            $this->locale === $reference->getLocale() &&
+            $this->securityContext === $reference->getSecurityContext() &&
+            $this->securityObjectType === $reference->getSecurityObjectType() &&
+            $this->securityObjectId === $reference->getSecurityObjectId() &&
+            $this->referenceResourceKey === $reference->getReferenceResourceKey() &&
+            $this->referenceResourceId === $reference->getReferenceResourceId() &&
+            $this->referenceSecurityContext === $reference->getReferenceSecurityContext() &&
+            $this->referenceSecurityObjectType === $reference->getReferenceSecurityObjectType() &&
+            $this->referenceSecurityObjectId === $reference->getReferenceSecurityObjectId() &&
+            $this->property === $reference->getProperty();
     }
 }

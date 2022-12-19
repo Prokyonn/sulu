@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="sulu_page.reference_subscriber"
+                 class="Sulu\Bundle\PageBundle\EventListener\PageReferenceSubscriber">
+            <argument type="service" id="sulu_page.reference_provider"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+
+            <tag name="sulu_document_manager.event_subscriber" />
+        </service>
+
+        <service id="sulu_page.reference_provider" class="Sulu\Bundle\PageBundle\Reference\PageReferenceProvider">
+            <argument type="service" id="sulu.content.type_manager"/>
+            <argument type="service" id="sulu.content.structure_manager"/>
+            <argument type="service" id="sulu_reference.reference_repository"/>
+        </service>
+    </services>
+</container>

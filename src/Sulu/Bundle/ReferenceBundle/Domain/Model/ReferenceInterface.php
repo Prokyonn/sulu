@@ -15,63 +15,65 @@ interface ReferenceInterface
 {
     public function getId(): ?int;
 
-    public function getSourceResourceKey(): string;
+    public function getResourceKey(): string;
 
-    public function setSourceResourceKey(string $sourceResourceKey): ReferenceInterface;
+    public function setResourceKey(string $resourceKey): ReferenceInterface;
 
-    public function getSourceResourceId(): string;
+    public function getResourceId(): string;
 
-    public function setSourceResourceId(string $sourceResourceId): ReferenceInterface;
+    public function setResourceId(string $resourceId): ReferenceInterface;
 
-    public function getSourceLocale(): string;
+    public function getLocale(): string;
 
-    public function setSourceLocale(string $sourceLocale): ReferenceInterface;
+    public function setLocale(string $locale): ReferenceInterface;
 
-    public function getSourceWorkflowStage(): string;
+    public function getSecurityContext(): ?string;
 
-    public function setSourceWorkflowStage(string $sourceWorkflowStage): ReferenceInterface;
+    public function setSecurityContext(?string $securityContext): ReferenceInterface;
 
-    public function getSourceSecurityContext(): string;
+    public function getSecurityObjectType(): ?string;
 
-    public function setSourceSecurityContext(string $sourceSecurityContext): ReferenceInterface;
+    public function setSecurityObjectType(?string $securityObjectType): ReferenceInterface;
 
-    public function getSourceSecurityObjectType(): string;
+    public function getSecurityObjectId(): ?string;
 
-    public function setSourceSecurityObjectType(string $sourceSecurityObjectType): ReferenceInterface;
+    public function setSecurityObjectId(?string $securityObjectId): ReferenceInterface;
 
-    public function getSourceSecurityObjectId(): string;
+    public function getReferenceResourceKey(): string;
 
-    public function setSourceSecurityObjectId(string $sourceSecurityObjectId): ReferenceInterface;
+    public function setReferenceResourceKey(string $referenceResourceKey): ReferenceInterface;
 
-    public function getTargetResourceKey(): string;
+    public function getReferenceResourceId(): string;
 
-    public function setTargetResourceKey(string $targetResourceKey): ReferenceInterface;
+    public function setReferenceResourceId(string $referenceResourceId): ReferenceInterface;
 
-    public function getTargetResourceId(): string;
+    public function getReferenceSecurityContext(): ?string;
 
-    public function setTargetResourceId(string $targetResourceId): ReferenceInterface;
+    public function setReferenceSecurityContext(?string $referenceSecurityContext): ReferenceInterface;
 
-    public function getTargetSecurityContext(): string;
+    public function getReferenceSecurityObjectType(): ?string;
 
-    public function setTargetSecurityContext(string $targetSecurityContext): ReferenceInterface;
+    public function setReferenceSecurityObjectType(?string $referenceSecurityObjectType): ReferenceInterface;
 
-    public function getTargetSecurityObjectType(): string;
+    public function getReferenceSecurityObjectId(): ?string;
 
-    public function setTargetSecurityObjectType(string $targetSecurityObjectType): ReferenceInterface;
+    public function setReferenceSecurityObjectId(?string $referenceSecurityObjectId): ReferenceInterface;
 
-    public function getTargetSecurityObjectId(): string;
+    public function getProperty(): string;
 
-    public function setTargetSecurityObjectId(string $targetSecurityObjectId): ReferenceInterface;
+    public function setProperty(string $property): ReferenceInterface;
 
-    public function getReferenceProperty(): string;
+    public function getReferenceCount(): int;
 
-    public function setReferenceProperty(string $referenceProperty): ReferenceInterface;
+    public function setReferenceCount(int $referenceCount): ReferenceInterface;
 
-    public function getReferenceGroup(): string;
+    public function getReferenceLiveCount(): int;
 
-    public function setReferenceGroup(string $referenceGroup): ReferenceInterface;
+    public function setReferenceLiveCount(int $referenceLiveCount): ReferenceInterface;
 
-    public function getReferenceContext(): string;
+    public function increaseReferenceCounter(): int;
 
-    public function setReferenceContext(string $referenceContext): ReferenceInterface;
+    public function increaseReferenceLiveCounter(): int;
+
+    public function equals(ReferenceInterface $reference): bool;
 }

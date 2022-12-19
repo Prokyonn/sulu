@@ -16,28 +16,33 @@ use Sulu\Bundle\ReferenceBundle\Domain\Model\ReferenceInterface;
 interface ReferenceRepositoryInterface
 {
     public function create(
-        string $sourceResourceKey,
-        string $sourceResourceId,
-        string $sourceLocale,
-        string $sourceWorkflowStage,
-        string $sourceSecurityContext,
-        string $sourceSecurityObjectType,
-        string $sourceSecurityObjectId,
-        string $targetResourceKey,
-        string $targetResourceId,
-        string $targetSecurityContext,
-        string $targetSecurityObjectType,
-        string $targetSecurityObjectId,
-        string $referenceProperty,
-        string $referenceGroup,
-        string $referenceContext
+        string $resourceKey,
+        string $resourceId,
+        string $locale,
+        string $property,
+        string $referenceResourceKey,
+        string $referenceResourceId,
+        ?string $securityContext = null,
+        ?string $securityObjectType = null,
+        ?string $securityObjectId = null,
+        ?string $referenceSecurityContext = null,
+        ?string $referenceSecurityObjectType = null,
+        ?string $referenceSecurityObjectId = null
     ): ReferenceInterface;
 
     public function add(ReferenceInterface $reference): void;
 
     public function remove(ReferenceInterface $reference): void;
 
+    public function removeByResourceKeyAndId(string $resourceKey, string $resourceId, string $locale): void;
+
+    /**
+     * @param mixed[] $criteria
+     */
     public function getOneBy(array $criteria): ReferenceInterface;
 
+    /**
+     * @param mixed[] $criteria
+     */
     public function findOneBy(array $criteria): ?ReferenceInterface;
 }

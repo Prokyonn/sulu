@@ -29021,6 +29021,11 @@ parameters:
 			path: src/Sulu/Bundle/PreviewBundle/UserInterface/Controller/PublicPreviewController.php
 
 		-
+			message: "#^If condition is always true\\.$#"
+			count: 1
+			path: src/Sulu/Bundle/ReferenceBundle/Infrastructure/Symfony/DependencyInjection/SuluReferenceExtension.php
+
+		-
 			message: "#^Method Sulu\\\\Bundle\\\\RouteBundle\\\\Command\\\\MovePageTreeCommand\\:\\:configure\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Sulu/Bundle/RouteBundle/Command/MovePageTreeCommand.php
