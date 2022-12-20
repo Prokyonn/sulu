@@ -19,6 +19,8 @@ use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactoryInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewCollection;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
+use Sulu\Bundle\ReferenceBundle\Domain\Model\ReferenceInterface;
+use Sulu\Bundle\ReferenceBundle\Infrastructure\Sulu\Admin\View\ReferenceViewBuilderFactoryInterface;
 use Sulu\Component\Localization\Manager\LocalizationManagerInterface;
 use Sulu\Component\Security\Authorization\PermissionTypes;
 use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
@@ -71,13 +73,19 @@ class MediaAdmin extends Admin
      */
     private $activityViewBuilderFactory;
 
+    /**
+     * @var ReferenceViewBuilderFactoryInterface
+     */
+    private $referenceViewBuilderFactory;
+
     public function __construct(
         ViewBuilderFactoryInterface $viewBuilderFactory,
         SecurityCheckerInterface $securityChecker,
         LocalizationManagerInterface $localizationManager,
         UrlGeneratorInterface $urlGenerator,
         WebspaceManagerInterface $webspaceManager,
-        ActivityViewBuilderFactoryInterface $activityViewBuilderFactory
+        ActivityViewBuilderFactoryInterface $activityViewBuilderFactory,
+        ReferenceViewBuilderFactoryInterface $referenceViewBuilderFactory
     ) {
         $this->viewBuilderFactory = $viewBuilderFactory;
         $this->securityChecker = $securityChecker;
@@ -85,6 +93,7 @@ class MediaAdmin extends Admin
         $this->urlGenerator = $urlGenerator;
         $this->webspaceManager = $webspaceManager;
         $this->activityViewBuilderFactory = $activityViewBuilderFactory;
+        $this->referenceViewBuilderFactory = $referenceViewBuilderFactory;
     }
 
     public function configureNavigationItems(NavigationItemCollection $navigationItemCollection): void
@@ -172,6 +181,18 @@ class MediaAdmin extends Admin
                             static::EDIT_FORM_VIEW . '.activity',
                             '/activities',
                             MediaInterface::RESOURCE_KEY
+                        )
+                        ->setParent(static::EDIT_FORM_VIEW)
+                );
+            }
+
+            if ($this->referenceViewBuilderFactory->hasReferenceListPermission()) {
+                $viewCollection->add(
+                    $this->referenceViewBuilderFactory
+                        ->createReferenceListViewBuilder(
+                            static::EDIT_FORM_VIEW . '.reference',
+                            '/references',
+                            ReferenceInterface::RESOURCE_KEY
                         )
                         ->setParent(static::EDIT_FORM_VIEW)
                 );

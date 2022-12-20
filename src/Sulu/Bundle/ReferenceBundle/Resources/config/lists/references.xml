@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<list xmlns="http://schemas.sulu.io/list-builder/list">
+    <key>references</key>
+
+    <properties>
+        <property
+            name="referenceResourceId"
+            translation="sulu_admin.id"
+            visibility="yes"
+            searchability="never"
+            sortable="false"
+            width="shrink"
+        />
+
+        <property
+            name="referenceResourceKey"
+            translation="sulu_admin.resource"
+            visibility="yes"
+            searchability="never"
+            sortable="false"
+            width="shrink"
+        />
+
+    </properties>
+</list>

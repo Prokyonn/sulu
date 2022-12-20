@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ReferenceBundle\Infrastructure\Symfony\DependencyInjection
 
 use Sulu\Bundle\PersistenceBundle\DependencyInjection\PersistenceExtensionTrait;
 use Sulu\Bundle\ReferenceBundle\Domain\Exception\ReferenceNotFoundException;
+use Sulu\Bundle\ReferenceBundle\Domain\Model\ReferenceInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -53,6 +54,26 @@ class SuluReferenceExtension extends Extension implements PrependExtensionInterf
                     'exception' => [
                         'codes' => [
                             ReferenceNotFoundException::class => 404,
+                        ],
+                    ],
+                ]
+            );
+        }
+
+        if ($container->hasExtension('sulu_admin')) {
+            $container->prependExtensionConfig(
+                'sulu_admin',
+                [
+                    'lists' => [
+                        'directories' => [
+                            __DIR__ . '/../../../Resources/config/lists',
+                        ],
+                    ],
+                    'resources' => [
+                        ReferenceInterface::RESOURCE_KEY => [
+                            'routes' => [
+                                'list' => 'sulu_reference.get_references',
+                            ],
                         ],
                     ],
                 ]
