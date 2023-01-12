@@ -27,7 +27,7 @@ use Sulu\Bundle\MediaBundle\Content\MediaSelectionContainer;
 use Sulu\Bundle\MediaBundle\Entity\Collection;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\MediaBundle\Media\Manager\MediaManagerInterface;
-use Sulu\Bundle\ReferenceBundle\Application\ReferenceCollector\ReferenceCollector;
+use Sulu\Bundle\ReferenceBundle\Application\Collector\ReferenceCollector;
 use Sulu\Bundle\ReferenceBundle\Infrastructure\Sulu\ContentType\ReferenceContentTypeInterface;
 use Sulu\Bundle\WebsiteBundle\ReferenceStore\ReferenceStoreInterface;
 use Sulu\Component\Content\Compat\PropertyInterface;
@@ -268,6 +268,7 @@ class MediaSelectionContentType extends ComplexContentType implements ContentTyp
             $referenceCollector->addReference(
                 MediaInterface::RESOURCE_KEY,
                 $id,
+                $media->getName(),
                 'id',
                 MediaAdmin::SECURITY_CONTEXT,
                 Collection::class,

@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ReferenceBundle\Application\ReferenceCollector;
+namespace Sulu\Bundle\ReferenceBundle\Application\Collector;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Sulu\Bundle\ReferenceBundle\Domain\Model\ReferenceInterface;
@@ -37,6 +37,11 @@ class ReferenceCollector
      * @var string
      */
     private $referenceResourceKey;
+
+    /**
+     * @var string
+     */
+    private $referenceTitle;
 
     /**
      * @var string
@@ -72,6 +77,7 @@ class ReferenceCollector
     public function addReference(
         string $resourceKey,
         string $resourceId,
+        string $title,
         string $property,
         ?string $securityContext = null,
         ?string $securityObjectType = null,
@@ -80,10 +86,12 @@ class ReferenceCollector
         $reference = $this->referenceRepository->create(
             $resourceKey,
             $resourceId,
+            $title,
             $this->referenceLocale,
             $property,
             $this->referenceResourceKey,
             $this->referenceResourceId,
+            $this->referenceTitle,
             $securityContext,
             $securityObjectType,
             $securityObjectId,
@@ -145,6 +153,18 @@ class ReferenceCollector
     public function setReferenceResourceKey(string $referenceResourceKey): ReferenceCollector
     {
         $this->referenceResourceKey = $referenceResourceKey;
+
+        return $this;
+    }
+
+    public function getReferenceTitle(): string
+    {
+        return $this->referenceTitle;
+    }
+
+    public function setReferenceTitle(string $referenceTitle): ReferenceCollector
+    {
+        $this->referenceTitle = $referenceTitle;
 
         return $this;
     }

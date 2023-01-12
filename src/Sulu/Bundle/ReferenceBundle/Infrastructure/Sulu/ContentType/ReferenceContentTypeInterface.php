@@ -11,7 +11,7 @@
 
 namespace Sulu\Bundle\ReferenceBundle\Infrastructure\Sulu\ContentType;
 
-use Sulu\Bundle\ReferenceBundle\Application\ReferenceCollector\ReferenceCollector;
+use Sulu\Bundle\ReferenceBundle\Application\Collector\ReferenceCollector;
 use Sulu\Component\Content\Document\Structure\PropertyValue;
 
 interface ReferenceContentTypeInterface

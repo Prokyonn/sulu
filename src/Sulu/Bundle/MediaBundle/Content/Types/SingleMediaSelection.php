@@ -25,7 +25,7 @@ use Sulu\Bundle\MediaBundle\Entity\Collection;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\MediaBundle\Media\Exception\MediaNotFoundException;
 use Sulu\Bundle\MediaBundle\Media\Manager\MediaManagerInterface;
-use Sulu\Bundle\ReferenceBundle\Application\ReferenceCollector\ReferenceCollector;
+use Sulu\Bundle\ReferenceBundle\Application\Collector\ReferenceCollector;
 use Sulu\Bundle\ReferenceBundle\Infrastructure\Sulu\ContentType\ReferenceContentTypeInterface;
 use Sulu\Bundle\WebsiteBundle\ReferenceStore\ReferenceStoreInterface;
 use Sulu\Component\Content\Compat\PropertyInterface;
@@ -203,6 +203,7 @@ class SingleMediaSelection extends SimpleContentType implements PreResolvableCon
         $referenceCollector->addReference(
             MediaInterface::RESOURCE_KEY,
             $data['id'],
+            $media->getName(),
             'id',
             MediaAdmin::SECURITY_CONTEXT,
             Collection::class,

@@ -18,6 +18,10 @@ interface ReferenceInterface
 
     public function getId(): ?int;
 
+    public function getTitle(): string;
+
+    public function setTitle(string $title): ReferenceInterface;
+
     public function getResourceKey(): string;
 
     public function setResourceKey(string $resourceKey): ReferenceInterface;
@@ -49,6 +53,10 @@ interface ReferenceInterface
     public function getReferenceResourceId(): string;
 
     public function setReferenceResourceId(string $referenceResourceId): ReferenceInterface;
+
+    public function getReferenceTitle(): string;
+
+    public function setReferenceTitle(string $referenceTitle): ReferenceInterface;
 
     public function getReferenceSecurityContext(): ?string;
 

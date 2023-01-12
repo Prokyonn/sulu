@@ -46,9 +46,9 @@ class PageReferenceSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            Events::PUBLISH => 'publish',
-            Events::PERSIST => 'persist',
-            Events::REMOVE => 'remove',
+            Events::PUBLISH => 'onPublish',
+            Events::PERSIST => 'onPersist',
+            Events::REMOVE => 'onRemove',
         ];
     }
 
@@ -71,7 +71,7 @@ class PageReferenceSubscriber implements EventSubscriberInterface
         $this->updateReferences($document, $locale);
     }
 
-    public function persist(PersistEvent $event): void
+    public function onPersist(PersistEvent $event): void
     {
         $document = $event->getDocument();
         $locale = $event->getLocale();
@@ -83,7 +83,7 @@ class PageReferenceSubscriber implements EventSubscriberInterface
         $this->updateReferences($document, $locale);
     }
 
-    public function remove(RemoveEvent $event): void
+    public function onRemove(RemoveEvent $event): void
     {
         $document = $event->getDocument();
 

@@ -41,10 +41,12 @@ final class ReferenceRepository implements ReferenceRepositoryInterface
     public function create(
         string $resourceKey,
         string $resourceId,
+        string $title,
         string $locale,
         string $property,
         string $referenceResourceKey,
         string $referenceResourceId,
+        string $referenceTitle,
         ?string $securityContext = null,
         ?string $securityObjectType = null,
         ?string $securityObjectId = null,
@@ -61,12 +63,14 @@ final class ReferenceRepository implements ReferenceRepositoryInterface
         $reference
             ->setResourceKey($resourceKey)
             ->setResourceId($resourceId)
+            ->setTitle($title)
             ->setLocale($locale)
             ->setSecurityContext($securityContext)
             ->setSecurityObjectType($securityObjectType)
             ->setSecurityObjectId($securityObjectId)
             ->setReferenceResourceKey($referenceResourceKey)
             ->setReferenceResourceId($referenceResourceId)
+            ->setReferenceTitle($referenceTitle)
             ->setReferenceSecurityContext($referenceSecurityContext)
             ->setReferenceSecurityObjectType($referenceSecurityObjectType)
             ->setReferenceSecurityObjectId($referenceSecurityObjectId)
