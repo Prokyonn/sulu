@@ -60,7 +60,6 @@ class PageReferenceProvider
     {
         $referenceCollection = new ReferenceCollector($this->referenceRepository);
 
-        $structure = $document->getStructure();
         $referenceCollection
             ->setReferenceResourceKey(BasePageDocument::RESOURCE_KEY)
             ->setReferenceResourceId($document->getUuid())
@@ -69,8 +68,9 @@ class PageReferenceProvider
             ->setReferenceSecurityObjectType(SecurityBehavior::class)
             ->setReferenceSecurityObjectId($document->getUuid())
             ->setReferenceWorkflowStage((int) $document->getWorkflowStage())
-            ->setReferenceTitle($structure->getProperty('title')->getValue());
+            ->setReferenceTitle($document->getTitle());
 
+        $structure = $document->getStructure();
         $templateStructure = $this->structureManager->getStructure($document->getStructureType(), Structure::TYPE_PAGE);
         foreach ($templateStructure->getProperties(true) as $property) {
             $contentType = $this->contentTypeManager->get($property->getContentTypeName());

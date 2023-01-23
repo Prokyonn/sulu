@@ -54,6 +54,10 @@ class PageReferenceSubscriber implements EventSubscriberInterface
 
     public function updateReferences(BasePageDocument $document, string $locale): void
     {
+        if (!$document->getUuid()) {
+            return;
+        }
+
         $this->pageReferenceProvider->collectReferences($document, $locale);
 
         $this->entityManager->flush();
