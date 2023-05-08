@@ -46,6 +46,16 @@
             <tag name="console.command"/>
         </service>
 
+        <service id="sulu_page.command.update_page_references"
+                 class="Sulu\Bundle\PageBundle\Command\UpdatePageReferencesCommand">
+            <argument type="service" id="sulu_document_manager.default_session"/>
+            <argument type="service" id="sulu_core.webspace.webspace_manager"/>
+            <argument type="service" id="sulu_document_manager.document_manager"/>
+            <argument type="service" id="sulu_page.reference_provider"/>
+
+            <tag name="console.command"/>
+        </service>
+
         <service id="sulu_page.command.validate_webspaces"
                  class="Sulu\Bundle\PageBundle\Command\ValidateWebspacesCommand">
             <argument type="service" id="twig"/>
