@@ -108,7 +108,12 @@ class ReferenceController extends AbstractRestController implements ClassResourc
         );
 
         /** @var string|null $locale */
-        $locale = $this->getLocale($request);
+        $locale = $this->getRequestParameter($request, 'locale');
+        /** @var string|null $resourceId */
+        $resourceId = $this->getRequestParameter($request, 'resourceId');
+        /** @var string|null $resourceKey */
+        $resourceKey = $this->getRequestParameter($request, 'resourceKey');
+
         /** @var UserInterface $user */
         $user = $this->getUser();
 
@@ -129,8 +134,6 @@ class ReferenceController extends AbstractRestController implements ClassResourc
         $listBuilder = $this->listBuilderFactory->create($this->referenceClass);
         $this->restHelper->initializeListBuilder($listBuilder, $fieldDescriptors);
 
-        $listBuilder->setParameter('locale', $locale);
-
         foreach ($hiddenFieldDescriptors as $fieldDescriptor) {
             $listBuilder->addSelectField($fieldDescriptor);
         }
@@ -142,19 +145,38 @@ class ReferenceController extends AbstractRestController implements ClassResourc
         $this->addResourceSecurityContextCondition($listBuilder, $fieldDescriptors, $user);
         $this->addResourceObjectSecurityCondition($listBuilder, $fieldDescriptors, $user);
 
+        if (null !== $locale) {
+            $this->addLocaleCondition($listBuilder, $fieldDescriptors, $locale);
+        }
+
+        if (null !== $resourceKey) {
+            $this->addResourceKeyCondition($listBuilder, $fieldDescriptors, $resourceKey);
+
+            if (null !== $resourceId) {
+                $this->addResourceIdCondition($listBuilder, $fieldDescriptors, $resourceId);
+            }
+        }
+
         $references = $listBuilder->execute();
-
+        $translationLocale = $user->getLocale();
         $references = \array_map(
-            function(array $trashItem) use ($hiddenFieldDescriptors) {
-                if (isset($trashItem['resourceType'])) {
-                    $trashItem['resourceType'] = $this->getResourceTranslation($trashItem['resourceType'], $trashItem['restoreType']);
-                }
+            function(array $reference) use ($translationLocale) {
+                $referenceResourceKey = $this->translator->trans(
+                    \sprintf(
+                        'sulu_reference.resource.%s',
+                        $reference['referenceResourceKey']
+                    ),
+                    [],
+                    'admin',
+                    $translationLocale
+                );
 
-                foreach ($hiddenFieldDescriptors as $fieldDescriptor) {
-                    unset($trashItem[$fieldDescriptor->getName()]);
-                }
-
-                return $trashItem;
+                return \array_merge(
+                    $reference,
+                    [
+                        'referenceResourceKey' => $referenceResourceKey,
+                    ]
+                );
             },
             $references
         );
@@ -220,6 +242,9 @@ class ReferenceController extends AbstractRestController implements ClassResourc
     private function getRequiredFieldDescriptors(): array
     {
         return [
+            'resourceId' => $this->createFieldDescriptor('resourceId'),
+            'resourceKey' => $this->createFieldDescriptor('resourceKey'),
+            'locale' => $this->createFieldDescriptor('locale'),
             'referenceResourceId' => $this->createFieldDescriptor('referenceResourceId'),
             'referenceResourceKey' => $this->createFieldDescriptor('referenceResourceKey'),
         ];
@@ -291,33 +316,59 @@ class ReferenceController extends AbstractRestController implements ClassResourc
         );
     }
 
-    private function getResourceTranslation(string $resourceKey, ?string $restoreType = null): string
-    {
-        $resourceTranslation = $this->translator->trans(
-            \sprintf(
-                'sulu_activity.resource.%s',
-                $resourceKey
-            ),
-            [],
-            'admin'
-        );
-
-        if ($restoreType) {
-            $resourceTranslation = \sprintf(
-                '%s (%s)',
-                $resourceTranslation,
-                $this->translator->trans(
-                    \sprintf(
-                        'sulu_activity.resource.%s.%s',
-                        $resourceKey,
-                        $restoreType
+    /**
+     * @param array<string, FieldDescriptorInterface> $fieldDescriptors
+     */
+    private function addLocaleCondition(
+        DoctrineListBuilder $listBuilder,
+        array $fieldDescriptors,
+        string $resourceLocale
+    ): void {
+        $listBuilder->addExpression(
+            $listBuilder->createOrExpression(
+                [
+                    $listBuilder->createWhereExpression(
+                        $fieldDescriptors['locale'],
+                        $resourceLocale,
+                        ListBuilderInterface::WHERE_COMPARATOR_EQUAL
                     ),
-                    [],
-                    'admin'
-                )
-            );
-        }
+                    $listBuilder->createWhereExpression(
+                        $fieldDescriptors['locale'],
+                        null,
+                        ListBuilderInterface::WHERE_COMPARATOR_EQUAL
+                    ),
+                ]
+            )
+        );
+    }
 
-        return $resourceTranslation;
+    /**
+     * @param array<string, FieldDescriptorInterface> $fieldDescriptors
+     */
+    private function addResourceKeyCondition(
+        DoctrineListBuilder $listBuilder,
+        array $fieldDescriptors,
+        string $resourceKey
+    ): void {
+        $listBuilder->where(
+            $fieldDescriptors['resourceKey'],
+            $resourceKey,
+            ListBuilderInterface::WHERE_COMPARATOR_EQUAL
+        );
+    }
+
+    /**
+     * @param array<string, FieldDescriptorInterface> $fieldDescriptors
+     */
+    private function addResourceIdCondition(
+        DoctrineListBuilder $listBuilder,
+        array $fieldDescriptors,
+        string $resourceId
+    ): void {
+        $listBuilder->where(
+            $fieldDescriptors['resourceId'],
+            $resourceId,
+            ListBuilderInterface::WHERE_COMPARATOR_EQUAL
+        );
     }
 }

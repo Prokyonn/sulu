@@ -7,7 +7,7 @@
             name="referenceResourceId"
             translation="sulu_admin.id"
             visibility="yes"
-            searchability="never"
+            searchability="yes"
             sortable="false"
             width="shrink"
         />
@@ -25,6 +25,18 @@
         </property>
 
         <property
+            name="referenceResourceKey"
+            translation="sulu_admin.resource"
+            visibility="yes"
+            searchability="yes"
+            sortable="false"
+            width="auto"
+        >
+            <field-name>referenceResourceKey</field-name>
+            <entity-name>%sulu.model.reference.class%</entity-name>
+        </property>
+
+        <property
             name="referenceCount"
             translation="sulu_admin.reference.count"
             visibility="yes"
@@ -35,15 +47,6 @@
             <field-name>referenceCount</field-name>
             <entity-name>%sulu.model.reference.class%</entity-name>
         </property>
-
-        <property
-            name="referenceResourceKey"
-            translation="sulu_admin.resource"
-            visibility="yes"
-            searchability="never"
-            sortable="false"
-            width="auto"
-        />
 
     </properties>
 </list>

@@ -19,7 +19,6 @@ use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactoryInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewCollection;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
-use Sulu\Bundle\ReferenceBundle\Domain\Model\ReferenceInterface;
 use Sulu\Bundle\ReferenceBundle\Infrastructure\Sulu\Admin\View\ReferenceViewBuilderFactoryInterface;
 use Sulu\Component\Localization\Manager\LocalizationManagerInterface;
 use Sulu\Component\Security\Authorization\PermissionTypes;
@@ -192,7 +191,7 @@ class MediaAdmin extends Admin
                         ->createReferenceListViewBuilder(
                             static::EDIT_FORM_VIEW . '.reference',
                             '/references',
-                            ReferenceInterface::RESOURCE_KEY
+                            MediaInterface::RESOURCE_KEY
                         )
                         ->setParent(static::EDIT_FORM_VIEW)
                 );

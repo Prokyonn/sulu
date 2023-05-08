@@ -16,6 +16,9 @@ use Sulu\Bundle\ReferenceBundle\Domain\Model\ReferenceInterface;
 use Sulu\Bundle\ReferenceBundle\Domain\Repository\ReferenceRepositoryInterface;
 use Sulu\Component\Content\Document\WorkflowStage;
 
+/**
+ * @internal
+ */
 class ReferenceCollector
 {
     /**
@@ -68,10 +71,28 @@ class ReferenceCollector
      */
     private $referenceWorkflowStage;
 
-    public function __construct(ReferenceRepositoryInterface $referenceRepository)
-    {
+    public function __construct(
+        ReferenceRepositoryInterface $referenceRepository,
+        string $referenceResourceKey,
+        string $referenceResourceId,
+        string $referenceLocale,
+        string $referenceTitle,
+        ?string $referenceSecurityContext = null,
+        ?string $referenceSecurityObjectId = null,
+        ?string $referenceSecurityObjectType = null,
+        ?int $referenceWorkflowStage = null
+    ) {
         $this->referenceRepository = $referenceRepository;
         $this->referenceCollection = new ArrayCollection();
+
+        $this->referenceResourceKey = $referenceResourceKey;
+        $this->referenceResourceId = $referenceResourceId;
+        $this->referenceLocale = $referenceLocale;
+        $this->referenceTitle = $referenceTitle;
+        $this->referenceSecurityContext = $referenceSecurityContext;
+        $this->referenceSecurityObjectType = $referenceSecurityObjectType;
+        $this->referenceSecurityObjectId = $referenceSecurityObjectId;
+        $this->referenceWorkflowStage = $referenceWorkflowStage ?? WorkflowStage::TEST;
     }
 
     public function addReference(
@@ -114,6 +135,17 @@ class ReferenceCollector
         $this->referenceRepository->add($reference);
 
         return $reference;
+    }
+
+    public function persistReferences(): void
+    {
+        $this->referenceRepository->removeByReferenceResourceKeyAndId(
+            $this->referenceResourceKey,
+            $this->referenceResourceId,
+            $this->referenceLocale
+        );
+
+        $this->referenceRepository->flush();
     }
 
     public function getReference(ReferenceInterface $reference): ?ReferenceInterface

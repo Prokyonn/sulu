@@ -11,7 +11,6 @@
 
 namespace Sulu\Bundle\PageBundle\EventListener;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\PageBundle\Document\BasePageDocument;
 use Sulu\Bundle\PageBundle\Reference\PageReferenceProvider;
 use Sulu\Component\DocumentManager\Event\PersistEvent;
@@ -27,17 +26,9 @@ class PageReferenceSubscriber implements EventSubscriberInterface
      */
     private $pageReferenceProvider;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    public function __construct(
-        PageReferenceProvider $pageReferenceProvider,
-        EntityManagerInterface $entityManager
-    ) {
+    public function __construct(PageReferenceProvider $pageReferenceProvider)
+    {
         $this->pageReferenceProvider = $pageReferenceProvider;
-        $this->entityManager = $entityManager;
     }
 
     /**
@@ -52,17 +43,6 @@ class PageReferenceSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function updateReferences(BasePageDocument $document, string $locale): void
-    {
-        if (!$document->getUuid()) {
-            return;
-        }
-
-        $this->pageReferenceProvider->collectReferences($document, $locale);
-
-        $this->entityManager->flush();
-    }
-
     public function onPublish(PublishEvent $event): void
     {
         $document = $event->getDocument();
@@ -72,7 +52,7 @@ class PageReferenceSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->updateReferences($document, $locale);
+        $this->pageReferenceProvider->updateReferences($document, $locale);
     }
 
     public function onPersist(PersistEvent $event): void
@@ -84,7 +64,7 @@ class PageReferenceSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->updateReferences($document, $locale);
+        $this->pageReferenceProvider->updateReferences($document, $locale);
     }
 
     public function onRemove(RemoveEvent $event): void
@@ -96,7 +76,5 @@ class PageReferenceSubscriber implements EventSubscriberInterface
         }
 
         $this->pageReferenceProvider->removeReferences($document);
-
-        $this->entityManager->flush();
     }
 }

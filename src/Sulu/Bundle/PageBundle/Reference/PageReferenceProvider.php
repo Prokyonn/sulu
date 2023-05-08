@@ -56,19 +56,19 @@ class PageReferenceProvider
         $this->documentInspector = $documentInspector;
     }
 
-    public function collectReferences(BasePageDocument $document, string $locale): ReferenceCollector
+    public function updateReferences(BasePageDocument $document, string $locale): ReferenceCollector
     {
-        $referenceCollection = new ReferenceCollector($this->referenceRepository);
-
-        $referenceCollection
-            ->setReferenceResourceKey(BasePageDocument::RESOURCE_KEY)
-            ->setReferenceResourceId($document->getUuid())
-            ->setReferenceLocale($locale)
-            ->setReferenceSecurityContext(PageAdmin::getPageSecurityContext($document->getWebspaceName()))
-            ->setReferenceSecurityObjectType(SecurityBehavior::class)
-            ->setReferenceSecurityObjectId($document->getUuid())
-            ->setReferenceWorkflowStage((int) $document->getWorkflowStage())
-            ->setReferenceTitle($document->getTitle());
+        $referenceCollector = new ReferenceCollector(
+            $this->referenceRepository,
+            BasePageDocument::RESOURCE_KEY,
+            $document->getUuid(),
+            $locale,
+            $document->getTitle(),
+            PageAdmin::getPageSecurityContext($document->getWebspaceName()),
+            $document->getUuid(),
+            SecurityBehavior::class,
+            (int) $document->getWorkflowStage()
+        );
 
         $structure = $document->getStructure();
         $templateStructure = $this->structureManager->getStructure($document->getStructureType(), Structure::TYPE_PAGE);
@@ -79,19 +79,17 @@ class PageReferenceProvider
                 continue;
             }
 
-            $contentType->getReferences($structure->getProperty($property->getName()), $referenceCollection);
+            $contentType->getReferences($structure->getProperty($property->getName()), $referenceCollector);
         }
 
-        return $referenceCollection;
+        $referenceCollector->persistReferences();
+
+        return $referenceCollector;
     }
 
     public function removeReferences(BasePageDocument $document, ?string $locale = null): void
     {
-        if ($locale) {
-            $locales = [$locale];
-        } else {
-            $locales = $this->documentInspector->getLocales($document);
-        }
+        $locales = $locale ? [$locale] : $this->documentInspector->getLocales($document);
 
         foreach ($locales as $locale) {
             $this->referenceRepository->removeByReferenceResourceKeyAndId(

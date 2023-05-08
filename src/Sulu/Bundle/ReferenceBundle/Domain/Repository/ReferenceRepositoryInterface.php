@@ -47,4 +47,6 @@ interface ReferenceRepositoryInterface
      * @param mixed[] $criteria
      */
     public function findOneBy(array $criteria): ?ReferenceInterface;
+
+    public function flush(): void;
 }

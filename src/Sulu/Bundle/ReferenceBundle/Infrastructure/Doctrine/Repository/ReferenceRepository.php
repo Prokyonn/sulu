@@ -96,8 +96,8 @@ final class ReferenceRepository implements ReferenceRepositoryInterface
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder
             ->delete(ReferenceInterface::class, 'reference')
-            ->where('reference.resourceKey = :resourceKey')
-            ->andWhere('reference.resourceId = :resourceId')
+            ->where('reference.referenceResourceKey = :resourceKey')
+            ->andWhere('reference.referenceResourceId = :resourceId')
             ->andWhere('reference.locale = :locale')
             ->setParameter('resourceKey', $referenceResourceKey)
             ->setParameter('resourceId', $referenceResourceId)
@@ -120,5 +120,10 @@ final class ReferenceRepository implements ReferenceRepositoryInterface
     public function findOneBy(array $criteria): ?ReferenceInterface
     {
         return $this->entityRepository->findOneBy($criteria);
+    }
+
+    public function flush(): void
+    {
+        $this->entityManager->flush();
     }
 }
