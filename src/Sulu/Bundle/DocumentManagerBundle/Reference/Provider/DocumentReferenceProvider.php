@@ -19,7 +19,6 @@ use Sulu\Component\Content\Compat\StructureManagerInterface;
 use Sulu\Component\Content\ContentTypeManagerInterface;
 use Sulu\Component\Content\Document\Behavior\SecurityBehavior;
 use Sulu\Component\Content\Document\Behavior\StructureBehavior;
-use Sulu\Component\Content\Document\Behavior\WebspaceBehavior;
 use Sulu\Component\Content\Document\Behavior\WorkflowStageBehavior;
 use Sulu\Component\DocumentManager\Behavior\Mapping\TitleBehavior;
 use Sulu\Component\DocumentManager\Behavior\Mapping\UuidBehavior;
@@ -54,13 +53,15 @@ class DocumentReferenceProvider implements DocumentReferenceProviderInterface
         $this->referenceSecurityContext = $referenceSecurityContext;
     }
 
-    public function updateReferences(UuidBehavior|WorkflowStageBehavior|TitleBehavior|StructureBehavior $document, string $locale): ReferenceCollector
+    public function updateReferences(UuidBehavior&TitleBehavior&StructureBehavior $document, string $locale): ReferenceCollector
     {
         $referenceResourceKey = $this->getReferenceResourceKey($document);
 
         if (!$referenceResourceKey) {
             throw new \Exception('ReferenceResourceKey must be defined');
         }
+
+        $workflowStage = $document instanceof WorkflowStageBehavior ? $document->getWorkflowStage() : 0;
 
         $referenceCollector = new ReferenceCollector(
             $this->referenceRepository,
@@ -71,7 +72,7 @@ class DocumentReferenceProvider implements DocumentReferenceProviderInterface
             $this->getReferenceSecurityContext($document),
             $document->getUuid(),
             $this->getReferenceSecurityObjectType(),
-            (int) $document->getWorkflowStage()
+            $workflowStage
         );
 
         $structure = $document->getStructure();
@@ -91,7 +92,7 @@ class DocumentReferenceProvider implements DocumentReferenceProviderInterface
         return $referenceCollector;
     }
 
-    public function removeReferences(UuidBehavior|StructureBehavior $document, ?string $locale = null): void
+    public function removeReferences(UuidBehavior $document, ?string $locale = null): void
     {
         $locales = $locale ? [$locale] : $this->documentInspector->getLocales($document);
 
@@ -104,7 +105,7 @@ class DocumentReferenceProvider implements DocumentReferenceProviderInterface
         }
     }
 
-    protected function getReferenceResourceKey(StructureBehavior $document): ?string
+    protected function getReferenceResourceKey(UuidBehavior $document): ?string
     {
         if (\defined(\get_class($document) . '::RESOURCE_KEY')) {
             return $document::RESOURCE_KEY;
@@ -118,7 +119,7 @@ class DocumentReferenceProvider implements DocumentReferenceProviderInterface
         return SecurityBehavior::class;
     }
 
-    protected function getReferenceSecurityContext(WebspaceBehavior|StructureBehavior $document): string
+    protected function getReferenceSecurityContext(StructureBehavior $document): string
     {
         return $this->referenceSecurityContext;
     }
