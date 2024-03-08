@@ -192,7 +192,7 @@ class Preview extends React.Component<Props> {
     };
 
     updatePreview = debounce((data: Object) => {
-        if (this.shouldUpdateFormStore) {
+        if (this.shouldUpdateFormStore && !!this.previewStore.token) {
             const {previewStore} = this;
             previewStore.update(data).then(this.setContent);
         }
@@ -330,7 +330,7 @@ class Preview extends React.Component<Props> {
 
         return (
             <div className={containerClass}>
-                {this.previewStore.starting
+                {this.previewStore.starting || !this.previewStore.token
                     ? <div className={previewStyles.loaderContainer}>
                         <Loader />
                     </div>
