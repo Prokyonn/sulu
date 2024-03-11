@@ -89,14 +89,14 @@ export default class PreviewStore {
         });
     }
 
-    restart(locale: ?string): Promise<string> {
-
+    @action restart(locale: ?string): Promise<string> {
         return this.stop().then(
             () => {
                 if (locale) {
-                    this.locale.set(locale);
+                    this.locale = locale;
                 }
-                this.start()
+
+                return this.start();
             });
     }
 

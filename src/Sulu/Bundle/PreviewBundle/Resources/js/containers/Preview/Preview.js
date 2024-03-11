@@ -170,6 +170,9 @@ class Preview extends React.Component<Props> {
         this.dataDisposer = reaction(
             () => toJS(formStore.data),
             (data) => {
+                if (this.iframeRef === null) {
+                    return;
+                }
                 this.updatePreview(data);
             }
         );
@@ -185,8 +188,8 @@ class Preview extends React.Component<Props> {
 
         this.localeDisposer = reaction(
             () => toJS(formStore.locale),
-            () => {
-                this.previewStore.restart();
+            (locale) => {
+                this.previewStore.restart(locale);
             }
         );
     };
@@ -330,7 +333,7 @@ class Preview extends React.Component<Props> {
 
         return (
             <div className={containerClass}>
-                {this.previewStore.starting || !this.previewStore.token
+                {this.previewStore.starting
                     ? <div className={previewStyles.loaderContainer}>
                         <Loader />
                     </div>
