@@ -11,40 +11,40 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContactBundle\Infrastructure\Sulu\Content\PropertyResolver;
+namespace Sulu\Bundle\TagBundle\Infrastructure\Content\PropertyResolver;
 
-use Sulu\Bundle\ContactBundle\Infrastructure\Sulu\Content\ResourceLoader\ContactResourceLoader;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\Value\ContentView;
 use Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\PropertyResolverInterface;
+use Sulu\Bundle\TagBundle\Infrastructure\Content\ResourceLoader\TagResourceLoader;
 
 /**
  * @internal if you need to override this service, create a new service with based on ResourceLoaderInterface instead of extending this class
  *
  * @final
  */
-class SingleContactSelectionPropertyResolver implements PropertyResolverInterface
+class TagSelectionPropertyResolver implements PropertyResolverInterface
 {
     public function resolve(mixed $data, string $locale, array $params = []): ContentView
     {
-        if (!\is_numeric($data)) {
-            return ContentView::create(null, ['id' => null, ...$params]);
+        if (!\is_array($data)
+            || 0 === \count($data)
+            || !\array_is_list($data)
+        ) {
+            return ContentView::create([], ['ids' => []]);
         }
 
         /** @var string $resourceLoaderKey */
-        $resourceLoaderKey = $params['resourceLoader'] ?? ContactResourceLoader::getKey();
+        $resourceLoaderKey = $params['resourceLoader'] ?? TagResourceLoader::getKey();
 
-        return ContentView::createResolvable(
-            (int) $data,
+        return ContentView::createResolvables(
+            $data,
             $resourceLoaderKey,
-            [
-                'id' => $data,
-                ...$params,
-            ],
+            ['ids' => $data],
         );
     }
 
     public static function getType(): string
     {
-        return 'single_contact_selection';
+        return 'tag_selection';
     }
 }

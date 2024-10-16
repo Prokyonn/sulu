@@ -16,6 +16,11 @@ namespace Sulu\Bundle\CategoryBundle\Infrastructure\Content\ResourceLoader;
 use Sulu\Bundle\CategoryBundle\Category\CategoryManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ResourceLoader\ResourceLoaderInterface;
 
+/**
+ * @internal if you need to override this service, create a new service with based on ResourceLoaderInterface instead of extending this class
+ *
+ * @final
+ */
 class CategoryResourceLoader implements ResourceLoaderInterface
 {
     public const RESOURCE_LOADER_KEY = 'category';

@@ -11,32 +11,30 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\MediaBundle\Infrastructure\Sulu\Content\ResourceLoader;
+namespace Sulu\Bundle\TagBundle\Infrastructure\Content\ResourceLoader;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ResourceLoader\ResourceLoaderInterface;
-use Sulu\Bundle\MediaBundle\Media\Manager\MediaManagerInterface;
+use Sulu\Bundle\TagBundle\Tag\TagRepositoryInterface;
 
 /**
- * @internal if you need to override this service, create a new service with based on ResourceLoaderInterface instead of extending this class
- *
  * @final
  */
-class MediaResourceLoader implements ResourceLoaderInterface
+class TagResourceLoader implements ResourceLoaderInterface
 {
-    public const RESOURCE_LOADER_KEY = 'media';
+    public const RESOURCE_LOADER_KEY = 'tag';
 
     public function __construct(
-        private MediaManagerInterface $mediaManager
+        private TagRepositoryInterface $tagRepository
     ) {
     }
 
     public function load(array $ids, ?string $locale, array $params = []): array
     {
-        $result = $this->mediaManager->getByIds($ids, (string) $locale);
+        $result = $this->tagRepository->findBy(['id' => $ids]);
 
         $mappedResult = [];
-        foreach ($result as $media) {
-            $mappedResult[$media->getId()] = $media;
+        foreach ($result as $tag) {
+            $mappedResult[$tag->getId()] = $tag->getName();
         }
 
         return $mappedResult;

@@ -17,6 +17,11 @@ use Sulu\Bundle\CategoryBundle\Infrastructure\Content\ResourceLoader\CategoryRes
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\Value\ContentView;
 use Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\PropertyResolverInterface;
 
+/**
+ * @internal if you need to override this service, create a new service with based on ResourceLoaderInterface instead of extending this class
+ *
+ * @final
+ */
 class CategorySelectionPropertyResolver implements PropertyResolverInterface
 {
     public function resolve(mixed $data, string $locale, array $params = []): ContentView
