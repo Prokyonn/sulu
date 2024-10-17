@@ -11,12 +11,14 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\TagBundle\Infrastructure\Content\ResourceLoader;
+namespace Sulu\Bundle\TagBundle\Infrastructure\Sulu\Content\ResourceLoader;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ResourceLoader\ResourceLoaderInterface;
 use Sulu\Bundle\TagBundle\Tag\TagRepositoryInterface;
 
 /**
+ * @internal if you need to override this service, create a new service with based on ResourceLoaderInterface instead of extending this class
+ *
  * @final
  */
 class TagResourceLoader implements ResourceLoaderInterface

@@ -11,14 +11,14 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\TagBundle\Infrastructure\Content\PropertyResolver;
+namespace Sulu\Bundle\TagBundle\Infrastructure\Sulu\Content\PropertyResolver;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\Value\ContentView;
 use Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\PropertyResolverInterface;
-use Sulu\Bundle\TagBundle\Infrastructure\Content\ResourceLoader\TagResourceLoader;
+use Sulu\Bundle\TagBundle\Infrastructure\Sulu\Content\ResourceLoader\TagResourceLoader;
 
 /**
- * @internal if you need to override this service, create a new service with based on ResourceLoaderInterface instead of extending this class
+ * @internal if you need to override this service, create a new service with based on PropertyResolverInterface instead of extending this class
  *
  * @final
  */
@@ -30,7 +30,7 @@ class TagSelectionPropertyResolver implements PropertyResolverInterface
             || 0 === \count($data)
             || !\array_is_list($data)
         ) {
-            return ContentView::create([], ['ids' => []]);
+            return ContentView::create([], ['ids' => [], ...$params]);
         }
 
         /** @var string $resourceLoaderKey */
@@ -39,7 +39,7 @@ class TagSelectionPropertyResolver implements PropertyResolverInterface
         return ContentView::createResolvables(
             $data,
             $resourceLoaderKey,
-            ['ids' => $data],
+            ['ids' => $data, ...$params],
         );
     }
 

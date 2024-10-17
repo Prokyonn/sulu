@@ -18,7 +18,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\PropertyResol
 use Sulu\Bundle\MediaBundle\Infrastructure\Sulu\Content\ResourceLoader\MediaResourceLoader;
 
 /**
- * @internal if you need to override this service, create a new service with based on ResourceLoaderInterface instead of extending this class
+ * @internal if you need to override this service, create a new service with based on PropertyResolverInterface instead of extending this class
  *
  * @final
  */
