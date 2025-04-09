@@ -21,6 +21,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 /**
  * @phpstan-type Document array{
  *     jcr: array{uuid: string, mixinTypes: string[]},
+ *     sulu: array<string, mixed>,
  *     localizations: array<string, array{
  *         routePath?: string,
  *         routePathName?: string,
@@ -31,7 +32,10 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  *         excerpt?: array{
  *             categories?: int[],
  *             tags?: int[],
- *         }
+ *         },
+ *         _route?: array<string, mixed>,
+ *         _history_urls?: string[],
+ *         _url?: ?string,
  *     }>
  * }
  * @phpstan-type DimensionContent array{
@@ -40,7 +44,14 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  */
 abstract class AbstractPersister implements PersisterInterface
 {
-    public const ROUTE_TABLE = 'ro_routes';
+    // TODO this needs to be ro_routes after the legacy RouteBundle is removed
+    public const ROUTE_TABLE = 'ro_next_routes';
+
+    public const URL = '_url';
+
+    public const HISTORY_URLS = '_history_urls';
+
+    public const ROUTE_RESOURCE_KEY = 'route_history';
 
     public function __construct(
         protected PropertyAccessorInterface $propertyAccessor,
@@ -67,14 +78,19 @@ abstract class AbstractPersister implements PersisterInterface
             }
         }
 
+        if ($this->isRoutable()) {
+            $routes = $this->createOrUpdateRoutes($document);
+            foreach ($routes as $locale => $route) {
+                // We have to add the routes to the document, because the
+                // `createOrUpdateDimensionContent` method needs them to
+                // set the relation between the DimensionContent and the Route.
+                $document['localizations'][$locale]['_route'] = $route;
+            }
+        }
+
         $this->entityRepository->beginTransaction();
         $this->createOrUpdateEntity($document);
         $this->createOrUpdateDimensionContent($document, $isLive);
-
-        if ($this->isRoutable()) {
-            $this->createOrUpdateRoute($document);
-        }
-
         $this->entityRepository->commit();
     }
 
@@ -302,7 +318,7 @@ abstract class AbstractPersister implements PersisterInterface
             /**
              * @var DimensionContent $dimensionContent
              */
-            $dimensionContent = $this->entityRepository->findBy($this->getDimensionContentTableName(), [
+            $dimensionContent = $this->entityRepository->findOneBy($this->getDimensionContentTableName(), [
                 $this->getDimensionContentEntityIdMappingName() => $data[$this->getDimensionContentEntityIdMappingName()],
                 'locale' => $locale,
                 'stage' => $data['stage'],
@@ -314,9 +330,12 @@ abstract class AbstractPersister implements PersisterInterface
 
     /**
      * @param Document $document
+     *
+     * @return array<string, array<string, mixed>>
      */
-    protected function createOrUpdateRoute(array $document): void
+    protected function createOrUpdateRoutes(array $document): array
     {
+        $routes = [];
         $localizations = $document['localizations'];
         foreach ($localizations as $locale => $localizedData) {
             // skip unlocalized data
@@ -328,48 +347,103 @@ abstract class AbstractPersister implements PersisterInterface
                 continue;
             }
 
-            $defaultData = [
-                'history' => false,
-                'created' => new \DateTime(),
-                'changed' => new \DateTime(),
-            ];
+            $parentId = $this->getParentId($document, $locale);
+            $parentRouteId = $this->getParentRouteId($parentId, $locale);
+            $site = $this->getSite($document, $locale);
+            $resourceId = $document['jcr']['uuid'];
+            $resourceKey = $this->getEntityResourceKey();
 
-            $existingRoute = $this->entityRepository->findBy(self::ROUTE_TABLE, [
-                'entity_id' => $document['jcr']['uuid'],
+            // main route
+            $data = [
+                'resource_key' => $resourceKey,
+                'resource_id' => $resourceId,
                 'locale' => $locale,
-            ]) ?? [];
-
-            $data = \array_merge(
-                $defaultData,
-                [
-                    'entity_class' => $this->getEntityClassName(),
-                    'entity_id' => $document['jcr']['uuid'],
-                    'locale' => $locale,
-                    'path' => $existingRoute['path'] ?? $this->getPath($document, $locale),
-                    'history' => $existingRoute['history'] ?? 0,
-                    'created' => new \DateTime($existingRoute['created'] ?? 'now'),
-                    'changed' => new \DateTime(),
-                ],
-            );
+                'slug' => $this->getSlug($document, $locale),
+                'site' => $site,
+                'parent_id' => $parentRouteId,
+            ];
 
             $this->entityRepository->insertOrUpdate(
                 $data,
                 self::ROUTE_TABLE,
                 [
-                    'entity_class' => 'string',
-                    'path' => 'string',
+                    'resource_id' => 'string',
+                    'resource_key' => 'string',
+                    'slug' => 'string',
                     'locale' => 'string',
-                    'history' => 'boolean',
-                    'created' => 'datetime',
-                    'changed' => 'datetime',
+                    'parent_id' => 'integer',
                 ],
                 [
-                    'entity_id' => $document['jcr']['uuid'],
-                    'path' => $data['path'],
+                    'resource_id' => $resourceId,
+                    'resource_key' => $resourceKey,
                     'locale' => $locale,
                 ],
             );
+
+            $route = $this->entityRepository->findOneBy(self::ROUTE_TABLE, [
+                'resource_id' => $resourceId,
+                'resource_key' => $resourceKey,
+                'locale' => $locale,
+            ]);
+
+            if (null !== $route) {
+                $routes[$locale] = $route;
+            }
+
+            // history routes
+            $historyUrls = $localizedData[AbstractPersister::HISTORY_URLS] ?? null;
+            if (null === $historyUrls) {
+                continue;
+            }
+
+            $historyResourceId = $resourceKey . '::' . $resourceId;
+            foreach ($historyUrls as $url) {
+                $data = [
+                    'resource_key' => AbstractPersister::ROUTE_RESOURCE_KEY,
+                    'resource_id' => $historyResourceId,
+                    'locale' => $locale,
+                    'slug' => $url,
+                    'site' => $site,
+                    'parent_id' => null, // history urls are disconnected from the parent to prevent unexpected changes
+                ];
+
+                $this->entityRepository->insertOrUpdate(
+                    $data,
+                    self::ROUTE_TABLE,
+                    [
+                        'resource_id' => 'string',
+                        'resource_key' => 'string',
+                        'slug' => 'string',
+                        'locale' => 'string',
+                        'parent_id' => 'integer',
+                    ],
+                    [
+                        'resource_id' => $historyResourceId,
+                        'resource_key' => AbstractPersister::ROUTE_RESOURCE_KEY,
+                        'slug' => $url,
+                        'locale' => $locale,
+                    ],
+                );
+            }
         }
+
+        return $routes;
+    }
+
+    protected function getParentRouteId(?string $parentId, ?string $locale): ?int
+    {
+        if (null === $parentId) {
+            return null;
+        }
+
+        /** @var array{id?: int} $parentRoute */
+        $parentRoute = $this->entityRepository->findOneBy(self::ROUTE_TABLE, [
+            'resource_key' => $this->getEntityResourceKey(),
+            'resource_id' => $parentId,
+            'locale' => $locale,
+        ]);
+
+        return $parentRoute['id'] ?? null;
     }
 
     /**
@@ -403,6 +477,7 @@ abstract class AbstractPersister implements PersisterInterface
      */
     protected function removeNonTemplateData(array $data): array
     {
+        unset($data['_url'], $data['_history_urls'], $data['_route'], $data['nodeType']);
         foreach ($data as $key => $value) {
             // remove block-length property
             if (\is_array($value) && \is_int($data[$key . '-length'] ?? null)) {
@@ -454,7 +529,7 @@ abstract class AbstractPersister implements PersisterInterface
 
     abstract protected function getDimensionContentEntityIdMappingName(): string;
 
-    abstract protected function getEntityClassName(): string;
+    abstract protected function getEntityResourceKey(): string;
 
     abstract protected function getDimensionContentExcerptCategoriesTableName(): string;
 
@@ -467,7 +542,26 @@ abstract class AbstractPersister implements PersisterInterface
     /**
      * @param Document $document
      */
-    abstract protected function getPath(array $document, string $locale): ?string;
+    protected function getSlug(array $document, string $locale): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @param Document $document
+     */
+    protected function getSite(array $document, string $locale): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @param Document $document
+     */
+    protected function getParentId(array $document, string $locale): ?string
+    {
+        return null;
+    }
 
     abstract protected function isRoutable(): bool;
 }
