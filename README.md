@@ -54,8 +54,8 @@ sulu_phpcr_migration:
 ## How to use
 
 ```shell
-# Update the database to the latest migration to prepare the structure
-php bin/adminconsole doctrine:migration:migrate
+# Update the database to the latest phpcr migration to prepare the structure
+php bin/adminconsole phpcr:migrations:migrate
 
 # Run the command to migrate for the data
 php bin/adminconsole sulu:phpcr-migration:migrate
