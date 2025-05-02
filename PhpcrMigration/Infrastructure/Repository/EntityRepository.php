@@ -12,10 +12,18 @@
 namespace Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Infrastructure\Repository;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Schema\Sequence;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Repository\EntityRepositoryInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
-class EntityRepository implements EntityRepositoryInterface
+class EntityRepository implements EntityRepositoryInterface, ResetInterface
 {
+    /**
+     * @var Sequence[]|null
+     */
+    private ?array $sequences = null;
+
     public function __construct(
         protected Connection $connection,
     ) {
@@ -35,19 +43,28 @@ class EntityRepository implements EntityRepositoryInterface
     {
         $exists = [] !== $where && $this->exists($tableName, $where);
 
-        match ($exists) {
-            true => $this->connection->update(
+        if ($exists) {
+            $this->connection->update(
                 $tableName,
                 $data,
                 $where,
                 $types
-            ),
-            default => $this->connection->insert(
+            );
+        } else {
+            // If this database is using sequences like PostgreSQL and we're doing an insert, we need to handle the ID
+            if (!\array_key_exists('id', $data)) {
+                $nextIdValue = $this->getNextIdValue($tableName);
+                if (null !== $nextIdValue) {
+                    $data['id'] = $nextIdValue;
+                }
+            }
+
+            $this->connection->insert(
                 $tableName,
                 $data,
                 $types
-            ),
-        };
+            );
+        }
     }
 
     public function findOneBy(string $tableName, array $where): ?array
@@ -192,5 +209,54 @@ class EntityRepository implements EntityRepositoryInterface
         $data['depth'] = $parentDepth + 1;
 
         $this->connection->insert($tableName, $data, $types);
+    }
+
+    private function getNextIdValue(string $tableName): ?int
+    {
+        $result = null;
+
+        $platform = $this->connection->getDatabasePlatform();
+        $sequences = $this->getSequences();
+        foreach ($sequences as $sequence) {
+            $sequenceName = $sequence->getName();
+            if (\str_contains($sequenceName, $tableName)) {
+                /** @var int|null|false $result */
+                $result = $this->connection->fetchOne(
+                    $platform->getSequenceNextValSQL($sequenceName)
+                );
+
+                if (false === $result || null === $result) {
+                    throw new \RuntimeException('Failed to get next ID value from sequence' . $sequenceName);
+                }
+
+                break;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return Sequence[]
+     */
+    private function getSequences(): array
+    {
+        if (null !== $this->sequences) {
+            return $this->sequences;
+        }
+
+        $sequences = [];
+        try {
+            $sequences = $this->connection->createSchemaManager()->listSequences();
+        } catch (Exception) {
+            // @ignoreException
+        }
+
+        return $this->sequences = $sequences;
+    }
+
+    public function reset(): void
+    {
+        $this->sequences = null;
     }
 }
