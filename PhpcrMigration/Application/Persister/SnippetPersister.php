@@ -55,6 +55,13 @@ class SnippetPersister extends AbstractPersister
             $data['templateData']['title'] = $data['title'];
         }
 
+        // Transform segments map to single segment value
+        // For snippets, take the first segment value from the map
+        if (isset($data['excerptSegment']) && \is_array($data['excerptSegment'])) {
+            $segments = $data['excerptSegment'];
+            $data['excerptSegment'] = [] === $segments ? null : \reset($segments);
+        }
+
         return $data;
     }
 
@@ -113,6 +120,7 @@ class SnippetPersister extends AbstractPersister
             'excerptTitle' => 'string',
             'excerptMore' => 'string',
             'excerptDescription' => 'string',
+            'excerptSegment' => 'string',
             'excerptImageId' => 'integer',
             'excerptIconId' => 'integer',
             'authored' => 'datetime',
@@ -136,6 +144,7 @@ class SnippetPersister extends AbstractPersister
             '[excerptTitle]' => '[excerpt][title]',
             '[excerptMore]' => '[excerpt][more]',
             '[excerptDescription]' => '[excerpt][description]',
+            '[excerptSegment]' => '[excerpt][segments]',
             '[excerptImageId]' => '[excerpt][images]',
             '[excerptIconId]' => '[excerpt][icon]',
         ];
@@ -167,6 +176,16 @@ class SnippetPersister extends AbstractPersister
     }
 
     protected function getDimensionContentExcerptTagsIdName(): string
+    {
+        return 'snippet_dimension_content_id';
+    }
+
+    protected function getDimensionContentExcerptAudienceTargetGroupsTableName(): string
+    {
+        return 'sn_snippet_dimension_content_excerpt_audience_target_groups';
+    }
+
+    protected function getDimensionContentExcerptAudienceTargetGroupsIdName(): string
     {
         return 'snippet_dimension_content_id';
     }

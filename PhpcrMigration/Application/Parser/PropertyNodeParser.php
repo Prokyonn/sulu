@@ -149,7 +149,14 @@ class PropertyNodeParser implements NodeParserInterface
             $propertyPath .= '[seo][' . $name . ']';
         } elseif (\str_starts_with($name, 'excerpt-')) {
             $name = \substr($name, 8);
-            $propertyPath .= '[excerpt][' . $name . ']';
+            // Special handling for segments which are stored as separate properties per webspace
+            // e.g., excerpt-segments-sulu_io becomes [excerpt][segments][sulu_io]
+            if (\str_starts_with($name, 'segments-')) {
+                $webspaceKey = \substr($name, 9); // Remove 'segments-' prefix
+                $propertyPath .= '[excerpt][segments][' . $webspaceKey . ']';
+            } else {
+                $propertyPath .= '[excerpt][' . $name . ']';
+            }
         } elseif (\str_contains($name, '#') || \str_ends_with($name, '-length')) {
             $propertyPath .= $this->parseBlockPropertyPath($name);
         } else {

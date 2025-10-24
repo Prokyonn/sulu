@@ -67,6 +67,13 @@ class ArticlePersister extends AbstractPersister
             $data['templateData'][$routePath] = $routePath; // can still be used in the template TODO
         }
 
+        // Transform segments map to single segment value
+        // For articles, take the first segment value from the map
+        if (isset($data['excerptSegment']) && \is_array($data['excerptSegment'])) {
+            $segments = $data['excerptSegment'];
+            $data['excerptSegment'] = [] === $segments ? null : \reset($segments);
+        }
+
         return $data;
     }
 
@@ -132,6 +139,7 @@ class ArticlePersister extends AbstractPersister
             'excerptTitle' => 'string',
             'excerptMore' => 'string',
             'excerptDescription' => 'string',
+            'excerptSegment' => 'string',
             'excerptImageId' => 'integer',
             'excerptIconId' => 'integer',
             'templateData' => 'json',
@@ -160,6 +168,7 @@ class ArticlePersister extends AbstractPersister
             '[excerptTitle]' => '[excerpt][title]',
             '[excerptMore]' => '[excerpt][more]',
             '[excerptDescription]' => '[excerpt][description]',
+            '[excerptSegment]' => '[excerpt][segments]',
             '[excerptImageId]' => '[excerpt][images]',
             '[excerptIconId]' => '[excerpt][icon]',
         ];
@@ -191,6 +200,16 @@ class ArticlePersister extends AbstractPersister
     }
 
     protected function getDimensionContentExcerptTagsIdName(): string
+    {
+        return 'article_dimension_content_id';
+    }
+
+    protected function getDimensionContentExcerptAudienceTargetGroupsTableName(): string
+    {
+        return 'ar_article_dimension_content_excerpt_audience_target_groups';
+    }
+
+    protected function getDimensionContentExcerptAudienceTargetGroupsIdName(): string
     {
         return 'article_dimension_content_id';
     }

@@ -32,6 +32,8 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  *         excerpt?: array{
  *             categories?: int[],
  *             tags?: int[],
+ *             audience_targeting_groups?: int[],
+ *             segments?: array<string, string>,
  *         },
  *         _route?: array<string, mixed>,
  *         _history_urls?: string[],
@@ -132,6 +134,7 @@ abstract class AbstractPersister implements PersisterInterface
     {
         $this->insertOrUpdateExcerptCategories($document, $locale, $dimensionContent);
         $this->insertOrUpdateExcerptTags($document, $locale, $dimensionContent);
+        $this->insertOrUpdateExcerptAudienceTargetGroups($document, $locale, $dimensionContent);
     }
 
     /**
@@ -240,6 +243,37 @@ abstract class AbstractPersister implements PersisterInterface
                     [
                         $this->getDimensionContentExcerptTagsIdName() => 'integer',
                         'tag_id' => 'integer',
+                    ],
+                );
+            }
+        }
+    }
+
+    /**
+     * @param Document $document
+     * @param DimensionContent $dimensionContent
+     */
+    protected function insertOrUpdateExcerptAudienceTargetGroups(array $document, ?string $locale, array $dimensionContent): void
+    {
+        if ($audienceTargetGroupIds = ($document['localizations'][$locale]['excerpt']['audience_targeting_groups'] ?? null)) {
+            // remove all existing audience target groups
+            $this->entityRepository->removeBy(
+                $this->getDimensionContentExcerptAudienceTargetGroupsTableName(),
+                [
+                    $this->getDimensionContentExcerptAudienceTargetGroupsIdName() => $dimensionContent['id'],
+                ],
+            );
+
+            foreach ($audienceTargetGroupIds as $audienceTargetGroupId) {
+                $this->entityRepository->insertOrUpdate(
+                    [
+                        $this->getDimensionContentExcerptAudienceTargetGroupsIdName() => $dimensionContent['id'],
+                        'target_group_id' => $audienceTargetGroupId,
+                    ],
+                    $this->getDimensionContentExcerptAudienceTargetGroupsTableName(),
+                    [
+                        $this->getDimensionContentExcerptAudienceTargetGroupsIdName() => 'integer',
+                        'target_group_id' => 'integer',
                     ],
                 );
             }
@@ -592,6 +626,10 @@ abstract class AbstractPersister implements PersisterInterface
     abstract protected function getDimensionContentExcerptTagsTableName(): string;
 
     abstract protected function getDimensionContentExcerptTagsIdName(): string;
+
+    abstract protected function getDimensionContentExcerptAudienceTargetGroupsTableName(): string;
+
+    abstract protected function getDimensionContentExcerptAudienceTargetGroupsIdName(): string;
 
     /**
      * @param Document $document

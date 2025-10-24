@@ -75,6 +75,17 @@ class PagePersister extends AbstractPersister
             $data['templateData'][$routePath] = $routePath; // can still be used in the template TODO
         }
 
+        // Transform segments map to single segment value for current webspace
+        if (isset($data['excerptSegment']) && \is_array($data['excerptSegment'])) {
+            /** @var array{webspaceKey?: string} $suluData */
+            $suluData = $document['sulu'];
+            $webspaceKey = $suluData['webspaceKey'] ?? null;
+
+            $data['excerptSegment'] = $webspaceKey && isset($data['excerptSegment'][$webspaceKey])
+                ? $data['excerptSegment'][$webspaceKey]
+                : null;
+        }
+
         return $data;
     }
 
@@ -191,6 +202,7 @@ class PagePersister extends AbstractPersister
             'excerptTitle' => 'string',
             'excerptMore' => 'string',
             'excerptDescription' => 'string',
+            'excerptSegment' => 'string',
             'excerptImageId' => 'integer',
             'excerptIconId' => 'integer',
             'authored' => 'datetime',
@@ -223,6 +235,7 @@ class PagePersister extends AbstractPersister
             '[excerptTitle]' => '[excerpt][title]',
             '[excerptMore]' => '[excerpt][more]',
             '[excerptDescription]' => '[excerpt][description]',
+            '[excerptSegment]' => '[excerpt][segments]',
             '[excerptImageId]' => '[excerpt][images]',
             '[excerptIconId]' => '[excerpt][icon]',
         ];
@@ -254,6 +267,16 @@ class PagePersister extends AbstractPersister
     }
 
     protected function getDimensionContentExcerptTagsIdName(): string
+    {
+        return 'page_dimension_content_id';
+    }
+
+    protected function getDimensionContentExcerptAudienceTargetGroupsTableName(): string
+    {
+        return 'pa_page_dimension_content_excerpt_audience_target_groups';
+    }
+
+    protected function getDimensionContentExcerptAudienceTargetGroupsIdName(): string
     {
         return 'page_dimension_content_id';
     }
