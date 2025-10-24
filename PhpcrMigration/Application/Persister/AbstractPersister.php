@@ -375,6 +375,7 @@ abstract class AbstractPersister implements PersisterInterface
             /** @var mixed[] $templateData */
             $templateData = $data['templateData'] ?? [];
             $data['templateData'] = \array_merge($localizedData, $templateData);
+            $data['templateData'] = $this->addBlockIds($data['templateData']);
 
             // SULU 3.0 MIGRATION FIX: Ensure ALL data is UTF-8 encoded (not just templateData)
             // This fixes title, seoTitle, excerptTitle, excerptDescription, and all other string fields
@@ -582,6 +583,76 @@ abstract class AbstractPersister implements PersisterInterface
     protected function getDefaultData(): array
     {
         return [];
+    }
+
+    /**
+     * Generate a unique block ID using xxHash 32-bit algorithm.
+     * Produces 8-character hexadecimal strings.
+     *
+     * Duplicates the logic from Sulu\Bundle\AdminBundle\BlockIdGenerator
+     */
+    private function generateBlockId(): string
+    {
+        // Use xxh32 hash with uniqid for short, unique IDs
+        // uniqid with more_entropy=true provides microsecond precision
+        // xxh32 produces 8-character hexadecimal strings
+        return \hash('xxh32', \uniqid('', true));
+    }
+
+    /**
+     * Check if an array is a block array (numerically indexed with 'type' keys).
+     *
+     * @param mixed[] $data
+     */
+    private function isBlockArray(array $data): bool
+    {
+        if ([] === $data || !\array_is_list($data)) {
+            return false;
+        }
+
+        foreach ($data as $item) {
+            if (\is_array($item) && isset($item['type'])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Recursively add block IDs to all blocks in the data structure.
+     *
+     * @param mixed[] $data
+     *
+     * @return mixed[]
+     */
+    private function addBlockIds(array $data): array
+    {
+        if (!$this->isBlockArray($data)) {
+            foreach ($data as $key => $value) {
+                if (\is_array($value)) {
+                    $data[$key] = $this->addBlockIds($value);
+                }
+            }
+
+            return $data;
+        }
+
+        foreach ($data as $index => $block) {
+            if (!\is_array($block)) {
+                continue;
+            }
+
+            /** @var array<array-key, mixed> $blockArray */
+            $blockArray = $block;
+
+            if (!\array_key_exists('id', $blockArray)) {
+                $blockArray['id'] = $this->generateBlockId();
+            }
+            $data[$index] = $this->addBlockIds($blockArray);
+        }
+
+        return $data;
     }
 
     /**
