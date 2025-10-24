@@ -46,7 +46,6 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  */
 abstract class AbstractPersister implements PersisterInterface
 {
-    // TODO this needs to be ro_routes after the legacy RouteBundle is removed
     public const ROUTE_TABLE = 'ro_routes';
 
     public const URL = '_url';
