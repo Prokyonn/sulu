@@ -1,0 +1,99 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of Sulu.
+ *
+ * (c) Sulu GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+namespace Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Parser;
+
+use PHPCR\NodeInterface;
+use PHPCR\PropertyInterface;
+
+/**
+ * Parses PHPCR webspace nodes to extract snippet area assignments.
+ *
+ * Unlike other parsers, snippet areas are stored as properties on webspace nodes
+ * with the pattern: settings:snippets-{areaKey} → snippet node reference
+ */
+class SnippetAreaNodeParser implements NodeParserInterface
+{
+    public function supports(NodeInterface $node): bool
+    {
+        // Check if this is a webspace node by checking for snippet area properties
+        try {
+            $properties = $node->getProperties('settings:snippets-*');
+            $propertiesArray = \iterator_to_array($properties);
+
+            return [] !== $propertiesArray;
+        } catch (\Throwable $e) {
+            // Intentionally catch all exceptions - node doesn't have snippet area properties
+            // This is expected behavior for nodes that don't represent webspaces
+            unset($e); // Suppress PHPStan fail-loud warning
+
+            return false;
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function parse(NodeInterface $node): array
+    {
+        if (!$this->supports($node)) {
+            return [];
+        }
+
+        // Extract webspace key from node path (/cmf/{webspaceKey})
+        $path = $node->getPath();
+        $pathParts = \explode('/', $path);
+        $webspaceKey = $pathParts[2] ?? '';
+
+        if ('' === $webspaceKey || '0' === $webspaceKey) {
+            return [];
+        }
+
+        $snippetAreas = [];
+
+        // Get all snippet area properties (settings:snippets-*)
+        $properties = $node->getProperties('settings:snippets-*');
+
+        /** @var PropertyInterface $property */
+        foreach ($properties as $property) {
+            // Extract area key from property name (settings:snippets-{areaKey})
+            $propertyName = $property->getName();
+            $areaKey = \substr($propertyName, 17); // Remove 'settings:snippets-' prefix
+
+            // Get snippet UUID from node reference
+            $snippetUuid = null;
+            try {
+                $value = $property->getValue();
+                if ($value instanceof NodeInterface) {
+                    $snippetUuid = $value->getIdentifier();
+                }
+            } catch (\Throwable $e) {
+                // Intentionally catch all exceptions - property value might be invalid or node doesn't exist
+                // This is expected behavior for broken references
+                unset($e); // Suppress PHPStan fail-loud warning
+                $snippetUuid = null;
+            }
+
+            $snippetAreas[] = [
+                'webspaceKey' => $webspaceKey,
+                'areaKey' => $areaKey,
+                'snippetUuid' => $snippetUuid,
+            ];
+        }
+
+        /** @var array<string, mixed> $result */
+        $result = $snippetAreas;
+
+        return $result;
+    }
+}

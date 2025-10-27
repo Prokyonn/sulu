@@ -30,6 +30,12 @@
             <tag name="sulu_phpcr_migration.node_parser"/>
         </service>
 
+        <service id="sulu_phpcr_migration.snippet_area_parser"
+                 class="Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Parser\SnippetAreaNodeParser">
+
+            <tag name="sulu_phpcr_migration.node_parser"/>
+        </service>
+
         <service id="sulu_phpcr_migration.chain_node_parser"
                  class="Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Parser\ChainNodeParser">
 

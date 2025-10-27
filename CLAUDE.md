@@ -30,7 +30,7 @@ composer deptrac        # Check architectural dependencies
 ```bash
 php bin/adminconsole phpcr:migrations:migrate           # Prepare PHPCR structure
 php bin/adminconsole sulu:phpcr-migration:migrate       # Run full migration
-php bin/adminconsole sulu:phpcr-migration:migrate page  # Migrate specific type (page|snippet|article|custom_url)
+php bin/adminconsole sulu:phpcr-migration:migrate page  # Migrate specific type (page|snippet|article|custom_url|snippet_area)
 ```
 
 ## Architecture Overview
@@ -140,6 +140,21 @@ PhpcrMigration/
   - SEO properties: canonical, redirect, noFollow, noIndex
   - Routes: uuid, path, history flag (in separate table)
 - **Route Handling**: PHPCR child nodes (`routes/*`) migrated to `cu_custom_url_route` records
+
+**Snippet Area Migration**:
+- **PHPCR Structure**: Properties on webspace nodes (`/cmf/{webspace}`)
+- **Property Pattern**: `settings:snippets-{areaKey}` with value as snippet node reference
+- **Sulu 3.0 Structure**: Single table (`sn_snippet_area`)
+- **Key Differences**:
+  - PHPCR: Properties scattered across webspace nodes
+  - Sulu 3.0: Dedicated table with webspaceKey + areaKey + snippet FK
+- **Migration Strategy**:
+  - Query webspace nodes under `/cmf/*`
+  - Extract all `settings:snippets-*` properties
+  - Parse property name to get areaKey (e.g., `settings:snippets-footer` → `footer`)
+  - Resolve snippet node reference to UUID
+  - Create record: (uuid, webspaceKey, areaKey, idSnippet)
+- **Special Handling**: Only migrated from default session (not live session)
 
 **Query Strategy**:
 - Use SQL2 queries to fetch nodes by mixin type
