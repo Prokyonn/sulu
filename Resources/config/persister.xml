@@ -27,6 +27,13 @@
             <tag name="sulu_phpcr_migration.persister" type="article"/>
         </service>
 
+        <service id="sulu_phpcr_migration.custom_url_persister"
+                 class="Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Persister\CustomUrlPersister">
+            <argument type="service" id="sulu_phpcr_migration.entity_repository"/>
+
+            <tag name="sulu_phpcr_migration.persister" type="custom_url"/>
+        </service>
+
         <service id="sulu_phpcr_migration.persister_pool"
                  class="Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Persister\PersisterPool">
             <argument type="tagged_iterator" tag="sulu_phpcr_migration.persister" index-by="type"/>
