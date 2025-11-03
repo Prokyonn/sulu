@@ -27,6 +27,9 @@ use Webmozart\Assert\Assert;
 
 readonly class ContentResolver implements ContentResolverInterface
 {
+    /**
+     * @param iterable<ContentPreResolveEnhancerInterface> $contentPreResolverEnhancers
+     */
     public function __construct(
         private ContentViewResolverInterface $contentViewResolver,
         private ResolvableResourceLoaderInterface $resolvableResourceLoader,
@@ -34,7 +37,8 @@ readonly class ContentResolver implements ContentResolverInterface
         private ResolvableResourceReplacerInterface $resolvableResourceReplacer,
         private ContentViewDataNormalizerInterface $contentViewDataNormalizer,
         private ContentAggregatorInterface $contentAggregator,
-        private int $maxDepth
+        private int $maxDepth,
+        private iterable $contentPreResolverEnhancers = []
     ) {
     }
 
@@ -179,6 +183,10 @@ readonly class ContentResolver implements ContentResolverInterface
         array &$priorityQueue,
         ?array $properties = null
     ): array {
+        foreach ($this->contentPreResolverEnhancers as $enhancer) {
+            $dimensionContent = $enhancer->enhance($dimensionContent);
+        }
+
         $contentViews = $this->contentViewResolver->getContentViews($dimensionContent, $properties);
         $resolvedContent = $this->contentViewResolver->resolveContentViews($contentViews, $depth, $priorityQueue);
 
