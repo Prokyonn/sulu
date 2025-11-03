@@ -45,7 +45,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 abstract class AbstractPersister implements PersisterInterface
 {
     // TODO this needs to be ro_routes after the legacy RouteBundle is removed
-    public const ROUTE_TABLE = 'ro_next_routes';
+    public const ROUTE_TABLE = 'ro_routes';
 
     public const URL = '_url';
 
@@ -74,6 +74,13 @@ abstract class AbstractPersister implements PersisterInterface
                 && isset($localizedData['routePath'])
                 && !isset($localizedData['routePathName'])
             ) {
+                // fallback to 'routePath' when 'routePathName' is missing
+                $document['localizations'][$locale]['routePathName'] = 'routePath';
+            } elseif (
+                [] !== $localizedData
+                && !isset($localizedData['routePath'])
+                && !isset($localizedData['routePathName'])
+            ) {
                 throw new RoutePathNameNotFoundException($document['jcr']['uuid'], $locale);
             }
         }
@@ -95,7 +102,7 @@ abstract class AbstractPersister implements PersisterInterface
     }
 
     /**
-     * @param mixed[] $data
+     * @param mixed[]               $data
      * @param array<string, string> $mapping
      *
      * @return mixed[]
@@ -118,7 +125,7 @@ abstract class AbstractPersister implements PersisterInterface
     }
 
     /**
-     * @param Document $document
+     * @param Document         $document
      * @param DimensionContent $dimensionContent
      */
     protected function insertDataRelationsToDimensionContent(array $document, ?string $locale, array $dimensionContent): void
@@ -134,9 +141,18 @@ abstract class AbstractPersister implements PersisterInterface
      */
     protected function mapExcerptImages(array $data): array
     {
-        if ($data['excerptImageId'] ?? null) {
-            $data['excerptImageId'] = $data['excerptImageId']['ids'][0] ?? null;
+        $value = $data['excerptImageId'] ?? null;
+        if (null === $value) {
+            return $data;
         }
+
+        if (!\is_array($value)) {
+            unset($data['excerptImageId']);
+
+            return $data;
+        }
+
+        $data['excerptImageId'] = $data['excerptImageId']['ids'][0] ?? null;
 
         return $data;
     }
@@ -148,15 +164,24 @@ abstract class AbstractPersister implements PersisterInterface
      */
     protected function mapExcerptIcons(array $data): array
     {
-        if ($data['excerptIconId'] ?? null) {
-            $data['excerptIconId'] = $data['excerptIconId']['ids'][0] ?? null;
+        $value = $data['excerptIconId'] ?? null;
+        if (null === $value) {
+            return $data;
         }
+
+        if (!\is_array($value)) {
+            unset($data['excerptIconId']);
+
+            return $data;
+        }
+
+        $data['excerptIconId'] = $data['excerptIconId']['ids'][0] ?? null;
 
         return $data;
     }
 
     /**
-     * @param Document $document
+     * @param Document         $document
      * @param DimensionContent $dimensionContent
      */
     protected function insertOrUpdateExcerptCategories(array $document, ?string $locale, array $dimensionContent): void
@@ -171,6 +196,10 @@ abstract class AbstractPersister implements PersisterInterface
             );
 
             foreach ($categoryIds as $categoryId) {
+                if (false === $this->entityRepository->exists('ca_categories', ['id' => $categoryId])) {
+                    continue;
+                }
+
                 $this->entityRepository->insertOrUpdate(
                     [
                         $this->getDimensionContentExcerptCategoriesIdName() => $dimensionContent['id'],
@@ -187,7 +216,7 @@ abstract class AbstractPersister implements PersisterInterface
     }
 
     /**
-     * @param Document $document
+     * @param Document         $document
      * @param DimensionContent $dimensionContent
      */
     protected function insertOrUpdateExcerptTags(array $document, ?string $locale, array $dimensionContent): void
@@ -292,10 +321,17 @@ abstract class AbstractPersister implements PersisterInterface
             }
 
             $data = $this->mapDataViaMapping($localizedData, $this->getDimensionContentMapping());
+            $data['created'] = $document['sulu']['created'] ?? null;
+            $data['created'] = $data['created']?->format('Y-m-d H:i:s');
+            $data['changed'] = $document['sulu']['changed'] ?? null;
+            $data['changed'] = $data['changed']?->format('Y-m-d H:i:s');
+
             $data = \array_merge($this->getDefaultData(), $data);
             $data = $this->mapExcerptImages($data);
             $data = $this->mapExcerptIcons($data);
             $data = $this->mapDimensionContentData($document, $locale, $data, $isLive);
+
+            $data = $this->fixData($data);
 
             // remove known keys that do not belong to the templateData
             $localizedData = $this->removeNonTemplateData($localizedData);
@@ -304,16 +340,26 @@ abstract class AbstractPersister implements PersisterInterface
             $templateData = $data['templateData'] ?? [];
             $data['templateData'] = \array_merge($localizedData, $templateData);
 
-            $this->entityRepository->insertOrUpdate(
-                $data,
-                $this->getDimensionContentTableName(),
-                $this->getDimensionContentTableTypes(),
-                [
-                    $this->getDimensionContentEntityIdMappingName() => $data[$this->getDimensionContentEntityIdMappingName()],
-                    'locale' => $locale,
-                    'stage' => $data['stage'],
-                ],
-            );
+            // SULU 3.0 MIGRATION FIX: Ensure ALL data is UTF-8 encoded (not just templateData)
+            // This fixes title, seoTitle, excerptTitle, excerptDescription, and all other string fields
+            $data = $this->fixUtf8Encoding($data);
+
+            $data['version'] = 0;
+
+            try {
+                $this->entityRepository->insertOrUpdate(
+                    $data,
+                    $this->getDimensionContentTableName(),
+                    $this->getDimensionContentTableTypes(),
+                    [
+                        $this->getDimensionContentEntityIdMappingName() => $data[$this->getDimensionContentEntityIdMappingName()],
+                        'locale' => $locale,
+                        'stage' => $data['stage'],
+                    ],
+                );
+            } catch (\Exception $e) {
+                throw $e;
+            }
 
             /**
              * @var DimensionContent $dimensionContent
@@ -343,7 +389,7 @@ abstract class AbstractPersister implements PersisterInterface
                 continue;
             }
             // skip non-published entries
-            if (1 === $localizedData['state']) {
+            if (!array_key_exists('state', $localizedData) || 1 === $localizedData['state']) {
                 continue;
             }
 
@@ -352,6 +398,11 @@ abstract class AbstractPersister implements PersisterInterface
             $site = $this->getSite($document, $locale);
             $resourceId = $document['jcr']['uuid'];
             $resourceKey = $this->getEntityResourceKey();
+
+            $slug = $this->getSlug($document, $locale);
+            if (null === $slug) {
+                continue;
+            }
 
             // main route
             $data = [
@@ -396,7 +447,7 @@ abstract class AbstractPersister implements PersisterInterface
                 continue;
             }
 
-            $historyResourceId = $resourceKey . '::' . $resourceId;
+            $historyResourceId = $resourceKey.'::'.$resourceId;
             foreach ($historyUrls as $url) {
                 $data = [
                     'resource_key' => AbstractPersister::ROUTE_RESOURCE_KEY,
@@ -448,7 +499,7 @@ abstract class AbstractPersister implements PersisterInterface
 
     /**
      * @param Document $document
-     * @param mixed[] $data
+     * @param mixed[]  $data
      *
      * @return mixed[]
      */
@@ -461,7 +512,7 @@ abstract class AbstractPersister implements PersisterInterface
 
     /**
      * @param Document $document
-     * @param mixed[] $data
+     * @param mixed[]  $data
      *
      * @return mixed[]
      */
@@ -480,8 +531,8 @@ abstract class AbstractPersister implements PersisterInterface
         unset($data['_url'], $data['_history_urls'], $data['_route'], $data['nodeType']);
         foreach ($data as $key => $value) {
             // remove block-length property
-            if (\is_array($value) && \is_int($data[$key . '-length'] ?? null)) {
-                $data[$key . '-length'] = null;
+            if (\is_array($value) && \is_int($data[$key.'-length'] ?? null)) {
+                $data[$key.'-length'] = null;
             }
         }
 
@@ -564,4 +615,64 @@ abstract class AbstractPersister implements PersisterInterface
     }
 
     abstract protected function isRoutable(): bool;
+
+    protected function fixData(array $data): array
+    {
+        $validator = [
+            'author_id' => fn (mixed $value): bool => $this->entityRepository->exists('co_contacts', ['id' => $value]),
+            'excerptImageId' => fn (mixed $value): bool => $this->entityRepository->exists('me_media', ['id' => $value]),
+            'excerptIconId' => fn (mixed $value): bool => $this->entityRepository->exists('me_media', ['id' => $value]),
+            'excerptMore' => fn (mixed $value): bool => (\is_string($value) && strlen($value) < 63) || null === $value,
+        ];
+
+        $fixer = [
+            // TODO error collector with excerptMore that were too long
+            'excerptMore' => fn (mixed $value): ?string => !\is_string($value) ? null : (\str_split($value, 63)[0]),
+        ];
+
+        foreach ($validator as $key => $isValid) {
+            if (isset($data[$key]) && !$isValid($data[$key])) {
+                $fix = $fixer[$key] ?? fn (mixed $value): null => null;
+                $data[$key] = $fix($data[$key]);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Fix UTF-8 encoding issues in data (recursively)
+     * Converts malformed UTF-8 strings to valid UTF-8.
+     */
+    private function fixUtf8Encoding($data)
+    {
+        if (\is_string($data)) {
+            // Use iconv to aggressively strip invalid UTF-8 sequences
+            // The //IGNORE flag will remove any characters that can't be converted
+            $cleaned = @\iconv('UTF-8', 'UTF-8//IGNORE', $data);
+
+            // If iconv failed, fallback to preg_replace to remove invalid UTF-8
+            if (false === $cleaned) {
+                // Remove invalid UTF-8 sequences using regex
+                $cleaned = \preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x80-\x9F]/u', '', $data);
+                // If still invalid, use mb_convert_encoding as last resort
+                if (false === $cleaned || !\mb_check_encoding($cleaned, 'UTF-8')) {
+                    $cleaned = \mb_convert_encoding($data, 'UTF-8', 'UTF-8');
+                }
+            }
+
+            return $cleaned ?: '';
+        }
+
+        if (\is_array($data)) {
+            foreach ($data as $key => $value) {
+                $data[$key] = $this->fixUtf8Encoding($value);
+            }
+
+            return $data;
+        }
+
+        // For objects (like DateTime), numbers, booleans, null, etc. return as-is
+        return $data;
+    }
 }

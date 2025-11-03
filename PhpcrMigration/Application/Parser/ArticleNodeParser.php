@@ -17,7 +17,7 @@ use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Repository\Entit
 
 class ArticleNodeParser implements NodeParserInterface
 {
-    public const LEGACY_ROUTE_TABLE = 'ro_routes';
+    public const LEGACY_ROUTE_TABLE = 'ro_routes_old';
 
     public function __construct(private readonly EntityRepositoryInterface $repository)
     {

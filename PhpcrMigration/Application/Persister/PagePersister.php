@@ -60,7 +60,7 @@ class PagePersister extends AbstractPersister
 
         if (isset($data['title'])) {
             // TODO error collector with titles that were too long
-            $data['title'] = \str_split((string) $data['title'], 64)[0];
+            $data['title'] = \str_split((string) $data['title'], 63)[0] ?? '';
             $data['templateData']['title'] = $data['title'];
         }
 
@@ -258,12 +258,15 @@ class PagePersister extends AbstractPersister
         return 'page_dimension_content_id';
     }
 
-    protected function getSlug(array $document, string $locale): string
+    protected function getSlug(array $document, string $locale): ?string
     {
         $localizedData = $document['localizations'][$locale];
 
         if (!isset($localizedData[AbstractPersister::URL])) {
-            throw new InvalidPathException(AbstractPersister::URL);
+            // TODO internal/external link pages
+            // TODO shadow pages
+
+            return null;
         }
 
         return $localizedData[AbstractPersister::URL];

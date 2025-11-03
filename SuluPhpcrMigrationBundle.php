@@ -76,7 +76,7 @@ class SuluPhpcrMigrationBundle extends AbstractBundle
             $doctrineConfig = [];
             $doctrineConfig['dbal'] = [
                 // we need to preserve the legacy ro_routes table to migrate history urls of articles
-                'schema_filter' => '~^(?!phpcr_|ro_routes$)~', // Ignore all tables prefixed by `phpcr_` or named `ro_routes`
+                'schema_filter' => '~^(?!phpcr_|ro_routes_old$)~', // Ignore all tables prefixed by `phpcr_` or named `ro_routes_old`
             ];
 
             $builder->prependExtensionConfig('doctrine', $doctrineConfig);
