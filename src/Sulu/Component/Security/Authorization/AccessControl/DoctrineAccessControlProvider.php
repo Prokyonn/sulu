@@ -100,21 +100,12 @@ class DoctrineAccessControlProvider implements AccessControlProviderInterface
     }
 
     /**
-     * Returns whether this provider supports the given type.
-     *
-     * @param string $type The name of the class protect
+     * @param string $type
      *
      * @return bool
      */
     public function supports($type)
     {
-        try {
-            $class = new \ReflectionClass($type);
-        } catch (\ReflectionException $e) {
-            // in case the class does not exist there is no support
-            return false;
-        }
-
-        return $class->implementsInterface(SecuredEntityInterface::class);
+        return $type !== '';
     }
 }

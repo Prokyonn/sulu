@@ -582,7 +582,7 @@ final class SuluPageBundle extends AbstractBundle
                                 'list' => 'sulu_page.get_pages',
                                 'detail' => 'sulu_page.get_page',
                             ],
-                            'security_class' => Page::class,
+                            'security_class' => PageInterface::RESOURCE_KEY,
                             'security_context' => 'sulu.webspaces.#webspace#',
                         ],
                         'pages_versions' => [

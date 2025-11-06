@@ -482,7 +482,7 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
 
             // Get all permissions for the page
             $allPermissions = $this->accessControlManager->getPermissions(
-                Page::class,
+                PageInterface::RESOURCE_KEY,
                 $rowId
             );
             $row['_hasPermissions'] = !empty($allPermissions);
@@ -540,7 +540,7 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
 
     public function getSecuredClass()
     {
-        return Page::class;
+        return PageInterface::class;
     }
 
     public function getSecuredObjectId(Request $request): string

@@ -19,6 +19,7 @@ use Sulu\Bundle\SecurityBundle\Entity\Permission;
 use Sulu\Bundle\SecurityBundle\Entity\Role;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Sulu\Page\Domain\Model\Page;
+use Sulu\Page\Domain\Model\PageInterface;
 use Sulu\Page\Tests\Traits\CreatePageTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
@@ -114,7 +115,7 @@ class PageSecurityListenerTest extends SuluTestCase
         $accessControl = new AccessControl();
         $accessControl->setPermissions(0);
         $accessControl->setEntityId($page->getUuid());
-        $accessControl->setEntityClass(Page::class);
+        $accessControl->setEntityClass(PageInterface::RESOURCE_KEY);
         $accessControl->setRole($this->anonymousRole);
 
         self::getEntityManager()->persist($accessControl);

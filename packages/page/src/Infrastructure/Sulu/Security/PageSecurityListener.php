@@ -16,8 +16,8 @@ use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 use Sulu\Component\Security\Authorization\SecurityCondition;
 use Sulu\Component\Webspace\Analyzer\Attributes\RequestAttributes;
 use Sulu\Component\Webspace\Webspace;
-use Sulu\Page\Domain\Model\Page;
 use Sulu\Page\Domain\Model\PageDimensionContentInterface;
+use Sulu\Page\Domain\Model\PageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -68,7 +68,7 @@ class PageSecurityListener implements EventSubscriberInterface
             new SecurityCondition(
                 'sulu.webspaces.' . $page->getWebspaceKey(),
                 $locale,
-                Page::class,
+                PageInterface::RESOURCE_KEY,
                 $page->getUuid()
             ),
             PermissionTypes::VIEW
