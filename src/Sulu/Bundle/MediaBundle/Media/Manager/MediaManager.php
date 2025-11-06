@@ -24,7 +24,6 @@ use Sulu\Bundle\MediaBundle\Domain\Event\MediaRemovedEvent;
 use Sulu\Bundle\MediaBundle\Domain\Event\MediaTranslationAddedEvent;
 use Sulu\Bundle\MediaBundle\Domain\Event\MediaVersionAddedEvent;
 use Sulu\Bundle\MediaBundle\Domain\Event\MediaVersionRemovedEvent;
-use Sulu\Bundle\MediaBundle\Entity\Collection;
 use Sulu\Bundle\MediaBundle\Entity\CollectionInterface;
 use Sulu\Bundle\MediaBundle\Entity\CollectionMeta;
 use Sulu\Bundle\MediaBundle\Entity\CollectionRepository;
@@ -633,7 +632,7 @@ class MediaManager implements MediaManagerInterface
                 new SecurityCondition(
                     'sulu.media.collections',
                     null,
-                    Collection::class,
+                    CollectionInterface::RESOURCE_KEY,
                     $mediaEntity->getCollection()->getId()
                 ),
                 PermissionTypes::DELETE

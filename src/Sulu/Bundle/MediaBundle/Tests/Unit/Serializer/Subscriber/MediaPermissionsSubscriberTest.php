@@ -21,6 +21,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\MediaBundle\Admin\MediaAdmin;
 use Sulu\Bundle\MediaBundle\Api\Media as MediaApiWrapper;
 use Sulu\Bundle\MediaBundle\Entity\Collection;
+use Sulu\Bundle\MediaBundle\Entity\CollectionInterface;
 use Sulu\Bundle\MediaBundle\Entity\Media;
 use Sulu\Bundle\MediaBundle\Serializer\Subscriber\MediaPermissionsSubscriber;
 use Sulu\Component\Security\Authentication\UserInterface;
@@ -97,7 +98,7 @@ class MediaPermissionsSubscriberTest extends TestCase
         $media->getCollection()->willReturn($collection->reveal());
 
         $permissions = [3 => ['view' => true]];
-        $this->accessControlManager->getPermissions(\get_class($collection->reveal()), 7)->willReturn($permissions);
+        $this->accessControlManager->getPermissions(CollectionInterface::RESOURCE_KEY, 7)->willReturn($permissions);
 
         $userPermission = ['_permissions' => ['permission' => 'value']];
         $this->accessControlManager->getUserPermissionByArray(null, MediaAdmin::SECURITY_CONTEXT, $permissions, $this->user->reveal())
@@ -129,7 +130,7 @@ class MediaPermissionsSubscriberTest extends TestCase
         $this->objectEvent->getObject()->willReturn($apiWrapper);
 
         $permissions = [3 => ['view' => true]];
-        $this->accessControlManager->getPermissions(\get_class($collection->reveal()), 7)->willReturn($permissions);
+        $this->accessControlManager->getPermissions(CollectionInterface::RESOURCE_KEY, 7)->willReturn($permissions);
 
         $userPermission = ['_permissions' => ['permission' => 'value']];
         $this->accessControlManager->getUserPermissionByArray(null, MediaAdmin::SECURITY_CONTEXT, $permissions, $this->user->reveal())

@@ -41,7 +41,7 @@ class FileVersionMetaRepository extends EntityRepository implements FileVersionM
             ->where('file.version = fileVersion.version')
             ->andWhere('accessControl.id is null');
 
-        return $queryBuilder->setParameter('entityClass', Collection::class)->getQuery()->getResult();
+        return $queryBuilder->setParameter('entityClass', CollectionInterface::RESOURCE_KEY)->getQuery()->getResult();
     }
 
     /**
@@ -68,7 +68,7 @@ class FileVersionMetaRepository extends EntityRepository implements FileVersionM
             )
             ->where('file.version = fileVersion.version')
             ->andWhere('accessControl.id is null')
-            ->setParameter('entityClass', Collection::class);
+            ->setParameter('entityClass', CollectionInterface::RESOURCE_KEY);
 
         return $queryBuilder;
     }

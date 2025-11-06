@@ -52,8 +52,12 @@ class SecuredEntitySubscriber implements EventSubscriberInterface
             return;
         }
 
+        // TODO
+        /** @var string $entityType */
+        $entityType = (new \ReflectionClass($object))->getConstant('RESOURCE_KEY');
+
         $allPermissions = $this->accessControlManager->getPermissions(
-            \get_class($object),
+            $entityType,
             (string) $object->getId()
         );
 

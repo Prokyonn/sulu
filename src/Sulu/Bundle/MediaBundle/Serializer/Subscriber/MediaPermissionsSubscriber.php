@@ -15,6 +15,7 @@ use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use Sulu\Bundle\MediaBundle\Entity\CollectionInterface;
 use Sulu\Bundle\MediaBundle\Entity\Media;
 use Sulu\Component\Rest\ApiWrapper;
 use Sulu\Component\Security\Authentication\UserInterface;
@@ -57,7 +58,7 @@ class MediaPermissionsSubscriber implements EventSubscriberInterface
         $collection = $object->getCollection();
 
         $allPermissions = $this->accessControlManager->getPermissions(
-            \get_class($collection),
+            CollectionInterface::RESOURCE_KEY,
             (string) $collection->getId()
         );
 

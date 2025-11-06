@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Sulu\Bundle\MediaBundle\Admin\MediaAdmin;
 use Sulu\Bundle\MediaBundle\Entity\Collection;
+use Sulu\Bundle\MediaBundle\Entity\CollectionInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\MediaBundle\Media\Exception\CollectionNotFoundException;
 use Sulu\Bundle\MediaBundle\Media\Exception\MediaNotFoundException;
@@ -296,7 +297,7 @@ class MediaController extends AbstractMediaController implements
     public function getSecuredClass()
     {
         // The media permissions are tied to the collection it is in
-        return Collection::class;
+        return CollectionInterface::class;
     }
 
     /**

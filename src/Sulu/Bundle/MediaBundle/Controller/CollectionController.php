@@ -415,7 +415,7 @@ class CollectionController extends AbstractRestController implements SecuredCont
      */
     public function getSecuredClass()
     {
-        return $this->collectionClass;
+        return CollectionInterface::class;
     }
 
     public function getSecuredObjectId(Request $request)

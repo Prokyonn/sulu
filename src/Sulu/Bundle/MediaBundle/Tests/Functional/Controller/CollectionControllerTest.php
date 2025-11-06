@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Id\AssignedGenerator;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Sulu\Bundle\MediaBundle\Entity\Collection;
+use Sulu\Bundle\MediaBundle\Entity\CollectionInterface;
 use Sulu\Bundle\MediaBundle\Entity\CollectionMeta;
 use Sulu\Bundle\MediaBundle\Entity\CollectionType;
 use Sulu\Bundle\MediaBundle\Entity\Media;
@@ -716,7 +717,7 @@ class CollectionControllerTest extends SuluTestCase
 
         $this->assertEquals(
             [],
-            $this->accessControlManager->getPermissions(Collection::class, $response->id)
+            $this->accessControlManager->getPermissions(CollectionInterface::RESOURCE_KEY, $response->id)
         );
 
         $this->client->jsonRequest(
@@ -783,7 +784,7 @@ class CollectionControllerTest extends SuluTestCase
             ],
         ];
 
-        $this->accessControlManager->setPermissions(Collection::class, (string) $this->collection1->getId(), $permissions);
+        $this->accessControlManager->setPermissions(CollectionInterface::RESOURCE_KEY, (string) $this->collection1->getId(), $permissions);
 
         $this->client->request(
             'POST',
@@ -810,7 +811,7 @@ class CollectionControllerTest extends SuluTestCase
 
         $this->assertEquals(
             $permissions,
-            $this->accessControlManager->getPermissions(Collection::class, $response->id)
+            $this->accessControlManager->getPermissions(CollectionInterface::RESOURCE_KEY, $response->id)
         );
     }
 
@@ -1334,19 +1335,19 @@ class CollectionControllerTest extends SuluTestCase
         $collectionId = $collection->getId();
 
         $child1 = $this->createCollection($this->collectionType1, ['en-gb' => 'Child 1'], $collection);
-        $this->accessControlManager->setPermissions(Collection::class, (string) $child1->getId(), $permissions);
+        $this->accessControlManager->setPermissions(CollectionInterface::RESOURCE_KEY, (string) $child1->getId(), $permissions);
 
         $child11 = $this->createCollection($this->collectionType1, ['en-gb' => 'Child 1-1'], $child1);
-        $this->accessControlManager->setPermissions(Collection::class, (string) $child11->getId(), $fullPermissions);
+        $this->accessControlManager->setPermissions(CollectionInterface::RESOURCE_KEY, (string) $child11->getId(), $fullPermissions);
 
         $child111 = $this->createCollection($this->collectionType1, ['en-gb' => 'Child 1-1-1'], $child11);
-        $this->accessControlManager->setPermissions(Collection::class, (string) $child111->getId(), $permissions);
+        $this->accessControlManager->setPermissions(CollectionInterface::RESOURCE_KEY, (string) $child111->getId(), $permissions);
 
         $child12 = $this->createCollection($this->collectionType1, ['en-gb' => 'Child 1-2'], $child1);
-        $this->accessControlManager->setPermissions(Collection::class, (string) $child12->getId(), $permissions);
+        $this->accessControlManager->setPermissions(CollectionInterface::RESOURCE_KEY, (string) $child12->getId(), $permissions);
 
         $child2 = $this->createCollection($this->collectionType1, ['en-gb' => 'Child 2'], $collection);
-        $this->accessControlManager->setPermissions(Collection::class, (string) $child2->getId(), $permissions);
+        $this->accessControlManager->setPermissions(CollectionInterface::RESOURCE_KEY, (string) $child2->getId(), $permissions);
 
         $this->em->clear();
 

@@ -106,6 +106,6 @@ class DoctrineAccessControlProvider implements AccessControlProviderInterface
      */
     public function supports($type)
     {
-        return $type !== '';
+        return '' !== $type;
     }
 }

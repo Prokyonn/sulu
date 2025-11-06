@@ -37,12 +37,14 @@ class PermissionInheritanceSubscriber
             return;
         }
 
-        $entityClass = \get_class($entity);
+        // TODO
+        /** @var string $entityType */
+        $entityType = (new \ReflectionClass($entity))->getConstant('RESOURCE_KEY');
 
         $this->accessControlManager->setPermissions(
-            $entityClass,
+            $entityType,
             $entity->getId(),
-            $this->accessControlManager->getPermissions($entityClass, $parentId)
+            $this->accessControlManager->getPermissions($entityType, $parentId)
         );
     }
 }

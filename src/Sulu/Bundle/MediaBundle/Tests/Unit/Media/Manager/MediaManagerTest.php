@@ -25,6 +25,7 @@ use Sulu\Bundle\MediaBundle\Domain\Event\MediaModifiedEvent;
 use Sulu\Bundle\MediaBundle\Domain\Event\MediaRemovedEvent;
 use Sulu\Bundle\MediaBundle\Domain\Event\MediaVersionAddedEvent;
 use Sulu\Bundle\MediaBundle\Entity\Collection;
+use Sulu\Bundle\MediaBundle\Entity\CollectionInterface;
 use Sulu\Bundle\MediaBundle\Entity\CollectionRepository;
 use Sulu\Bundle\MediaBundle\Entity\File;
 use Sulu\Bundle\MediaBundle\Entity\FileVersion;
@@ -285,7 +286,7 @@ class MediaManagerTest extends TestCase
 
         $this->mediaRepository->findMediaById(1)->willReturn($media);
         $this->securityChecker->checkPermission(
-            new SecurityCondition('sulu.media.collections', null, Collection::class, 2),
+            new SecurityCondition('sulu.media.collections', null, CollectionInterface::RESOURCE_KEY, 2),
             'delete'
         )->shouldBeCalled();
 
@@ -328,7 +329,7 @@ class MediaManagerTest extends TestCase
 
         $this->mediaRepository->findMediaById(1)->willReturn($media);
         $this->securityChecker->checkPermission(
-            new SecurityCondition('sulu.media.collections', null, Collection::class, 2),
+            new SecurityCondition('sulu.media.collections', null, CollectionInterface::RESOURCE_KEY, 2),
             'delete'
         )->shouldBeCalled();
 
