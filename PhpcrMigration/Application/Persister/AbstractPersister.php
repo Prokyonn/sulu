@@ -51,7 +51,7 @@ abstract class AbstractPersister implements PersisterInterface
 
     public const HISTORY_URLS = '_history_urls';
 
-    public const ROUTE_RESOURCE_KEY = 'route_history';
+    public const ROUTE_RESOURCE_KEY = 'route_histories';
 
     public function __construct(
         protected PropertyAccessorInterface $propertyAccessor,
