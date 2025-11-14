@@ -18,5 +18,5 @@ interface NodeParserInterface
     /**
      * @return array<string, mixed>
      */
-    public function parse(NodeInterface $node): array;
+    public function parse(NodeInterface $node, string $documentType): array;
 }

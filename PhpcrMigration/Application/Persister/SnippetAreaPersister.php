@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Persister;
 
+use Ramsey\Uuid\Uuid;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Repository\EntityRepositoryInterface;
 
 /**
@@ -49,12 +50,12 @@ class SnippetAreaPersister implements PersisterInterface
     public function persist(array $document, bool $isLive): void
     {
         // Generate UUID for snippet area (not present in PHPCR)
-        $uuid = \hash('xxh32', \uniqid('', true));
+        $uuid = Uuid::uuid4()->toString();
 
         $snippetAreaData = [
             'uuid' => $uuid,
-            'webspaceKey' => $document['webspaceKey'],
-            'areaKey' => $document['areaKey'],
+            'webspace_key' => $document['webspaceKey'],
+            'area_key' => $document['areaKey'],
             'idSnippet' => $document['snippetUuid'],
         ];
 
@@ -62,8 +63,8 @@ class SnippetAreaPersister implements PersisterInterface
         $existing = $this->entityRepository->findOneBy(
             'sn_snippet_area',
             [
-                'webspaceKey' => $document['webspaceKey'],
-                'areaKey' => $document['areaKey'],
+                'webspace_key' => $document['webspaceKey'],
+                'area_key' => $document['areaKey'],
             ],
         );
 
@@ -78,10 +79,11 @@ class SnippetAreaPersister implements PersisterInterface
             'sn_snippet_area',
             [
                 'uuid' => 'string',
-                'webspaceKey' => 'string',
-                'areaKey' => 'string',
+                'webspace_key' => 'string',
+                'area_key' => 'string',
                 'idSnippet' => 'string',
             ],
+            ['uuid' => $snippetAreaData['uuid']],
         );
     }
 }

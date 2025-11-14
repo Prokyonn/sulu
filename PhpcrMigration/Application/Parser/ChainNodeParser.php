@@ -22,11 +22,11 @@ class ChainNodeParser implements NodeParserInterface
     {
     }
 
-    public function parse(NodeInterface $node): array
+    public function parse(NodeInterface $node, string $documentType): array
     {
         $document = [];
         foreach ($this->nodeParsers as $nodeParser) {
-            $document = \array_merge_recursive($document, $nodeParser->parse($node));
+            $document = \array_merge_recursive($document, $nodeParser->parse($node, $documentType));
         }
 
         return $document;

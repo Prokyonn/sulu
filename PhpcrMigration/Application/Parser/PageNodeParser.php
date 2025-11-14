@@ -16,9 +16,9 @@ use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Persister\Abstra
 
 class PageNodeParser implements NodeParserInterface
 {
-    public function parse(NodeInterface $node): array
+    public function parse(NodeInterface $node, string $documentType): array
     {
-        if (!$this->supports($node)) {
+        if (!$this->supports($node, $documentType)) {
             return [];
         }
 
@@ -38,8 +38,12 @@ class PageNodeParser implements NodeParserInterface
         ];
     }
 
-    private function supports(NodeInterface $node): bool
+    private function supports(NodeInterface $node, string $documentType): bool
     {
+        if ('page' !== $documentType) {
+            return false;
+        }
+
         foreach ($node->getMixinNodeTypes() as $mixinNodeType) {
             if (\in_array($mixinNodeType->getName(), ['sulu:page', 'sulu:home'])) {
                 return true;

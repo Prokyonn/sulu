@@ -24,8 +24,12 @@ use PHPCR\PropertyInterface;
  */
 class SnippetAreaNodeParser implements NodeParserInterface
 {
-    public function supports(NodeInterface $node): bool
+    public function supports(NodeInterface $node, string $documentType): bool
     {
+        if ('snippet_area' !== $documentType) {
+            return false;
+        }
+
         // Check if this is a webspace node by checking for snippet area properties
         try {
             $properties = $node->getProperties('settings:snippets-*');
@@ -42,11 +46,13 @@ class SnippetAreaNodeParser implements NodeParserInterface
     }
 
     /**
+     * Returns a list of snippet area documents (one per area found on the webspace node).
+     *
      * @return array<string, mixed>
      */
-    public function parse(NodeInterface $node): array
+    public function parse(NodeInterface $node, string $documentType): array
     {
-        if (!$this->supports($node)) {
+        if (!$this->supports($node, $documentType)) {
             return [];
         }
 
@@ -68,7 +74,7 @@ class SnippetAreaNodeParser implements NodeParserInterface
         foreach ($properties as $property) {
             // Extract area key from property name (settings:snippets-{areaKey})
             $propertyName = $property->getName();
-            $areaKey = \substr($propertyName, 17); // Remove 'settings:snippets-' prefix
+            $areaKey = \substr($propertyName, 18); // Remove 'settings:snippets-' prefix
 
             // Get snippet UUID from node reference
             $snippetUuid = null;
@@ -91,9 +97,6 @@ class SnippetAreaNodeParser implements NodeParserInterface
             ];
         }
 
-        /** @var array<string, mixed> $result */
-        $result = $snippetAreas;
-
-        return $result;
+        return $snippetAreas;
     }
 }

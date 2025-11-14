@@ -69,7 +69,7 @@ class MigratePhpcrCommand extends Command
                 $progressBar = $io->createProgressBar(\iterator_count($nodes));
                 $progressBar->setFormat(ProgressBar::FORMAT_DEBUG);
                 foreach ($nodes as $node) {
-                    $documents = $this->nodeParser->parse($node);
+                    $documents = $this->nodeParser->parse($node, $documentType);
 
                     // Handle parsers which return multiple documents per node
                     if ($this->isListOfDocuments($documents)) {

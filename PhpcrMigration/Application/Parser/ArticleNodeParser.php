@@ -24,9 +24,9 @@ class ArticleNodeParser implements NodeParserInterface
     {
     }
 
-    public function parse(NodeInterface $node): array
+    public function parse(NodeInterface $node, string $documentType): array
     {
-        if (!$this->supports($node)) {
+        if (!$this->supports($node, $documentType)) {
             return [];
         }
 
@@ -38,8 +38,12 @@ class ArticleNodeParser implements NodeParserInterface
         ];
     }
 
-    private function supports(NodeInterface $node): bool
+    private function supports(NodeInterface $node, string $documentType): bool
     {
+        if ('article' !== $documentType) {
+            return false;
+        }
+
         foreach ($node->getMixinNodeTypes() as $mixinNodeType) {
             if ('sulu:article' == $mixinNodeType->getName()) {
                 return true;
