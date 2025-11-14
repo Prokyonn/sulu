@@ -376,10 +376,13 @@ abstract class AbstractPersister implements PersisterInterface
 
             // SULU 3.0 MIGRATION FIX: Ensure ALL data is UTF-8 encoded (not just templateData)
             // This fixes title, seoTitle, excerptTitle, excerptDescription, and all other string fields
-            /** @var mixed[] $data */
-            $data = $this->fixUtf8Encoding($data);
+            $fixedData = $this->fixUtf8Encoding($data);
+            \assert(\is_array($fixedData));
+            $data = $fixedData;
 
             $data['version'] = 0;
+
+            $entityIdMappingName = $this->getDimensionContentEntityIdMappingName();
 
             try {
                 $this->entityRepository->insertOrUpdate(
@@ -387,7 +390,7 @@ abstract class AbstractPersister implements PersisterInterface
                     $this->getDimensionContentTableName(),
                     $this->getDimensionContentTableTypes(),
                     [
-                        $this->getDimensionContentEntityIdMappingName() => $data[$this->getDimensionContentEntityIdMappingName()],
+                        $entityIdMappingName => $data[$entityIdMappingName],
                         'locale' => $locale,
                         'stage' => $data['stage'],
                     ],
@@ -400,7 +403,7 @@ abstract class AbstractPersister implements PersisterInterface
              * @var DimensionContent $dimensionContent
              */
             $dimensionContent = $this->entityRepository->findOneBy($this->getDimensionContentTableName(), [
-                $this->getDimensionContentEntityIdMappingName() => $data[$this->getDimensionContentEntityIdMappingName()],
+                $entityIdMappingName => $data[$entityIdMappingName],
                 'locale' => $locale,
                 'stage' => $data['stage'],
             ]);
@@ -760,16 +763,18 @@ abstract class AbstractPersister implements PersisterInterface
             $cleaned = @\iconv('UTF-8', 'UTF-8//IGNORE', $data);
 
             // If iconv failed, fallback to preg_replace to remove invalid UTF-8
-            if (false === $cleaned || null === $cleaned) {
+            if (false === $cleaned) {
                 // Remove invalid UTF-8 sequences using regex
-                $cleaned = \preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x80-\x9F]/u', '', $data);
+                $cleanedPregReplace = \preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x80-\x9F]/u', '', $data);
                 // If still invalid, use mb_convert_encoding as last resort
-                if ((false === $cleaned || null === $cleaned) || !\mb_check_encoding($cleaned, 'UTF-8')) {
+                if (null === $cleanedPregReplace || !\mb_check_encoding($cleanedPregReplace, 'UTF-8')) {
                     $cleaned = \mb_convert_encoding($data, 'UTF-8', 'UTF-8');
+                } else {
+                    $cleaned = $cleanedPregReplace;
                 }
             }
 
-            return $cleaned ?: '';
+            return (string) ($cleaned ?: '');
         }
 
         if (\is_array($data)) {

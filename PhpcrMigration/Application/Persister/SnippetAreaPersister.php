@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Persister;
 
-use Ramsey\Uuid\Uuid;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Repository\EntityRepositoryInterface;
 
 /**
@@ -50,7 +49,8 @@ class SnippetAreaPersister implements PersisterInterface
     public function persist(array $document, bool $isLive): void
     {
         // Generate UUID for snippet area (not present in PHPCR)
-        $uuid = Uuid::uuid4()->toString();
+        // Use xxHash 32-bit with microsecond timestamp (same approach as block IDs)
+        $uuid = \hash('xxh32', \uniqid('', true));
 
         $snippetAreaData = [
             'uuid' => $uuid,

@@ -97,6 +97,9 @@ class SnippetAreaNodeParser implements NodeParserInterface
             ];
         }
 
-        return $snippetAreas;
+        /** @var array<string, mixed> $result */
+        $result = $snippetAreas;
+
+        return $result;
     }
 }

@@ -70,6 +70,10 @@ class CustomUrlNodeParser implements NodeParserInterface
         // Parse base properties using PropertyNodeParser
         $baseData = $this->propertyNodeParser->parse($node, $documentType);
 
+        if ([] === $baseData) {
+            return [];
+        }
+
         // Extract webspace from path (/cmf/<webspace>/custom-urls/...)
         $path = $node->getPath();
         $pathParts = \explode('/', $path);
