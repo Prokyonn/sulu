@@ -25,8 +25,12 @@ class CustomUrlNodeParser implements NodeParserInterface
     ) {
     }
 
-    public function supports(NodeInterface $node): bool
+    public function supports(NodeInterface $node, string $documentType): bool
     {
+        if ('custom_url' !== $documentType) {
+            return false;
+        }
+
         foreach ($node->getMixinNodeTypes() as $mixinNodeType) {
             if ('sulu:custom_url' === $mixinNodeType->getName()) {
                 return true;
@@ -57,14 +61,18 @@ class CustomUrlNodeParser implements NodeParserInterface
      *     changer: int,
      * }
      */
-    public function parse(NodeInterface $node): array
+    public function parse(NodeInterface $node, string $documentType): array
     {
-        if (!$this->supports($node)) {
+        if (!$this->supports($node, $documentType)) {
             return [];
         }
 
         // Parse base properties using PropertyNodeParser
-        $baseData = $this->propertyNodeParser->parse($node);
+        $baseData = $this->propertyNodeParser->parse($node, $documentType);
+
+        if ([] === $baseData) {
+            return [];
+        }
 
         // Extract webspace from path (/cmf/<webspace>/custom-urls/...)
         $path = $node->getPath();

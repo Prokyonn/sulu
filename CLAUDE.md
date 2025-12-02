@@ -30,7 +30,7 @@ composer deptrac        # Check architectural dependencies
 ```bash
 php bin/adminconsole phpcr:migrations:migrate           # Prepare PHPCR structure
 php bin/adminconsole sulu:phpcr-migration:migrate       # Run full migration
-php bin/adminconsole sulu:phpcr-migration:migrate page  # Migrate specific type (page|snippet|article|custom_url)
+php bin/adminconsole sulu:phpcr-migration:migrate page  # Migrate specific type (page|snippet|article|custom_url|snippet_area)
 ```
 
 ## Architecture Overview
@@ -141,6 +141,21 @@ PhpcrMigration/
   - Routes: uuid, path, history flag (in separate table)
 - **Route Handling**: PHPCR child nodes (`routes/*`) migrated to `cu_custom_url_route` records
 
+**Snippet Area Migration**:
+- **PHPCR Structure**: Properties on webspace nodes (`/cmf/{webspace}`)
+- **Property Pattern**: `settings:snippets-{areaKey}` with value as snippet node reference
+- **Sulu 3.0 Structure**: Single table (`sn_snippet_area`)
+- **Key Differences**:
+  - PHPCR: Properties scattered across webspace nodes
+  - Sulu 3.0: Dedicated table with webspaceKey + areaKey + snippet FK
+- **Migration Strategy**:
+  - Query webspace nodes under `/cmf/*`
+  - Extract all `settings:snippets-*` properties
+  - Parse property name to get areaKey (e.g., `settings:snippets-footer` → `footer`)
+  - Resolve snippet node reference to UUID
+  - Create record: (uuid, webspaceKey, areaKey, idSnippet)
+- **Special Handling**: Only migrated from default session (not live session)
+
 **Query Strategy**:
 - Use SQL2 queries to fetch nodes by mixin type
 - Sort by path depth first, then `sulu:order` to ensure parent-child processing order
@@ -174,22 +189,40 @@ vendor/bin/phpunit --testsuite=Unit # Unit tests only
 ### Adding a New Parser
 
 1. Create parser class implementing `NodeParserInterface` in `Application/Parser/`
-2. Extend `PropertyNodeParser` for property parsing utilities
+2. Optionally inject `PropertyNodeParser` for property parsing utilities (via constructor)
 3. Register service with tag `sulu_phpcr_migration.node_parser` in `Resources/config/parser.xml`
-4. Implement `supports(Node $node): bool` to define node type handling
-5. Implement `parse(Node $node): array` with proper array shape docblock
+4. Implement `parse(NodeInterface $node, string $documentType): array` with proper array shape docblock
+5. Add internal `supports()` logic to check `$documentType` and node mixin types
 
 ### Adding a New Persister
 
 1. Create persister class extending `AbstractPersister` in `Application/Persister/`
 2. Register service with tag `sulu_phpcr_migration.persister` in `Resources/config/persister.xml`
 3. Tag must include `type` attribute (e.g., `type="page"`)
-4. Implement `doPersist(string $locale, array $data): void` for persistence logic
-5. Use `$this->entityRepository` for data access
-6. Implement abstract methods for excerpt junction table names:
-   - `getDimensionContentExcerptCategoriesTableName()` / `getDimensionContentExcerptCategoriesIdName()`
-   - `getDimensionContentExcerptTagsTableName()` / `getDimensionContentExcerptTagsIdName()`
-   - `getDimensionContentExcerptAudienceTargetGroupsTableName()` / `getDimensionContentExcerptAudienceTargetGroupsIdName()`
+4. Use `$this->entityRepository` for data access
+5. Implement all required abstract methods:
+
+**Core methods:**
+- `supports(array $document): bool` - check if persister handles this document type
+- `getType(): string` - return the document type (e.g., `'page'`)
+- `isRoutable(): bool` - whether this content type has routes
+
+**Entity table methods:**
+- `getEntityTableName(): string` - main entity table (e.g., `'pa_pages'`)
+- `getEntityTableTypes(): array` - Doctrine DBAL column types for entity
+- `getEntityMapping(): array` - map document keys to entity columns
+- `getEntityResourceKey(): string` - resource key for routes (e.g., `'pages'`)
+
+**Dimension content table methods:**
+- `getDimensionContentTableName(): string` - dimension content table
+- `getDimensionContentTableTypes(): array` - column types for dimension content
+- `getDimensionContentMapping(): array` - map localized data to columns
+- `getDimensionContentEntityIdMappingName(): string` - FK column name to entity
+
+**Excerpt junction table methods:**
+- `getDimensionContentExcerptCategoriesTableName()` / `getDimensionContentExcerptCategoriesIdName()`
+- `getDimensionContentExcerptTagsTableName()` / `getDimensionContentExcerptTagsIdName()`
+- `getDimensionContentExcerptAudienceTargetGroupsTableName()` / `getDimensionContentExcerptAudienceTargetGroupsIdName()`
 
 **Junction Table Naming Pattern**: `{prefix}_{type}_dimension_content_excerpt_{relation}`
 - Pages: `pa_page_dimension_content_excerpt_categories`

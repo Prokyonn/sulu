@@ -38,7 +38,7 @@ class MigratePhpcrCommand extends Command
 
     protected function configure(): void
     {
-        $this->addArgument('documentTypes', InputArgument::OPTIONAL, 'The document type to migrate. (e.g. snippet, page, article)', 'page,article,snippet');
+        $this->addArgument('documentTypes', InputArgument::OPTIONAL, 'The document type to migrate. (e.g. snippet, page, article, snippet_area)', 'page,article,snippet,snippet_area');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -55,8 +55,11 @@ class MigratePhpcrCommand extends Command
             $io->title('Migrating ' . $documentType . ' documents');
             $persister = $this->persisterPool->getPersister($documentType);
 
+            // Snippet areas only exist in default session (not in live session)
+            $sessions = 'snippet_area' === $documentType ? [$session] : [$session, $liveSession];
+
             /** @var SessionInterface $currentSession */
-            foreach ([$session, $liveSession] as $currentSession) {
+            foreach ($sessions as $currentSession) {
                 $sessionName = $currentSession->getWorkspace()->getName();
                 $io->section('Migrating ' . $documentType . ' documents in ' . $sessionName);
 
@@ -66,11 +69,23 @@ class MigratePhpcrCommand extends Command
                 $progressBar = $io->createProgressBar(\iterator_count($nodes));
                 $progressBar->setFormat(ProgressBar::FORMAT_DEBUG);
                 foreach ($nodes as $node) {
-                    $document = $this->nodeParser->parse($node);
-                    $persister->persist(
-                        document: $document,
-                        isLive: \str_ends_with($sessionName, '_live'),
-                    );
+                    $documents = $this->nodeParser->parse($node, $documentType);
+
+                    // Handle parsers which return multiple documents per node
+                    if ($this->isListOfDocuments($documents)) {
+                        /** @var array<string, mixed> $document */
+                        foreach ($documents as $document) {
+                            $persister->persist(
+                                document: $document,
+                                isLive: \str_ends_with($sessionName, '_live'),
+                            );
+                        }
+                    } else {
+                        $persister->persist(
+                            document: $documents,
+                            isLive: \str_ends_with($sessionName, '_live'),
+                        );
+                    }
                     $progressBar->advance();
                 }
                 $progressBar->finish();
@@ -88,6 +103,11 @@ class MigratePhpcrCommand extends Command
      */
     private function fetchPhpcrNodes(QueryManagerInterface $queryManager, string $documentType): array
     {
+        // Special handling for snippet areas (stored as webspace properties, not documents)
+        if ('snippet_area' === $documentType) {
+            return $this->fetchWebspaceNodes($queryManager);
+        }
+
         $wheres = [
             \sprintf('[jcr:mixinTypes] = "sulu:%s"', $documentType),
         ];
@@ -124,5 +144,59 @@ class MigratePhpcrCommand extends Command
         });
 
         return $nodesArray;
+    }
+
+    /**
+     * Check if the parsed result is a list of documents vs a single document.
+     *
+     * A list of documents has sequential numeric keys (0, 1, 2...) with each element being a document array.
+     * A single document has string keys (uuid, title, etc.) at the top level.
+     *
+     * @param array<int|string, mixed> $documents
+     */
+    private function isListOfDocuments(array $documents): bool
+    {
+        if ([] === $documents) {
+            return false;
+        }
+
+        // Check if array is a list (sequential numeric keys starting at 0)
+        if (!\array_is_list($documents)) {
+            return false;
+        }
+
+        // Check if first element is an array (a document)
+        $firstElement = \reset($documents);
+
+        return \is_array($firstElement);
+    }
+
+    /**
+     * Fetch webspace nodes for snippet area migration.
+     *
+     * @return array<NodeInterface>
+     */
+    private function fetchWebspaceNodes(QueryManagerInterface $queryManager): array
+    {
+        // Query for all nodes under /cmf that are webspace nodes (depth = 2)
+        $sql = 'SELECT * FROM [nt:unstructured] WHERE ISCHILDNODE([/cmf])';
+        $query = $queryManager->createQuery($sql, 'JCR-SQL2');
+        $result = $query->execute();
+
+        $nodes = $result->getNodes();
+        $nodesArray = \iterator_to_array($nodes);
+
+        // Filter to only webspace nodes that have snippet area properties
+        return \array_filter($nodesArray, function(NodeInterface $node) {
+            try {
+                $properties = $node->getProperties('settings:snippets-*');
+                $propertiesArray = \iterator_to_array($properties);
+
+                return [] !== $propertiesArray;
+                // @phpstan-ignore-next-line fail-loud: intentional catch-all for missing properties
+            } catch (\Throwable) {
+                return false;
+            }
+        });
     }
 }

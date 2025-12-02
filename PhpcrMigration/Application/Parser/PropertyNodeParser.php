@@ -28,10 +28,14 @@ class PropertyNodeParser implements NodeParserInterface
      *     localizations: array<string, array<string, mixed>>,
      *     jcr: array<string, array<string,mixed>>,
      *     sulu: array<string, array<string,mixed>>,
-     * }
+     * }|array{}
      */
-    public function parse(NodeInterface $node): array
+    public function parse(NodeInterface $node, string $documentType): array
     {
+        if ('snippet_area' === $documentType) {
+            return [];
+        }
+
         $document = [
             'localizations' => [
                 'null' => [], // required to always create the unlocalized dimension

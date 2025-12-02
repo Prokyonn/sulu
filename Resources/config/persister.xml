@@ -34,6 +34,13 @@
             <tag name="sulu_phpcr_migration.persister" type="custom_url"/>
         </service>
 
+        <service id="sulu_phpcr_migration.snippet_area_persister"
+                 class="Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Persister\SnippetAreaPersister">
+            <argument type="service" id="sulu_phpcr_migration.entity_repository"/>
+
+            <tag name="sulu_phpcr_migration.persister" type="snippet_area"/>
+        </service>
+
         <service id="sulu_phpcr_migration.persister_pool"
                  class="Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Persister\PersisterPool">
             <argument type="tagged_iterator" tag="sulu_phpcr_migration.persister" index-by="type"/>
