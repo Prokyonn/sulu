@@ -3,5 +3,3 @@ parameters:
         - PhpcrMigration
         - Tests
     level: max
-    ignoreErrors:
-        - '#caught "Throwable" must be rethrown#'

@@ -38,7 +38,7 @@ class MigratePhpcrCommand extends Command
 
     protected function configure(): void
     {
-        $this->addArgument('documentTypes', InputArgument::OPTIONAL, 'The document type to migrate. (e.g. snippet, page, article, snippet_area)', 'page,article,snippet');
+        $this->addArgument('documentTypes', InputArgument::OPTIONAL, 'The document type to migrate. (e.g. snippet, page, article, snippet_area)', 'page,article,snippet,snippet_area');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -193,11 +193,8 @@ class MigratePhpcrCommand extends Command
                 $propertiesArray = \iterator_to_array($properties);
 
                 return [] !== $propertiesArray;
-            } catch (\Throwable $e) {
-                // Intentionally catch all exceptions - node doesn't have snippet area properties
-                // This is expected behavior for nodes that don't represent webspaces
-                unset($e); // Suppress PHPStan fail-loud warning
-
+                // @phpstan-ignore-next-line fail-loud: intentional catch-all for missing properties
+            } catch (\Throwable) {
                 return false;
             }
         });

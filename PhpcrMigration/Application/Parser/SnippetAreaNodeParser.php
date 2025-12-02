@@ -36,11 +36,8 @@ class SnippetAreaNodeParser implements NodeParserInterface
             $propertiesArray = \iterator_to_array($properties);
 
             return [] !== $propertiesArray;
-        } catch (\Throwable $e) {
-            // Intentionally catch all exceptions - node doesn't have snippet area properties
-            // This is expected behavior for nodes that don't represent webspaces
-            unset($e); // Suppress PHPStan fail-loud warning
-
+            // @phpstan-ignore-next-line fail-loud: intentional catch-all for missing properties
+        } catch (\Throwable) {
             return false;
         }
     }
@@ -83,10 +80,8 @@ class SnippetAreaNodeParser implements NodeParserInterface
                 if ($value instanceof NodeInterface) {
                     $snippetUuid = $value->getIdentifier();
                 }
-            } catch (\Throwable $e) {
-                // Intentionally catch all exceptions - property value might be invalid or node doesn't exist
-                // This is expected behavior for broken references
-                unset($e); // Suppress PHPStan fail-loud warning
+                // @phpstan-ignore-next-line fail-loud: intentional catch-all for broken references
+            } catch (\Throwable) {
                 $snippetUuid = null;
             }
 
