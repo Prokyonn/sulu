@@ -48,6 +48,8 @@ interface EntityRepositoryInterface
      */
     public function removeBy(string $tableName, array $where): int|string;
 
+    public function tableExists(string $tableName): bool;
+
     /**
      * @param array<string, mixed> $data
      * @param array<string, string> $types

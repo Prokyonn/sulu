@@ -12,6 +12,7 @@
 namespace Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Parser;
 
 use PHPCR\NodeInterface;
+use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Exception\LegacyRouteTableNotFoundException;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Persister\AbstractPersister;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Repository\EntityRepositoryInterface;
 
@@ -55,6 +56,10 @@ class ArticleNodeParser implements NodeParserInterface
      */
     private function parseLocalizedRoutes(NodeInterface $node, array $localizations): array
     {
+        if (!$this->repository->tableExists(self::LEGACY_ROUTE_TABLE)) {
+            throw new LegacyRouteTableNotFoundException(self::LEGACY_ROUTE_TABLE);
+        }
+
         $routes = $this->repository->findBy(
             self::LEGACY_ROUTE_TABLE,
             [
