@@ -646,8 +646,8 @@ abstract class AbstractPersister implements PersisterInterface
             /** @var array<array-key, mixed> $blockArray */
             $blockArray = $block;
 
-            if (!\array_key_exists('id', $blockArray)) {
-                $blockArray['id'] = $this->generateBlockId();
+            if (!\array_key_exists('_id', $blockArray)) {
+                $blockArray['_id'] = $this->generateBlockId();
             }
             $data[$index] = $this->addBlockIds($blockArray);
         }
