@@ -189,22 +189,40 @@ vendor/bin/phpunit --testsuite=Unit # Unit tests only
 ### Adding a New Parser
 
 1. Create parser class implementing `NodeParserInterface` in `Application/Parser/`
-2. Extend `PropertyNodeParser` for property parsing utilities
+2. Optionally inject `PropertyNodeParser` for property parsing utilities (via constructor)
 3. Register service with tag `sulu_phpcr_migration.node_parser` in `Resources/config/parser.xml`
-4. Implement `supports(Node $node): bool` to define node type handling
-5. Implement `parse(Node $node): array` with proper array shape docblock
+4. Implement `parse(NodeInterface $node, string $documentType): array` with proper array shape docblock
+5. Add internal `supports()` logic to check `$documentType` and node mixin types
 
 ### Adding a New Persister
 
 1. Create persister class extending `AbstractPersister` in `Application/Persister/`
 2. Register service with tag `sulu_phpcr_migration.persister` in `Resources/config/persister.xml`
 3. Tag must include `type` attribute (e.g., `type="page"`)
-4. Implement `doPersist(string $locale, array $data): void` for persistence logic
-5. Use `$this->entityRepository` for data access
-6. Implement abstract methods for excerpt junction table names:
-   - `getDimensionContentExcerptCategoriesTableName()` / `getDimensionContentExcerptCategoriesIdName()`
-   - `getDimensionContentExcerptTagsTableName()` / `getDimensionContentExcerptTagsIdName()`
-   - `getDimensionContentExcerptAudienceTargetGroupsTableName()` / `getDimensionContentExcerptAudienceTargetGroupsIdName()`
+4. Use `$this->entityRepository` for data access
+5. Implement all required abstract methods:
+
+**Core methods:**
+- `supports(array $document): bool` - check if persister handles this document type
+- `getType(): string` - return the document type (e.g., `'page'`)
+- `isRoutable(): bool` - whether this content type has routes
+
+**Entity table methods:**
+- `getEntityTableName(): string` - main entity table (e.g., `'pa_pages'`)
+- `getEntityTableTypes(): array` - Doctrine DBAL column types for entity
+- `getEntityMapping(): array` - map document keys to entity columns
+- `getEntityResourceKey(): string` - resource key for routes (e.g., `'pages'`)
+
+**Dimension content table methods:**
+- `getDimensionContentTableName(): string` - dimension content table
+- `getDimensionContentTableTypes(): array` - column types for dimension content
+- `getDimensionContentMapping(): array` - map localized data to columns
+- `getDimensionContentEntityIdMappingName(): string` - FK column name to entity
+
+**Excerpt junction table methods:**
+- `getDimensionContentExcerptCategoriesTableName()` / `getDimensionContentExcerptCategoriesIdName()`
+- `getDimensionContentExcerptTagsTableName()` / `getDimensionContentExcerptTagsIdName()`
+- `getDimensionContentExcerptAudienceTargetGroupsTableName()` / `getDimensionContentExcerptAudienceTargetGroupsIdName()`
 
 **Junction Table Naming Pattern**: `{prefix}_{type}_dimension_content_excerpt_{relation}`
 - Pages: `pa_page_dimension_content_excerpt_categories`
