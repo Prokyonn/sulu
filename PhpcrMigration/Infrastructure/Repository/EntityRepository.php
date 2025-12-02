@@ -106,6 +106,11 @@ class EntityRepository implements EntityRepositoryInterface, ResetInterface
         return $this->connection->executeStatement($query, $params);
     }
 
+    public function tableExists(string $tableName): bool
+    {
+        return $this->connection->createSchemaManager()->tablesExist([$tableName]);
+    }
+
     /**
      * @param mixed[] $where
      *
