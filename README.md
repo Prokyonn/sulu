@@ -73,6 +73,30 @@ php bin/adminconsole sulu:phpcr-migration:migrate snippet
 Allowed types are: `snippet`, `page`, `article`
 
 
+## 🛠️&nbsp; Development
+
+For development setup and running tests:
+
+```bash
+# Install dependencies
+composer install
+
+# Run tests
+composer test
+
+# Run code quality checks
+composer lint
+
+# Auto-fix code style
+composer fix
+```
+
+See [docs/TESTING.md](docs/TESTING.md) for detailed testing documentation including:
+- Functional test infrastructure
+- Updating SQLite fixtures
+- Updating Sulu 3.0 target schema
+
+
 ## ❤️&nbsp; Support and Contributions
 
 The Sulu content management system is a **community-driven open source project** backed by various partner companies.

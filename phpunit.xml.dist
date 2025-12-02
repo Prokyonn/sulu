@@ -3,23 +3,24 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          backupGlobals="false"
          colors="true"
-         bootstrap="Tests/test-bootstrap.php"
+         bootstrap="Tests/Application/config/bootstrap.php"
 >
     <php>
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
-        <!-- See: https://symfony.com/doc/current/components/phpunit_bridge.html#modified-phpunit-script -->
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
     </php>
 
     <testsuites>
-        <testsuite name="Sulu Phpcr Migration Bundle Unit">
-            <directory>./Tests/Unit</directory>
-        </testsuite>
-
-        <testsuite name="Sulu Phpcr Migration Bundle Functional">
+        <testsuite name="Functional">
             <directory>./Tests/Functional</directory>
         </testsuite>
     </testsuites>
+
+    <source>
+        <include>
+            <directory suffix=".php">./PhpcrMigration</directory>
+        </include>
+    </source>
 </phpunit>
