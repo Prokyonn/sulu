@@ -55,11 +55,11 @@ class SnippetPersister extends AbstractPersister
             $data['templateData']['title'] = $data['title'];
         }
 
-        // Transform segments map to single segment value
-        // For snippets, take the first segment value from the map
-        if (isset($data['excerptSegment']) && \is_array($data['excerptSegment'])) {
-            $segments = $data['excerptSegment'];
-            $data['excerptSegment'] = [] === $segments ? null : \reset($segments);
+        // Snippets store template as unlocalized property (same template for all locales)
+        if (null === $locale) {
+            $data['templateKey'] = null;
+        } elseif (!isset($data['templateKey']) && isset($document['localizations']['null']['template'])) {
+            $data['templateKey'] = $document['localizations']['null']['template'];
         }
 
         return $data;
@@ -117,12 +117,6 @@ class SnippetPersister extends AbstractPersister
             'availableLocales' => 'json',
             'templateKey' => 'string',
             'templateData' => 'json',
-            'excerptTitle' => 'string',
-            'excerptMore' => 'string',
-            'excerptDescription' => 'string',
-            'excerptSegment' => 'string',
-            'excerptImageId' => 'integer',
-            'excerptIconId' => 'integer',
             'authored' => 'datetime',
             'workflowPlace' => 'string',
             'workflowPublished' => 'datetime',
@@ -131,7 +125,6 @@ class SnippetPersister extends AbstractPersister
 
     protected function getDimensionContentMapping(): array
     {
-        //TODO
         return [
             '[author_id]' => '[author]',
             '[authored]' => '[authored]',
@@ -141,12 +134,6 @@ class SnippetPersister extends AbstractPersister
             '[templateKey]' => '[template]',
             '[workflowPlace]' => '[state]',
             '[workflowPublished]' => '[published]',
-            '[excerptTitle]' => '[excerpt][title]',
-            '[excerptMore]' => '[excerpt][more]',
-            '[excerptDescription]' => '[excerpt][description]',
-            '[excerptSegment]' => '[excerpt][segments]',
-            '[excerptImageId]' => '[excerpt][images]',
-            '[excerptIconId]' => '[excerpt][icon]',
         ];
     }
 
