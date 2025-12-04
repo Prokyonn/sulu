@@ -11,11 +11,13 @@
 
 namespace Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\UserInterface\Command;
 
+use Doctrine\DBAL\Connection;
 use PHPCR\NodeInterface;
 use PHPCR\Query\QueryManagerInterface;
 use PHPCR\SessionInterface;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Parser\NodeParserInterface;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Persister\PersisterPool;
+use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Query\PostMigrationQueryInterface;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Session\SessionManager;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -28,10 +30,15 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'sulu:phpcr-migration:migrate', description: 'Migrate the PHPCR content repository to the SuluContentBundle.')]
 class MigratePhpcrCommand extends Command
 {
+    /**
+     * @param iterable<PostMigrationQueryInterface> $postMigrationQueries
+     */
     public function __construct(
         private readonly SessionManager $sessionManager,
         private readonly NodeParserInterface $nodeParser,
         private readonly PersisterPool $persisterPool,
+        private readonly iterable $postMigrationQueries,
+        private readonly Connection $connection,
     ) {
         parent::__construct();
     }
@@ -91,6 +98,10 @@ class MigratePhpcrCommand extends Command
                 $progressBar->finish();
                 $io->newLine(2);
             }
+        }
+
+        foreach ($this->postMigrationQueries as $query) {
+            $query->execute($this->connection);
         }
 
         $io->success('Migration completed');
