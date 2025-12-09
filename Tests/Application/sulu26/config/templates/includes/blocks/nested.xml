@@ -1,0 +1,67 @@
+<properties xmlns="http://schemas.sulu.io/template/template"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://schemas.sulu.io/template/template http://schemas.sulu.io/template/template-1.0.xsd">
+    <block name="blocks" default-type="nested">
+        <types>
+            <type name="nested">
+                <meta>
+                    <title lang="en">Nested Block</title>
+                    <title lang="de">Verschachtelter Block</title>
+                </meta>
+                <properties>
+                    <property name="title" type="text_line">
+                        <meta>
+                            <title lang="en">Title</title>
+                            <title lang="de">Titel</title>
+                        </meta>
+                    </property>
+                    <block name="innerBlocks" default-type="inner_text" minOccurs="0">
+                        <meta>
+                            <title lang="en">Inner Blocks</title>
+                            <title lang="de">Innere Blöcke</title>
+                        </meta>
+                        <types>
+                            <type name="inner_text">
+                                <meta>
+                                    <title lang="en">Inner Text</title>
+                                    <title lang="de">Innerer Text</title>
+                                </meta>
+                                <properties>
+                                    <property name="text" type="text_editor">
+                                        <meta>
+                                            <title lang="en">Text</title>
+                                            <title lang="de">Text</title>
+                                        </meta>
+                                    </property>
+                                </properties>
+                            </type>
+                            <type name="inner_image">
+                                <meta>
+                                    <title lang="en">Inner Image</title>
+                                    <title lang="de">Inneres Bild</title>
+                                </meta>
+                                <properties>
+                                    <property name="image" type="single_media_selection">
+                                        <meta>
+                                            <title lang="en">Image</title>
+                                            <title lang="de">Bild</title>
+                                        </meta>
+                                        <params>
+                                            <param name="types" value="image"/>
+                                        </params>
+                                    </property>
+                                    <property name="caption" type="text_line">
+                                        <meta>
+                                            <title lang="en">Caption</title>
+                                            <title lang="de">Bildunterschrift</title>
+                                        </meta>
+                                    </property>
+                                </properties>
+                            </type>
+                        </types>
+                    </block>
+                </properties>
+            </type>
+        </types>
+    </block>
+</properties>

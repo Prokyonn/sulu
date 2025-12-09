@@ -1,0 +1,64 @@
+<properties xmlns="http://schemas.sulu.io/template/template"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://schemas.sulu.io/template/template http://schemas.sulu.io/template/template-1.0.xsd">
+    <block name="blocks" default-type="image_map">
+        <types>
+            <type name="image_map">
+                <meta>
+                    <title lang="en">Image Map</title>
+                    <title lang="de">Bildkarte</title>
+                </meta>
+                <properties>
+                    <property name="imageMap" type="image_map">
+                        <meta>
+                            <title lang="en">Image Map</title>
+                            <title lang="de">Bildkarte</title>
+                        </meta>
+                        <types>
+                            <type name="link">
+                                <meta>
+                                    <title lang="en">Link Hotspot</title>
+                                    <title lang="de">Link Hotspot</title>
+                                </meta>
+                                <properties>
+                                    <property name="title" type="text_line">
+                                        <meta>
+                                            <title lang="en">Title</title>
+                                            <title lang="de">Titel</title>
+                                        </meta>
+                                    </property>
+                                    <property name="link" type="link">
+                                        <meta>
+                                            <title lang="en">Link</title>
+                                            <title lang="de">Link</title>
+                                        </meta>
+                                    </property>
+                                </properties>
+                            </type>
+                            <type name="text">
+                                <meta>
+                                    <title lang="en">Text Hotspot</title>
+                                    <title lang="de">Text Hotspot</title>
+                                </meta>
+                                <properties>
+                                    <property name="title" type="text_line">
+                                        <meta>
+                                            <title lang="en">Title</title>
+                                            <title lang="de">Titel</title>
+                                        </meta>
+                                    </property>
+                                    <property name="description" type="text_area">
+                                        <meta>
+                                            <title lang="en">Description</title>
+                                            <title lang="de">Beschreibung</title>
+                                        </meta>
+                                    </property>
+                                </properties>
+                            </type>
+                        </types>
+                    </property>
+                </properties>
+            </type>
+        </types>
+    </block>
+</properties>

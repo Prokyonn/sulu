@@ -1,0 +1,60 @@
+<properties xmlns="http://schemas.sulu.io/template/template"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://schemas.sulu.io/template/template http://schemas.sulu.io/template/template-1.0.xsd">
+    <block name="blocks" default-type="smart_content_pages">
+        <types>
+            <type name="smart_content_pages">
+                <meta>
+                    <title lang="en">Smart Content (Pages)</title>
+                    <title lang="de">Smart Content (Seiten)</title>
+                </meta>
+                <properties>
+                    <property name="title" type="text_line">
+                        <meta>
+                            <title lang="en">Title</title>
+                            <title lang="de">Titel</title>
+                        </meta>
+                    </property>
+                    <property name="smartContent" type="smart_content">
+                        <meta>
+                            <title lang="en">Smart Content</title>
+                            <title lang="de">Smart Content</title>
+                        </meta>
+                        <params>
+                            <param name="provider" value="pages"/>
+                            <param name="max_per_page" value="10"/>
+                            <param name="properties" type="collection">
+                                <param name="title" value="title"/>
+                                <param name="url" value="url"/>
+                            </param>
+                        </params>
+                    </property>
+                </properties>
+            </type>
+            <type name="smart_content_articles">
+                <meta>
+                    <title lang="en">Smart Content (Articles)</title>
+                    <title lang="de">Smart Content (Artikel)</title>
+                </meta>
+                <properties>
+                    <property name="title" type="text_line">
+                        <meta>
+                            <title lang="en">Title</title>
+                            <title lang="de">Titel</title>
+                        </meta>
+                    </property>
+                    <property name="smartContentArticles" type="smart_content">
+                        <meta>
+                            <title lang="en">Smart Content</title>
+                            <title lang="de">Smart Content</title>
+                        </meta>
+                        <params>
+                            <param name="provider" value="articles"/>
+                            <param name="max_per_page" value="10"/>
+                        </params>
+                    </property>
+                </properties>
+            </type>
+        </types>
+    </block>
+</properties>
