@@ -22,7 +22,6 @@ use Symfony\Component\Console\Output\BufferedOutput;
 /**
  * Compares migration output against committed CSV baselines.
  *
- * Tests are grouped by content type for cleaner output.
  * First run: Automatically generates baselines if missing.
  * Subsequent runs: Compares migration output against baselines.
  *
@@ -32,9 +31,6 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
 {
     private const BASELINE_DIR = __DIR__ . '/../../Resources/baselines';
 
-    /**
-     * Page tables from ContentBundle.
-     */
     private const PAGE_TABLES = [
         'pa_pages',
         'pa_page_dimension_contents',
@@ -43,9 +39,6 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
         'pa_page_dimension_content_navigation_contexts',
     ];
 
-    /**
-     * Article tables from ContentBundle.
-     */
     private const ARTICLE_TABLES = [
         'ar_articles',
         'ar_article_dimension_contents',
@@ -54,9 +47,6 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
         'ar_article_dimension_content_excerpt_tags',
     ];
 
-    /**
-     * Snippet tables from ContentBundle.
-     */
     private const SNIPPET_TABLES = [
         'sn_snippets',
         'sn_snippet_dimension_contents',
@@ -65,9 +55,6 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
         'sn_snippet_area',
     ];
 
-    /**
-     * Custom URL tables.
-     */
     private const CUSTOM_URL_TABLES = [
         'cu_custom_url',
         'cu_custom_url_route',
@@ -82,18 +69,15 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
     {
         parent::setUp();
 
-        // Run migration once for all tests
         if (!self::$migrationExecuted) {
             $this->runFullMigration();
             self::$migrationExecuted = true;
 
-            // Export current state to temp directory for comparison
             self::$tempDir = \sys_get_temp_dir() . '/baseline_test_' . \uniqid();
             \mkdir(self::$tempDir, 0755, true);
             $exporter = new CsvBaselineExporter($this->targetConnection, self::$tempDir);
             $exporter->export();
 
-            // Check if baselines exist, generate if not
             $baselineFiles = \glob(self::BASELINE_DIR . '/*.csv');
             if (false === $baselineFiles || [] === $baselineFiles) {
                 $this->generateBaselines();
@@ -101,7 +85,6 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
             }
         }
 
-        // Skip all tests if baselines were just generated
         if (self::$baselinesGenerated) {
             $this->markTestSkipped('Baselines were generated. Re-run tests to validate against baselines.');
         }
@@ -174,28 +157,103 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
                 $this->fail("Table '{$table}' was not exported. Check if the table exists in the database.");
             }
 
-            $expected = \file_get_contents($baselineFile);
-            $actual = \file_get_contents($actualFile);
+            $expected = $this->parseCsv($baselineFile);
+            $actual = $this->parseCsv($actualFile);
 
-            if (false === $expected || false === $actual) {
-                $this->fail("Failed to read files for table '{$table}'.");
-            }
-
-            $this->assertEquals(
+            $this->assertSame(
                 $expected,
                 $actual,
                 \sprintf(
-                    "Table '%s' does not match baseline.\n\nTo update baselines, delete Tests/Resources/baselines/*.csv and re-run tests.\n\nDiff:\n%s",
-                    $table,
-                    $this->generateDiff($baselineFile, $actualFile)
+                    "Table '%s' does not match baseline.\n\nTo update baselines, delete Tests/Resources/baselines/*.csv and re-run tests.",
+                    $table
                 )
             );
         }
     }
 
+    private const JSON_COLUMNS = ['templateData', 'seoData', 'excerptData'];
+
     /**
-     * Get tables that aren't in any specific group.
+     * Fields to exclude from JSON comparison (randomly generated values).
+     */
+    private const EXCLUDED_JSON_FIELDS = ['_id'];
+
+    /**
+     * @return list<array<string, string>>
+     */
+    private function parseCsv(string $path): array
+    {
+        $handle = \fopen($path, 'r');
+        if (false === $handle) {
+            return [];
+        }
+
+        $headers = \fgetcsv($handle, null, ',', '"', '\\');
+        if (false === $headers || null === $headers) {
+            \fclose($handle);
+
+            return [];
+        }
+
+        $rows = [];
+        while (false !== ($row = \fgetcsv($handle, null, ',', '"', '\\'))) {
+            if (\count($row) === \count($headers)) {
+                $combined = \array_combine($headers, $row);
+                $rows[] = $this->normalizeRow($combined);
+            }
+        }
+
+        \fclose($handle);
+
+        return $rows;
+    }
+
+    /**
+     * @param array<string, string> $row
      *
+     * @return array<string, string>
+     */
+    private function normalizeRow(array $row): array
+    {
+        foreach (self::JSON_COLUMNS as $column) {
+            if (isset($row[$column]) && '' !== $row[$column]) {
+                $decoded = \json_decode($row[$column], true);
+                if (\is_array($decoded)) {
+                    $decoded = $this->removeExcludedFields($decoded);
+                    $encoded = \json_encode($decoded, \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
+                    if (false !== $encoded) {
+                        $row[$column] = $encoded;
+                    }
+                }
+            }
+        }
+
+        return $row;
+    }
+
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
+     */
+    private function removeExcludedFields(array $data): array
+    {
+        $result = [];
+        foreach ($data as $key => $value) {
+            if (\is_string($key) && \in_array($key, self::EXCLUDED_JSON_FIELDS, true)) {
+                continue;
+            }
+            if (\is_array($value)) {
+                $result[$key] = $this->removeExcludedFields($value);
+            } else {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @return list<string>
      */
     private function getRemainingTables(): array
@@ -250,36 +308,5 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
         if (0 !== $exitCode) {
             $this->fail('Migration command failed: ' . $output->fetch());
         }
-    }
-
-    private function generateDiff(string $expectedPath, string $actualPath): string
-    {
-        $expected = \file($expectedPath, \FILE_IGNORE_NEW_LINES) ?: [];
-        $actual = \file($actualPath, \FILE_IGNORE_NEW_LINES) ?: [];
-
-        $diff = [];
-        $max = \max(\count($expected), \count($actual));
-        $diffCount = 0;
-
-        for ($i = 0; $i < $max && $diffCount < 10; ++$i) {
-            $expectedLine = $expected[$i] ?? '<missing>';
-            $actualLine = $actual[$i] ?? '<missing>';
-
-            if ($expectedLine !== $actualLine) {
-                $diff[] = '  Line ' . ($i + 1) . ':';
-                $diff[] = "    - {$expectedLine}";
-                $diff[] = "    + {$actualLine}";
-                ++$diffCount;
-            }
-        }
-
-        if ($max > \count($diff) / 3 + $diffCount) {
-            $remaining = $max - $i;
-            if ($remaining > 0) {
-                $diff[] = "  ... and possibly {$remaining} more lines with differences";
-            }
-        }
-
-        return \implode("\n", $diff);
     }
 }

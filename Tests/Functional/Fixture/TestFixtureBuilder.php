@@ -78,8 +78,6 @@ final class TestFixtureBuilder
     }
 
     /**
-     * Build the test fixture.
-     *
      * @throws \RuntimeException If source files are missing or unreadable
      */
     public function build(): void
@@ -179,17 +177,11 @@ final class TestFixtureBuilder
     private function validateSourceFiles(string $sulu26Path, string $sulu30Path): void
     {
         if (!\file_exists($sulu26Path)) {
-            throw new \RuntimeException(
-                "Sulu 2.6 dump not found: {$sulu26Path}\n" .
-                "Create it with: mysqldump -u root -p sulu26_test > {$sulu26Path}"
-            );
+            throw new \RuntimeException("Sulu 2.6 dump not found: {$sulu26Path}\nCreate it with: mysqldump -u root -p sulu26_test > {$sulu26Path}");
         }
 
         if (!\file_exists($sulu30Path)) {
-            throw new \RuntimeException(
-                "Sulu 3.0 schema not found: {$sulu30Path}\n" .
-                "Create it with: mysqldump -u root -p --no-data sulu30_schema > {$sulu30Path}"
-            );
+            throw new \RuntimeException("Sulu 3.0 schema not found: {$sulu30Path}\nCreate it with: mysqldump -u root -p --no-data sulu30_schema > {$sulu30Path}");
         }
     }
 

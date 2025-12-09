@@ -38,15 +38,12 @@ abstract class BaseFunctionalTestCase extends KernelTestCase
     {
         parent::setUp();
 
-        // Boot kernel
         self::bootKernel();
 
-        // Get DBAL connection from container
         /** @var Connection $connection */
         $connection = self::getContainer()->get('doctrine.dbal.default_connection');
         $this->targetConnection = $connection;
 
-        // Load test fixture into database
         TestConnectionFactory::loadFixture($connection);
     }
 

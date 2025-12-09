@@ -1,1 +1,2 @@
 id,target_id,path,locale,entity_class,entity_id,history,created,changed,idUsersCreator,idUsersChanger
+1,,/blog/test,de,"Sulu\Bundle\ArticleBundle\Document\ArticleDocument",6c437f5b-ee8f-463b-a57c-25e116836797,0,"2025-12-09 00:40:34","2025-12-09 00:40:34",1,1

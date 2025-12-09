@@ -15,23 +15,13 @@ namespace Sulu\Bundle\PhpcrMigrationBundle\Tests\Functional\Helper;
 
 use Doctrine\DBAL\Connection;
 
-/**
- * Exports database tables to CSV for baseline comparison.
- *
- * CSV files are deterministic: rows sorted by primary key, consistent formatting.
- */
 class CsvBaselineExporter
 {
-    /**
-     * System table prefixes to exclude from export.
-     */
     private const EXCLUDED_PREFIXES = [
         'phpcr_',
+        'ac_',
     ];
 
-    /**
-     * System table names to exclude from export.
-     */
     private const EXCLUDED_TABLES = [
         'doctrine_migration_versions',
         'migration_versions',
@@ -44,11 +34,6 @@ class CsvBaselineExporter
     ) {
     }
 
-    /**
-     * Export all tables to CSV files.
-     *
-     * @return int Number of tables exported
-     */
     public function export(): int
     {
         if (!\is_dir($this->outputDir)) {
@@ -98,7 +83,7 @@ class CsvBaselineExporter
             throw new \RuntimeException("Failed to open: {$outputPath}");
         }
 
-        \fputcsv($fp, $columnNames);
+        \fputcsv($fp, $columnNames, ',', '"', '\\');
 
         foreach ($rows as $row) {
             $normalizedRow = \array_map(
@@ -114,7 +99,7 @@ class CsvBaselineExporter
                 },
                 $row
             );
-            \fputcsv($fp, $normalizedRow);
+            \fputcsv($fp, $normalizedRow, ',', '"', '\\');
         }
 
         \fclose($fp);
@@ -123,9 +108,7 @@ class CsvBaselineExporter
     }
 
     /**
-     * Get all tables to export (excludes system tables).
-     *
-     * @return list<string>
+     * @return array<string>
      */
     private function getExportTables(): array
     {
@@ -151,17 +134,12 @@ class CsvBaselineExporter
         return $tables;
     }
 
-    /**
-     * Check if table should be excluded from export.
-     */
     private function shouldExcludeTable(string $tableName): bool
     {
-        // Exclude by exact name
         if (\in_array($tableName, self::EXCLUDED_TABLES, true)) {
             return true;
         }
 
-        // Exclude by prefix
         foreach (self::EXCLUDED_PREFIXES as $prefix) {
             if (\str_starts_with($tableName, $prefix)) {
                 return true;
