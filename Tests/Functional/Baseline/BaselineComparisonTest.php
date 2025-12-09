@@ -195,9 +195,16 @@ class BaselineComparisonTest extends KernelTestCase
             $expected = $this->loadJson($baselineFile);
             $actual = $this->loadJson($actualFile);
 
-            $this->assertSame(
-                $expected,
-                $actual,
+            $expectedJson = \json_encode($expected, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
+            $actualJson = \json_encode($actual, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
+
+            if (false === $expectedJson || false === $actualJson) {
+                $this->fail('Failed to encode baseline or actual data as JSON');
+            }
+
+            $this->assertJsonStringEqualsJsonString(
+                $expectedJson,
+                $actualJson,
                 \sprintf(
                     "Table '%s' does not match baseline.\n\nTo update baselines, delete Tests/Resources/baselines/*.json and re-run tests.",
                     $table
@@ -247,12 +254,7 @@ class BaselineComparisonTest extends KernelTestCase
                 $result[$key] = $this->removeExcludedFields($value);
             } elseif (\is_string($value) && \str_starts_with($value, '{')) {
                 $decoded = \json_decode($value, true);
-                if (\is_array($decoded)) {
-                    $cleaned = $this->removeExcludedFields($decoded);
-                    $result[$key] = \json_encode($cleaned, \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
-                } else {
-                    $result[$key] = $value;
-                }
+                $result[$key] = \is_array($decoded) ? $this->removeExcludedFields($decoded) : $value;
             } else {
                 $result[$key] = $value;
             }
