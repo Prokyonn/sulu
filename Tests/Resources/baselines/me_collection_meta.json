@@ -1,0 +1,86 @@
+[
+    {
+        "id": 1,
+        "title": "System",
+        "description": "",
+        "locale": "en",
+        "idCollections": 1
+    },
+    {
+        "id": 2,
+        "title": "Sulu media",
+        "description": "",
+        "locale": "en",
+        "idCollections": 2
+    },
+    {
+        "id": 3,
+        "title": "Sulu Medien",
+        "description": "",
+        "locale": "de",
+        "idCollections": 2
+    },
+    {
+        "id": 4,
+        "title": "Preview images",
+        "description": "",
+        "locale": "en",
+        "idCollections": 3
+    },
+    {
+        "id": 5,
+        "title": "Vorschaubilder",
+        "description": "",
+        "locale": "de",
+        "idCollections": 3
+    },
+    {
+        "id": 6,
+        "title": "Sulu contacts",
+        "description": "",
+        "locale": "en",
+        "idCollections": 4
+    },
+    {
+        "id": 7,
+        "title": "Sulu Kontakte",
+        "description": "",
+        "locale": "de",
+        "idCollections": 4
+    },
+    {
+        "id": 8,
+        "title": "People",
+        "description": "",
+        "locale": "en",
+        "idCollections": 5
+    },
+    {
+        "id": 9,
+        "title": "Personen",
+        "description": "",
+        "locale": "de",
+        "idCollections": 5
+    },
+    {
+        "id": 10,
+        "title": "Organizations",
+        "description": "",
+        "locale": "en",
+        "idCollections": 6
+    },
+    {
+        "id": 11,
+        "title": "Organisationen",
+        "description": "",
+        "locale": "de",
+        "idCollections": 6
+    },
+    {
+        "id": 12,
+        "title": "Example Collection",
+        "description": "",
+        "locale": "de",
+        "idCollections": 7
+    }
+]

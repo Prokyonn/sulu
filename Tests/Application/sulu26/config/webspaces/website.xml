@@ -16,6 +16,10 @@
         <default-template type="home">homepage</default-template>
     </default-templates>
 
+    <security permission-check="true">
+        <system>website</system>
+    </security>
+
     <templates>
         <template type="search">search/search</template>
         <template type="error">error/error</template>

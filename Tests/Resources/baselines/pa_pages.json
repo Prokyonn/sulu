@@ -1,0 +1,98 @@
+[
+    {
+        "uuid": "16060395-4bbf-4e1d-9c8e-fe5265890c99",
+        "parent_id": "db367f2b-7e1d-42e0-8ea2-b39b3d7511bf",
+        "webspaceKey": "website",
+        "lft": 2,
+        "rgt": 7,
+        "depth": 1,
+        "created": "2025-12-09 10:44:07",
+        "changed": "2025-12-09 10:44:10",
+        "idUsersCreator": "",
+        "idUsersChanger": ""
+    },
+    {
+        "uuid": "6dc030f9-9ee9-4f97-af14-bd9e696c32b5",
+        "parent_id": "db367f2b-7e1d-42e0-8ea2-b39b3d7511bf",
+        "webspaceKey": "website",
+        "lft": 12,
+        "rgt": 13,
+        "depth": 1,
+        "created": "2025-12-09 10:44:29",
+        "changed": "2025-12-09 10:50:39",
+        "idUsersCreator": "",
+        "idUsersChanger": ""
+    },
+    {
+        "uuid": "786eedc0-e161-4fa4-871d-8a5765442dfd",
+        "parent_id": "db367f2b-7e1d-42e0-8ea2-b39b3d7511bf",
+        "webspaceKey": "website",
+        "lft": 8,
+        "rgt": 9,
+        "depth": 1,
+        "created": "2025-12-09 10:33:53",
+        "changed": "2025-12-09 10:42:38",
+        "idUsersCreator": "",
+        "idUsersChanger": ""
+    },
+    {
+        "uuid": "7f97b10e-b5fb-46da-ab1b-b85d88d74e39",
+        "parent_id": "16060395-4bbf-4e1d-9c8e-fe5265890c99",
+        "webspaceKey": "website",
+        "lft": 3,
+        "rgt": 4,
+        "depth": 2,
+        "created": "2025-12-09 10:52:51",
+        "changed": "2025-12-09 10:53:04",
+        "idUsersCreator": "",
+        "idUsersChanger": ""
+    },
+    {
+        "uuid": "a94e4697-b95f-46d6-9b25-f6cd606fb7c2",
+        "parent_id": "db367f2b-7e1d-42e0-8ea2-b39b3d7511bf",
+        "webspaceKey": "website",
+        "lft": 14,
+        "rgt": 15,
+        "depth": 1,
+        "created": "2025-12-09 10:52:15",
+        "changed": "2025-12-09 10:52:15",
+        "idUsersCreator": "",
+        "idUsersChanger": ""
+    },
+    {
+        "uuid": "c32200c7-1402-41ea-aff9-e19cf37f5f91",
+        "parent_id": "db367f2b-7e1d-42e0-8ea2-b39b3d7511bf",
+        "webspaceKey": "website",
+        "lft": 10,
+        "rgt": 11,
+        "depth": 1,
+        "created": "2025-12-09 10:44:07",
+        "changed": "2025-12-09 10:54:03",
+        "idUsersCreator": "",
+        "idUsersChanger": ""
+    },
+    {
+        "uuid": "d632fcc7-8ad8-4d59-a195-ded6c24720fc",
+        "parent_id": "16060395-4bbf-4e1d-9c8e-fe5265890c99",
+        "webspaceKey": "website",
+        "lft": 5,
+        "rgt": 6,
+        "depth": 2,
+        "created": "2025-12-09 10:53:13",
+        "changed": "2025-12-09 10:53:25",
+        "idUsersCreator": "",
+        "idUsersChanger": ""
+    },
+    {
+        "uuid": "db367f2b-7e1d-42e0-8ea2-b39b3d7511bf",
+        "parent_id": "",
+        "webspaceKey": "website",
+        "lft": 1,
+        "rgt": 16,
+        "depth": 0,
+        "created": "2025-12-09 09:37:45",
+        "changed": "2025-12-09 09:37:45",
+        "idUsersCreator": "",
+        "idUsersChanger": ""
+    }
+]

@@ -13,21 +13,19 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\PhpcrMigrationBundle\Tests\Functional\Baseline;
 
+use Doctrine\DBAL\Connection;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\UserInterface\Command\MigratePhpcrCommand;
-use Sulu\Bundle\PhpcrMigrationBundle\Tests\Functional\BaseFunctionalTestCase;
-use Sulu\Bundle\PhpcrMigrationBundle\Tests\Functional\Helper\CsvBaselineExporter;
+use Sulu\Bundle\PhpcrMigrationBundle\Tests\Application\Kernel;
+use Sulu\Bundle\PhpcrMigrationBundle\Tests\Functional\Helper\JsonBaselineExporter;
+use Sulu\Bundle\PhpcrMigrationBundle\Tests\Functional\TestConnectionFactory;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
- * Compares migration output against committed CSV baselines.
- *
- * First run: Automatically generates baselines if missing.
- * Subsequent runs: Compares migration output against baselines.
- *
  * @group optional
  */
-class BaselineComparisonTest extends BaseFunctionalTestCase
+class BaselineComparisonTest extends KernelTestCase
 {
     private const BASELINE_DIR = __DIR__ . '/../../Resources/baselines';
 
@@ -60,30 +58,37 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
         'cu_custom_url_route',
     ];
 
-    private static bool $migrationExecuted = false;
     private static ?string $tempDir = null;
-
     private static bool $baselinesGenerated = false;
+
+    protected static function getKernelClass(): string
+    {
+        return Kernel::class;
+    }
+
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        self::bootKernel();
+
+        /** @var Connection $connection */
+        $connection = self::getContainer()->get('doctrine.dbal.default_connection');
+
+        TestConnectionFactory::loadFixture($connection);
+
+        self::runMigrationAndExport($connection);
+
+        $baselineFiles = \glob(self::BASELINE_DIR . '/*.json');
+        if (false === $baselineFiles || [] === $baselineFiles) {
+            self::generateBaselines($connection);
+            self::$baselinesGenerated = true;
+        }
+    }
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        if (!self::$migrationExecuted) {
-            $this->runFullMigration();
-            self::$migrationExecuted = true;
-
-            self::$tempDir = \sys_get_temp_dir() . '/baseline_test_' . \uniqid();
-            \mkdir(self::$tempDir, 0755, true);
-            $exporter = new CsvBaselineExporter($this->targetConnection, self::$tempDir);
-            $exporter->export();
-
-            $baselineFiles = \glob(self::BASELINE_DIR . '/*.csv');
-            if (false === $baselineFiles || [] === $baselineFiles) {
-                $this->generateBaselines();
-                self::$baselinesGenerated = true;
-            }
-        }
 
         if (self::$baselinesGenerated) {
             $this->markTestSkipped('Baselines were generated. Re-run tests to validate against baselines.');
@@ -92,7 +97,6 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
 
     public static function tearDownAfterClass(): void
     {
-        // Cleanup temp directory
         if (null !== self::$tempDir && \is_dir(self::$tempDir)) {
             $files = \glob(self::$tempDir . '/*');
             if (false !== $files) {
@@ -101,11 +105,42 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
             \rmdir(self::$tempDir);
         }
 
-        self::$migrationExecuted = false;
         self::$tempDir = null;
         self::$baselinesGenerated = false;
 
         parent::tearDownAfterClass();
+    }
+
+    private static function runMigrationAndExport(Connection $connection): void
+    {
+        $command = self::getContainer()->get(MigratePhpcrCommand::class);
+        \assert($command instanceof MigratePhpcrCommand);
+
+        $input = new ArrayInput([
+            'documentTypes' => 'page,article,snippet,custom_url,snippet_area',
+        ]);
+        $output = new BufferedOutput();
+
+        $exitCode = $command->run($input, $output);
+
+        if (0 !== $exitCode) {
+            throw new \RuntimeException('Migration command failed: ' . $output->fetch());
+        }
+
+        self::$tempDir = \sys_get_temp_dir() . '/baseline_test_' . \uniqid();
+        \mkdir(self::$tempDir, 0755, true);
+        $exporter = new JsonBaselineExporter($connection, self::$tempDir);
+        $exporter->export();
+    }
+
+    private static function generateBaselines(Connection $connection): void
+    {
+        if (!\is_dir(self::BASELINE_DIR)) {
+            \mkdir(self::BASELINE_DIR, 0755, true);
+        }
+
+        $exporter = new JsonBaselineExporter($connection, self::BASELINE_DIR);
+        $exporter->export();
     }
 
     public function testPageTablesMatchBaseline(): void
@@ -134,9 +169,9 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
         $this->assertTablesMatchBaseline($remainingTables);
     }
 
+    private const EXCLUDED_FIELDS = ['_id', 'uuid'];
+
     /**
-     * Assert that all specified tables match their baselines.
-     *
      * @param list<string> $tables
      */
     private function assertTablesMatchBaseline(array $tables): void
@@ -146,8 +181,8 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
         }
 
         foreach ($tables as $table) {
-            $baselineFile = self::BASELINE_DIR . '/' . $table . '.csv';
-            $actualFile = self::$tempDir . '/' . $table . '.csv';
+            $baselineFile = self::BASELINE_DIR . '/' . $table . '.json';
+            $actualFile = self::$tempDir . '/' . $table . '.json';
 
             if (!\file_exists($baselineFile)) {
                 $this->fail("Baseline not found for table '{$table}'. Re-run tests to generate baselines.");
@@ -157,94 +192,67 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
                 $this->fail("Table '{$table}' was not exported. Check if the table exists in the database.");
             }
 
-            $expected = $this->parseCsv($baselineFile);
-            $actual = $this->parseCsv($actualFile);
+            $expected = $this->loadJson($baselineFile);
+            $actual = $this->loadJson($actualFile);
 
             $this->assertSame(
                 $expected,
                 $actual,
                 \sprintf(
-                    "Table '%s' does not match baseline.\n\nTo update baselines, delete Tests/Resources/baselines/*.csv and re-run tests.",
+                    "Table '%s' does not match baseline.\n\nTo update baselines, delete Tests/Resources/baselines/*.json and re-run tests.",
                     $table
                 )
             );
         }
     }
 
-    private const JSON_COLUMNS = ['templateData', 'seoData', 'excerptData'];
-
     /**
-     * Fields to exclude from JSON comparison (randomly generated values).
+     * @return list<array<string, mixed>>
      */
-    private const EXCLUDED_JSON_FIELDS = ['_id'];
-
-    /**
-     * @return list<array<string, string>>
-     */
-    private function parseCsv(string $path): array
+    private function loadJson(string $path): array
     {
-        $handle = \fopen($path, 'r');
-        if (false === $handle) {
+        $content = \file_get_contents($path);
+        if (false === $content) {
             return [];
         }
 
-        $headers = \fgetcsv($handle, null, ',', '"', '\\');
-        if (false === $headers || null === $headers) {
-            \fclose($handle);
-
+        $data = \json_decode($content, true);
+        if (!\is_array($data)) {
             return [];
         }
 
-        $rows = [];
-        while (false !== ($row = \fgetcsv($handle, null, ',', '"', '\\'))) {
-            if (\count($row) === \count($headers)) {
-                $combined = \array_combine($headers, $row);
-                $rows[] = $this->normalizeRow($combined);
-            }
-        }
+        $rows = \array_map(
+            fn (array $row): array => $this->removeExcludedFields($row),
+            $data
+        );
 
-        \fclose($handle);
+        \usort($rows, fn (array $a, array $b): int => \serialize($a) <=> \serialize($b));
 
         return $rows;
     }
 
     /**
-     * @param array<string, string> $row
+     * @param array<string, mixed> $data
      *
-     * @return array<string, string>
-     */
-    private function normalizeRow(array $row): array
-    {
-        foreach (self::JSON_COLUMNS as $column) {
-            if (isset($row[$column]) && '' !== $row[$column]) {
-                $decoded = \json_decode($row[$column], true);
-                if (\is_array($decoded)) {
-                    $decoded = $this->removeExcludedFields($decoded);
-                    $encoded = \json_encode($decoded, \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
-                    if (false !== $encoded) {
-                        $row[$column] = $encoded;
-                    }
-                }
-            }
-        }
-
-        return $row;
-    }
-
-    /**
-     * @param array<mixed> $data
-     *
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     private function removeExcludedFields(array $data): array
     {
         $result = [];
         foreach ($data as $key => $value) {
-            if (\is_string($key) && \in_array($key, self::EXCLUDED_JSON_FIELDS, true)) {
+            if (\in_array($key, self::EXCLUDED_FIELDS, true)) {
                 continue;
             }
             if (\is_array($value)) {
                 $result[$key] = $this->removeExcludedFields($value);
+            } elseif (\is_string($value) && \str_starts_with($value, '{')) {
+                $decoded = \json_decode($value, true);
+                if (\is_array($decoded)) {
+                    $cleaned = $this->removeExcludedFields($decoded);
+                    $result[$key] = \json_encode($cleaned, \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
+                } else {
+                    $result[$key] = $value;
+                }
             } else {
                 $result[$key] = $value;
             }
@@ -265,7 +273,7 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
             self::CUSTOM_URL_TABLES
         );
 
-        $baselineFiles = \glob(self::BASELINE_DIR . '/*.csv');
+        $baselineFiles = \glob(self::BASELINE_DIR . '/*.json');
         if (false === $baselineFiles) {
             return [];
         }
@@ -281,32 +289,5 @@ class BaselineComparisonTest extends BaseFunctionalTestCase
         \sort($remaining);
 
         return $remaining;
-    }
-
-    private function generateBaselines(): void
-    {
-        if (!\is_dir(self::BASELINE_DIR)) {
-            \mkdir(self::BASELINE_DIR, 0755, true);
-        }
-
-        $exporter = new CsvBaselineExporter($this->targetConnection, self::BASELINE_DIR);
-        $exporter->export();
-    }
-
-    private function runFullMigration(): void
-    {
-        /** @var MigratePhpcrCommand $command */
-        $command = self::getContainer()->get(MigratePhpcrCommand::class);
-
-        $input = new ArrayInput([
-            'documentTypes' => 'page,article,snippet,custom_url,snippet_area',
-        ]);
-        $output = new BufferedOutput();
-
-        $exitCode = $command->run($input, $output);
-
-        if (0 !== $exitCode) {
-            $this->fail('Migration command failed: ' . $output->fetch());
-        }
     }
 }

@@ -1,0 +1,26 @@
+[
+    {
+        "snippet_dimension_content_id": 2,
+        "category_id": 3
+    },
+    {
+        "snippet_dimension_content_id": 4,
+        "category_id": 2
+    },
+    {
+        "snippet_dimension_content_id": 6,
+        "category_id": 1
+    },
+    {
+        "snippet_dimension_content_id": 8,
+        "category_id": 3
+    },
+    {
+        "snippet_dimension_content_id": 10,
+        "category_id": 2
+    },
+    {
+        "snippet_dimension_content_id": 12,
+        "category_id": 1
+    }
+]

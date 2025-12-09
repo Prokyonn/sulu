@@ -14,27 +14,14 @@ declare(strict_types=1);
 namespace Sulu\Bundle\PhpcrMigrationBundle\Tests\Functional;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DriverManager;
 use Sulu\Bundle\PhpcrMigrationBundle\Tests\Functional\Fixture\TestFixtureBuilder;
 
-/**
- * Simplified factory for loading test fixtures.
- *
- * Note: Connections now come from Symfony container.
- * This class only handles fixture loading.
- */
 final class TestConnectionFactory
 {
     private const FIXTURES_DIR = __DIR__ . '/../Resources/fixtures';
 
     private static bool $fixtureLoaded = false;
 
-    /**
-     * Load test fixture into database.
-     *
-     * Automatically rebuilds the fixture if source files have changed.
-     * Requires a DBAL connection from the container.
-     */
     public static function loadFixture(Connection $connection): void
     {
         if (self::$fixtureLoaded) {
@@ -53,17 +40,11 @@ final class TestConnectionFactory
         }
 
         $params = $connection->getParams();
-        $dbName = $params['dbname'] ?? throw new \RuntimeException('Database name not found in connection params');
+        $databaseName = $params['dbname'] ?? throw new \RuntimeException('Database name not found in connection params');
 
-        $tempParams = $params;
-        unset($tempParams['dbname']);
-        $tempConnection = DriverManager::getConnection($tempParams);
-
-        $tempConnection->executeStatement("DROP DATABASE IF EXISTS `{$dbName}`");
-        $tempConnection->executeStatement("CREATE DATABASE `{$dbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $tempConnection->close();
-
-        $connection->executeStatement("USE `{$dbName}`");
+        $connection->executeStatement("DROP DATABASE IF EXISTS `{$databaseName}`");
+        $connection->executeStatement("CREATE DATABASE `{$databaseName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+        $connection->executeStatement("USE `{$databaseName}`");
 
         $sql = \file_get_contents($fixturesPath);
         if (false === $sql) {

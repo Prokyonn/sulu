@@ -305,42 +305,5 @@
                 <title lang="de">Verwandte Seiten</title>
             </meta>
         </property>
-
-        <property name="showInNavigation" type="checkbox">
-            <meta>
-                <title lang="en">Show in Navigation</title>
-                <title lang="de">In Navigation anzeigen</title>
-            </meta>
-        </property>
-
-        <property name="pageStyle" type="single_select">
-            <meta>
-                <title lang="en">Page Style</title>
-                <title lang="de">Seitenstil</title>
-            </meta>
-            <params>
-                <param name="default_value" value="default"/>
-                <param name="values" type="collection">
-                    <param name="default">
-                        <meta>
-                            <title lang="en">Default</title>
-                            <title lang="de">Standard</title>
-                        </meta>
-                    </param>
-                    <param name="wide">
-                        <meta>
-                            <title lang="en">Wide</title>
-                            <title lang="de">Breit</title>
-                        </meta>
-                    </param>
-                    <param name="narrow">
-                        <meta>
-                            <title lang="en">Narrow</title>
-                            <title lang="de">Schmal</title>
-                        </meta>
-                    </param>
-                </param>
-            </params>
-        </property>
     </properties>
 </template>

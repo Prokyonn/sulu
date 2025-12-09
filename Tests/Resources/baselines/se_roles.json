@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "name": "User",
+        "role_key": "",
+        "securitySystem": "Sulu",
+        "anonymous": 0,
+        "created": "2025-12-09 09:37:46",
+        "changed": "2025-12-09 09:37:46",
+        "idSecurityTypes": "",
+        "idUsersCreator": "",
+        "idUsersChanger": ""
+    },
+    {
+        "id": 2,
+        "name": "Anonymous User website",
+        "role_key": "",
+        "securitySystem": "website",
+        "anonymous": 1,
+        "created": "2025-12-09 10:52:26",
+        "changed": "2025-12-09 10:52:26",
+        "idSecurityTypes": "",
+        "idUsersCreator": "",
+        "idUsersChanger": ""
+    }
+]

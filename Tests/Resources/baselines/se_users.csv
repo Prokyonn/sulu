@@ -1,2 +1,0 @@
-id,username,password,locale,salt,locked,enabled,lastLogin,confirmationKey,passwordResetToken,passwordResetTokenExpiresAt,passwordResetTokenEmailsSent,privateKey,apiKey,email,created,changed,idContacts,idUsersCreator,idUsersChanger
-1,admin,$2y$13$Bn6clEsvRUyFKxxR/JywMelk1mip35kSnwNLqJu7GODgpH9EWP/VO,en,QbRZRe7DTbCR3rX1rEuLaDpuGSMNwzafPDwol47JGgE=,0,1,"2025-12-09 00:39:24",,,,,,b0acb1557d0e0f1db1d59d5a7e71cdca,admin@example.com,"2025-12-09 00:36:18","2025-12-09 00:39:24",1,,1

@@ -1,0 +1,47 @@
+[
+    {
+        "id": 1,
+        "version": 1,
+        "created": "2025-12-09 10:36:17",
+        "changed": "2025-12-09 10:36:17",
+        "idMedia": 1,
+        "idUsersCreator": 1,
+        "idUsersChanger": 1
+    },
+    {
+        "id": 2,
+        "version": 1,
+        "created": "2025-12-09 10:36:17",
+        "changed": "2025-12-09 10:36:17",
+        "idMedia": 2,
+        "idUsersCreator": 1,
+        "idUsersChanger": 1
+    },
+    {
+        "id": 3,
+        "version": 1,
+        "created": "2025-12-09 10:36:17",
+        "changed": "2025-12-09 10:36:17",
+        "idMedia": 3,
+        "idUsersCreator": 1,
+        "idUsersChanger": 1
+    },
+    {
+        "id": 4,
+        "version": 1,
+        "created": "2025-12-09 10:36:17",
+        "changed": "2025-12-09 10:36:17",
+        "idMedia": 4,
+        "idUsersCreator": 1,
+        "idUsersChanger": 1
+    },
+    {
+        "id": 5,
+        "version": 1,
+        "created": "2025-12-09 10:36:18",
+        "changed": "2025-12-09 10:36:18",
+        "idMedia": 5,
+        "idUsersCreator": 1,
+        "idUsersChanger": 1
+    }
+]

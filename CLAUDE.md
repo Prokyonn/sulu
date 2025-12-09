@@ -194,7 +194,7 @@ vendor/bin/phpunit --testsuite=Unit # Unit tests only
 
 ### Functional Test Fixtures
 
-Functional tests run against MySQL with CSV baselines for regression detection.
+Functional tests run against MySQL with JSON baselines for regression detection.
 
 **Directory Structure:**
 ```
@@ -206,23 +206,21 @@ Tests/
 │   ├── Fixture/
 │   │   └── TestFixtureBuilder.php  # Auto-builds test_fixture.sql
 │   └── Helper/
-│       └── CsvBaselineExporter.php # Exports tables to CSV
+│       └── JsonBaselineExporter.php # Exports tables to JSON
 ├── Resources/
 │   ├── fixtures/
 │   │   ├── sulu26_dump.sql      # Sulu 2.6 database dump
 │   │   ├── sulu30_schema.sql    # Sulu 3.0 schema (no data)
 │   │   └── test_fixture.sql     # Combined fixture (auto-generated)
 │   └── baselines/
-│       └── *.csv                # Expected migration output
-└── Scripts/
-    └── export-csv-baseline.php   # Optional: manual CSV export
+│       └── *.json               # Expected migration output
 ```
 
 **Note:** The `sulu26/` and `sulu30/` skeleton applications are **optional** and only needed when:
 - Creating new test content or reproducing edge cases (sulu26)
 - Updating schema after Sulu 3.0 changes (sulu30)
 
-Existing test fixtures (`test_fixture.sql` and `*.csv` baselines) are committed to the repository and work out-of-the-box for CI and local testing.
+Existing test fixtures (`test_fixture.sql` and `*.json` baselines) are committed to the repository and work out-of-the-box for CI and local testing.
 
 **Workflow: Adding Test Data**
 
@@ -248,7 +246,7 @@ Existing test fixtures (`test_fixture.sql` and `*.csv` baselines) are committed 
 
    To regenerate baselines after migration changes, delete existing baselines first:
    ```bash
-   rm Tests/Resources/baselines/*.csv
+   rm Tests/Resources/baselines/*.json
    composer test
    ```
 

@@ -91,34 +91,18 @@ final class TestFixtureBuilder
         $output = [];
         $output[] = '-- Test Fixture for PhpcrMigrationBundle';
         $output[] = '-- Generated: ' . \date('Y-m-d H:i:s');
-        $output[] = '-- ';
-        $output[] = '-- This file combines:';
-        $output[] = '--   - Sulu 2.6 data (source for migration)';
-        $output[] = '--   - Sulu 3.0 schema (target tables, empty)';
-        $output[] = '--';
-        $output[] = '-- DO NOT EDIT - regenerate by re-running tests or using TestFixtureBuilder';
+        $output[] = '-- Combines Sulu 2.6 data with Sulu 3.0 schema';
         $output[] = '';
         $output[] = 'SET FOREIGN_KEY_CHECKS = 0;';
         $output[] = '';
 
-        // Step 1: Include Sulu 2.6 dump
         $sulu26Content = $this->readFile($sulu26Path);
-        $output[] = '-- ============================================';
         $output[] = '-- SULU 2.6 DATA';
-        $output[] = '-- ============================================';
-        $output[] = '';
         $output[] = $sulu26Content;
         $output[] = '';
 
-        // Step 2: Rename routes table
-        $output[] = '-- ============================================';
         $output[] = '-- ROUTE TABLE PREPARATION';
-        $output[] = '-- ============================================';
-        $output[] = '';
-        $output[] = '-- Rename original routes to ro_routes_old (migration reads from here)';
         $output[] = 'RENAME TABLE ro_routes TO ro_routes_old;';
-        $output[] = '';
-        $output[] = '-- Create empty ro_routes table (migration writes here)';
         $output[] = 'CREATE TABLE ro_routes (';
         $output[] = '    id INT AUTO_INCREMENT NOT NULL,';
         $output[] = '    parent_id INT DEFAULT NULL,';
@@ -135,19 +119,15 @@ final class TestFixtureBuilder
         $output[] = ') DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB;';
         $output[] = '';
 
-        // Step 3: Extract and include Sulu 3.0 target tables
         $sulu30Content = $this->readFile($sulu30Path);
         $targetTables = $this->findTargetTables($sulu26Content, $sulu30Content);
 
-        $output[] = '-- ============================================';
-        $output[] = '-- SULU 3.0 TARGET TABLES (EMPTY)';
-        $output[] = '-- ============================================';
+        $output[] = '-- SULU 3.0 TARGET TABLES';
         $output[] = '';
 
         foreach ($targetTables as $table) {
             $createStatement = $this->extractCreateTableStatement($table, $sulu30Content);
             if (null !== $createStatement) {
-                $output[] = "-- Table: {$table}";
                 $output[] = $createStatement;
                 $output[] = '';
             }

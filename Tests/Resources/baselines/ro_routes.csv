@@ -1,5 +1,0 @@
-id,parent_id,webspace,locale,slug,resource_key,resource_id
-1,,website,de,/,pages,9015cf9b-fe67-48c0-8f14-13284f20cd93
-2,,website,en,/,pages,9015cf9b-fe67-48c0-8f14-13284f20cd93
-3,1,website,de,/test,pages,224c1c4e-29a1-4459-b698-ee5a43b0a27e
-4,,,de,/blog/test,articles,6c437f5b-ee8f-463b-a57c-25e116836797
