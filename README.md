@@ -75,7 +75,7 @@ Allowed types are: `snippet`, `page`, `article`
 
 ## 🛠️&nbsp; Development
 
-For development setup and running tests:
+### Quick Start
 
 ```bash
 # Install dependencies
@@ -91,11 +91,16 @@ composer lint
 composer fix
 ```
 
-See [docs/TESTING.md](docs/TESTING.md) for detailed testing documentation including:
-- Functional test infrastructure
-- Updating SQLite fixtures
-- Updating Sulu 3.0 target schema
+### Testing
 
+This bundle uses functional tests with JSON baseline comparison to validate migration correctness.
+
+See **[docs/TESTING.md](docs/TESTING.md)** for comprehensive documentation:
+- Test infrastructure and architecture
+- How baseline comparison works
+- Adding new test content to Sulu 2.6
+- Updating Sulu 3.0 target schema
+- Regenerating baselines
 
 ## ❤️&nbsp; Support and Contributions
 
