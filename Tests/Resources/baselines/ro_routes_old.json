@@ -1,1 +1,15 @@
-[]
+[
+    {
+        "id": 1,
+        "target_id": "",
+        "path": "/blog/example-article",
+        "locale": "de",
+        "entity_class": "Sulu\\Bundle\\ArticleBundle\\Document\\ArticleDocument",
+        "entity_id": "52634b61-09b3-4224-a428-4a885dceb98f",
+        "history": 0,
+        "created": "2025-12-09 15:12:10",
+        "changed": "2025-12-09 15:12:10",
+        "idUsersCreator": 1,
+        "idUsersChanger": 1
+    }
+]

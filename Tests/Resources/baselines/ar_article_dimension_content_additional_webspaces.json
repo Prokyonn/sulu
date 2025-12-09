@@ -1,1 +1,12 @@
-[]
+[
+    {
+        "id": 1,
+        "article_dimension_content_id": 2,
+        "name": "website"
+    },
+    {
+        "id": 2,
+        "article_dimension_content_id": 4,
+        "name": "website"
+    }
+]

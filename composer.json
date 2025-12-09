@@ -60,7 +60,7 @@
         "test": [
             "@phpunit"
         ],
-        "phpunit": "@php vendor/bin/phpunit",
+        "phpunit": "@php vendor/bin/phpunit --testdox",
         "phpstan": [
             "@php vendor/bin/phpstan analyze"
         ],

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\PhpcrMigrationBundle\Tests\Functional\Baseline;
 
 use Doctrine\DBAL\Connection;
+use SebastianBergmann\Comparator\ComparisonFailure;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\UserInterface\Command\MigratePhpcrCommand;
 use Sulu\Bundle\PhpcrMigrationBundle\Tests\Application\Kernel;
 use Sulu\Bundle\PhpcrMigrationBundle\Tests\Functional\Helper\JsonBaselineExporter;
@@ -28,35 +29,6 @@ use Symfony\Component\Console\Output\BufferedOutput;
 class BaselineComparisonTest extends KernelTestCase
 {
     private const BASELINE_DIR = __DIR__ . '/../../Resources/baselines';
-
-    private const PAGE_TABLES = [
-        'pa_pages',
-        'pa_page_dimension_contents',
-        'pa_page_dimension_content_excerpt_categories',
-        'pa_page_dimension_content_excerpt_tags',
-        'pa_page_dimension_content_navigation_contexts',
-    ];
-
-    private const ARTICLE_TABLES = [
-        'ar_articles',
-        'ar_article_dimension_contents',
-        'ar_article_dimension_content_additional_webspaces',
-        'ar_article_dimension_content_excerpt_categories',
-        'ar_article_dimension_content_excerpt_tags',
-    ];
-
-    private const SNIPPET_TABLES = [
-        'sn_snippets',
-        'sn_snippet_dimension_contents',
-        'sn_snippet_dimension_content_excerpt_categories',
-        'sn_snippet_dimension_content_excerpt_tags',
-        'sn_snippet_area',
-    ];
-
-    private const CUSTOM_URL_TABLES = [
-        'cu_custom_url',
-        'cu_custom_url_route',
-    ];
 
     private static ?string $tempDir = null;
     private static bool $baselinesGenerated = false;
@@ -143,74 +115,87 @@ class BaselineComparisonTest extends KernelTestCase
         $exporter->export();
     }
 
-    public function testPageTablesMatchBaseline(): void
+    /**
+     * @return \Generator<string, array{string}>
+     */
+    public static function tableProvider(): \Generator
     {
-        $this->assertTablesMatchBaseline(self::PAGE_TABLES);
+        $baselineFiles = \glob(self::BASELINE_DIR . '/*.json');
+        if (false === $baselineFiles) {
+            return;
+        }
+
+        $tables = [];
+        foreach ($baselineFiles as $file) {
+            $tables[] = \pathinfo($file, \PATHINFO_FILENAME);
+        }
+
+        \sort($tables);
+
+        foreach ($tables as $table) {
+            yield $table => [$table];
+        }
     }
 
-    public function testArticleTablesMatchBaseline(): void
+    /**
+     * @dataProvider tableProvider
+     */
+    public function testTableMatchesBaseline(string $table): void
     {
-        $this->assertTablesMatchBaseline(self::ARTICLE_TABLES);
-    }
-
-    public function testSnippetTablesMatchBaseline(): void
-    {
-        $this->assertTablesMatchBaseline(self::SNIPPET_TABLES);
-    }
-
-    public function testCustomUrlTablesMatchBaseline(): void
-    {
-        $this->assertTablesMatchBaseline(self::CUSTOM_URL_TABLES);
-    }
-
-    public function testRemainingTablesMatchBaseline(): void
-    {
-        $remainingTables = $this->getRemainingTables();
-        $this->assertTablesMatchBaseline($remainingTables);
+        $this->assertTableMatchesBaseline($table);
     }
 
     private const EXCLUDED_FIELDS = ['_id', 'uuid'];
 
-    /**
-     * @param list<string> $tables
-     */
-    private function assertTablesMatchBaseline(array $tables): void
+    private function assertTableMatchesBaseline(string $table): void
     {
         if (null === self::$tempDir) {
             $this->fail('Temp directory not initialized. Migration may have failed.');
         }
 
-        foreach ($tables as $table) {
-            $baselineFile = self::BASELINE_DIR . '/' . $table . '.json';
-            $actualFile = self::$tempDir . '/' . $table . '.json';
+        $baselineFile = self::BASELINE_DIR . '/' . $table . '.json';
+        $actualFile = self::$tempDir . '/' . $table . '.json';
 
-            if (!\file_exists($baselineFile)) {
-                $this->fail("Baseline not found for table '{$table}'. Re-run tests to generate baselines.");
-            }
-
-            if (!\file_exists($actualFile)) {
-                $this->fail("Table '{$table}' was not exported. Check if the table exists in the database.");
-            }
-
-            $expected = $this->loadJson($baselineFile);
-            $actual = $this->loadJson($actualFile);
-
-            $expectedJson = \json_encode($expected, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
-            $actualJson = \json_encode($actual, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
-
-            if (false === $expectedJson || false === $actualJson) {
-                $this->fail('Failed to encode baseline or actual data as JSON');
-            }
-
-            $this->assertJsonStringEqualsJsonString(
-                $expectedJson,
-                $actualJson,
-                \sprintf(
-                    "Table '%s' does not match baseline.\n\nTo update baselines, delete Tests/Resources/baselines/*.json and re-run tests.",
-                    $table
-                )
-            );
+        if (!\file_exists($baselineFile)) {
+            $this->fail("Baseline not found for table '{$table}'. Re-run tests to generate baselines.");
         }
+
+        if (!\file_exists($actualFile)) {
+            $this->fail("Table '{$table}' was not exported. Check if the table exists in the database.");
+        }
+
+        $expected = $this->loadJson($baselineFile);
+        $actual = $this->loadJson($actualFile);
+
+        $expectedJson = \json_encode($expected, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
+        $actualJson = \json_encode($actual, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
+
+        if (false === $expectedJson || false === $actualJson) {
+            $this->fail('Failed to encode baseline or actual data as JSON');
+        }
+
+        if ($expectedJson === $actualJson) {
+            $this->assertTrue(true);
+
+            return;
+        }
+
+        // We do not use assertSame here to have better control over the diff output
+        $comparisonFailure = new ComparisonFailure(
+            $expected,
+            $actual,
+            $expectedJson,
+            $actualJson,
+            'Failed asserting that two json values are equal.'
+        );
+
+        $this->fail(
+            \sprintf(
+                "Table '%s' does not match baseline.\n\n%s\n\nTo update baselines, delete Tests/Resources/baselines/*.json and re-run tests.",
+                $table,
+                $comparisonFailure->getDiff()
+            )
+        );
     }
 
     /**
@@ -261,35 +246,5 @@ class BaselineComparisonTest extends KernelTestCase
         }
 
         return $result;
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function getRemainingTables(): array
-    {
-        $groupedTables = \array_merge(
-            self::PAGE_TABLES,
-            self::ARTICLE_TABLES,
-            self::SNIPPET_TABLES,
-            self::CUSTOM_URL_TABLES
-        );
-
-        $baselineFiles = \glob(self::BASELINE_DIR . '/*.json');
-        if (false === $baselineFiles) {
-            return [];
-        }
-
-        $remaining = [];
-        foreach ($baselineFiles as $file) {
-            $table = \pathinfo($file, \PATHINFO_FILENAME);
-            if (!\in_array($table, $groupedTables, true)) {
-                $remaining[] = $table;
-            }
-        }
-
-        \sort($remaining);
-
-        return $remaining;
     }
 }
