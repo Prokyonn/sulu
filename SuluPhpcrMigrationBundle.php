@@ -32,6 +32,7 @@ class SuluPhpcrMigrationBundle extends AbstractBundle
         $loader->load('command.xml');
         $loader->load('parser.xml');
         $loader->load('persister.xml');
+        $loader->load('query.xml');
     }
 
     public function configure(DefinitionConfigurator $definition): void

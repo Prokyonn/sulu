@@ -9,6 +9,8 @@
             <argument type="service" id="sulu_phpcr_migration.session_manager"/>
             <argument type="service" id="sulu_phpcr_migration.chain_node_parser"/>
             <argument type="service" id="sulu_phpcr_migration.persister_pool"/>
+            <argument type="tagged_iterator" tag="sulu_phpcr_migration.post_migration_query"/>
+            <argument type="service" id="doctrine.dbal.default_connection"/>
 
             <tag name="console.command"/>
         </service>
