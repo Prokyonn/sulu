@@ -124,10 +124,8 @@
         "post-create-project-cmd": [
             "@php bin/adminconsole sulu:admin:info --ansi"
         ],
-        "serve": [
-            "Composer\\Config::disableProcessTimeout",
-            "@php -S 127.0.0.1:8000 -t public config/router.php"
-        ],
+        "import-fixture": "sh -c 'mysql -h 127.0.0.1 -u root -p migration_sulu_26 < ../../Resources/fixtures/sulu26_dump.sql'",
+        "export-fixture": "sh -c 'mysqldump -h 127.0.0.1 -u root -p migration_sulu_26 > ../../Resources/fixtures/sulu26_dump.sql'",
         "bootstrap-test-environment": [
             "@php bin/adminconsole doctrine:database:drop --if-exists --force --env test",
             "@php bin/adminconsole doctrine:database:create --env test",

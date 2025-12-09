@@ -23,17 +23,37 @@ Creates test fixtures for migration testing. **Not required** for running tests.
 
 3. Start server:
    ```bash
-   symfony server:start
+   symfony serve
    ```
 
-## Export Fixture
+## Fixture Management
 
-After creating content:
+### Import existing fixture
+```bash
+composer import-fixture
+```
+Loads `../../Resources/fixtures/sulu26_dump.sql` into the database.
+
+### Export current database
+```bash
+composer export-fixture
+```
+Saves database to `../../Resources/fixtures/sulu26_dump.sql`.
+
+## Complete Workflow
 
 ```bash
-# Dump your database
-mysqldump -h 127.0.0.1 -u root -p migration_sulu_26 > Tests/Resources/fixtures/sulu26_dump.sql
+# 1. Import existing fixture
+composer import-fixture
 
-# Prepare the test fixture (from bundle root)
-php Tests/Scripts/prepare-test-fixture.php
+# 2. Start Sulu admin and modify content
+symfony serve
+
+# 3. Export your changes
+composer export-fixture
+
+# 4. Run tests to regenerate baselines (from bundle root)
+cd ../../..
+rm Tests/Resources/baselines/*.csv
+composer test
 ```
