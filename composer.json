@@ -77,7 +77,11 @@
             "@php vendor/bin/rector process --dry-run"
         ],
         "lint-composer": "@composer validate --strict",
-        "deptrac": "@php vendor/qossmic/deptrac/deptrac.php"
+        "deptrac": "@php vendor/qossmic/deptrac/deptrac.php",
+        "test-baseline-regenerate": [
+            "rm -f Tests/Resources/baselines/*.json",
+            "@phpunit"
+        ]
     },
     "config": {
         "sort-packages": true,

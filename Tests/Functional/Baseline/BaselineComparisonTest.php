@@ -61,10 +61,6 @@ class BaselineComparisonTest extends KernelTestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        if (self::$baselinesGenerated) {
-            $this->markTestSkipped('Baselines were generated. Re-run tests to validate against baselines.');
-        }
     }
 
     public static function tearDownAfterClass(): void
@@ -121,7 +117,11 @@ class BaselineComparisonTest extends KernelTestCase
     public static function tableProvider(): \Generator
     {
         $baselineFiles = \glob(self::BASELINE_DIR . '/*.json');
-        if (false === $baselineFiles) {
+        if (false === $baselineFiles || [] === $baselineFiles) {
+            // If no baselines exist, yield a dummy test case that will be skipped
+            // This prevents "empty data set" error when baselines are being generated
+            yield 'regenerate_baselines' => ['regenerate_baselines'];
+
             return;
         }
 
@@ -142,6 +142,24 @@ class BaselineComparisonTest extends KernelTestCase
      */
     public function testTableMatchesBaseline(string $table): void
     {
+        if ('regenerate_baselines' === $table) {
+            if (self::$baselinesGenerated) {
+                $baselineFiles = \glob(self::BASELINE_DIR . '/*.json');
+                $count = false !== $baselineFiles ? \count($baselineFiles) : 0;
+
+                \fwrite(\STDERR, \sprintf("\nTest baselines created (%d files)\n", $count));
+                $this->assertTrue(true);
+
+                return;
+            }
+
+            $this->markTestSkipped('No baseline files found. Baselines will be generated.');
+        }
+
+        if (self::$baselinesGenerated) {
+            $this->markTestSkipped('Baselines were generated. Re-run tests to validate against baselines.');
+        }
+
         $this->assertTableMatchesBaseline($table);
     }
 
