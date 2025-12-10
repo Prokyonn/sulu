@@ -137,10 +137,20 @@ class PropertyNodeParser implements NodeParserInterface
         if (\str_starts_with($name, 'i18n:')) {
             $afterPrefix = \substr($name, 5);
 
+            $notMatchingLocales = [];
             foreach ($locales as $locale) {
                 if (\str_starts_with($afterPrefix, $locale . '-')) {
+                    $remaining = \substr($afterPrefix, \strlen($locale) + 1);
+
+                    // Check if remaining starts with another locale (e.g., "de" matched but "de-ch" is the actual locale)
+                    $matchingLocales = \array_diff($locales, \array_merge($notMatchingLocales, [$locale]));
+                    if ($this->startsWithAnotherLocale($remaining, $locale, $matchingLocales)) {
+                        $notMatchingLocales[] = $locale;
+                        continue;
+                    }
+
                     $propertyPath = '[localizations][' . $locale . ']';
-                    $name = \substr($afterPrefix, \strlen($locale) + 1);
+                    $name = $remaining;
 
                     return $propertyPath;
                 }
@@ -150,6 +160,21 @@ class PropertyNodeParser implements NodeParserInterface
         }
 
         return $propertyPath;
+    }
+
+    /**
+     * @param string[] $locales
+     */
+    private function startsWithAnotherLocale(string $remaining, string $matchedLocale, array $locales): bool
+    {
+        foreach ($locales as $locale) {
+            // Check if remaining starts with a locale that extends the matched one (e.g., "ch-" for "de-ch")
+            if (\str_starts_with($matchedLocale . '-' . $remaining, $locale . '-')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function getPropertyPath(string $propertyPath, string $name): string

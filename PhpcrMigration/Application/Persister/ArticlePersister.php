@@ -71,7 +71,6 @@ class ArticlePersister extends AbstractPersister
 
             // content bundle is only compatible with "url"
             $data['templateData']['url'] = $routePath; // is used in the content bundle
-            $data['templateData'][$routePath] = $routePath; // can still be used in the template TODO
         }
 
         // Transform segments map to single segment value

@@ -22,6 +22,9 @@ class LocaleDiscoveryService
      */
     private array $localeCache = [];
 
+    private const VALID_SUFFIXES = ['-title', '-template', '-created'];
+    private const MIN_REQUIRED_MATCHES = 2;
+
     /**
      * @return string[]
      */
@@ -32,21 +35,7 @@ class LocaleDiscoveryService
             return $this->localeCache[$nodeIdentifier];
         }
 
-        $locales = [];
-
-        $prefix = 'i18n';
-        foreach ($node->getProperties() as $property) {
-            \preg_match(
-                \sprintf('/^%s:([a-zA-Z_]*?)-.*/', $prefix),
-                $property->getName(),
-                $matches
-            );
-
-            if ([] !== $matches) {
-                $locales[$matches[1]] = $matches[1];
-            }
-        }
-
+        $locales = $this->extractValidatedLocales($node);
         $this->localeCache[$nodeIdentifier] = $locales;
 
         return $locales;
@@ -55,5 +44,44 @@ class LocaleDiscoveryService
     public function clearCache(): void
     {
         $this->localeCache = [];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function extractValidatedLocales(NodeInterface $node): array
+    {
+        /** @var array<string, int> $localeCounts */
+        $localeCounts = [];
+
+        foreach (self::VALID_SUFFIXES as $suffix) {
+            foreach ($this->extractLocalesBySuffix($node, $suffix) as $locale) {
+                $localeCounts[$locale] = ($localeCounts[$locale] ?? 0) + 1;
+            }
+        }
+
+        $locales = [];
+        foreach ($localeCounts as $locale => $count) {
+            if ($count >= self::MIN_REQUIRED_MATCHES) {
+                $locales[$locale] = $locale;
+            }
+        }
+
+        return $locales;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function extractLocalesBySuffix(NodeInterface $node, string $suffix): array
+    {
+        $locales = [];
+        foreach ($node->getProperties('i18n:*' . $suffix) as $property) {
+            $afterPrefix = \substr($property->getName(), 5); // Remove 'i18n:'
+            $locale = \substr($afterPrefix, 0, -\strlen($suffix));
+            $locales[$locale] = $locale;
+        }
+
+        return $locales;
     }
 }

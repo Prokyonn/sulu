@@ -77,7 +77,6 @@ class PagePersister extends AbstractPersister
 
             // content bundle is only compatible with "url"
             $data['templateData']['url'] = $routePath; // is used in the content bundle
-            $data['templateData'][$routePath] = $routePath; // can still be used in the template TODO
         }
 
         // Transform segments map to single segment value for current webspace
@@ -316,15 +315,12 @@ class PagePersister extends AbstractPersister
             '[templateKey]' => '[template]',
             '[workflowPlace]' => '[state]',
             '[workflowPublished]' => '[published]',
-            // Sulu 3.0: SEO data consolidated into JSON column
             '[seoData]' => '[_seoData]',
             '[seoNoIndex]' => '[seo][noIndex]',
             '[seoNoFollow]' => '[seo][noFollow]',
             '[seoHideInSitemap]' => '[seo][hideInSitemap]',
-            // Sulu 3.0: Excerpt data consolidated into JSON column
             '[excerptData]' => '[_excerptData]',
             '[excerptSegment]' => '[excerpt][segments]',
-            // Sulu 3.0: Link data for internal/external link pages
             '[linkProvider]' => '[linkProvider]',
             '[linkData]' => '[linkData]',
         ];
@@ -375,9 +371,6 @@ class PagePersister extends AbstractPersister
         $localizedData = $document['localizations'][$locale];
 
         if (!isset($localizedData[AbstractPersister::URL])) {
-            // TODO internal/external link pages
-            // TODO shadow pages
-
             return null;
         }
 
