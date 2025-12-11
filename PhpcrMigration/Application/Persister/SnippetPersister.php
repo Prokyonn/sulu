@@ -107,7 +107,6 @@ class SnippetPersister extends AbstractPersister
 
     protected function getDimensionContentTableTypes(): array
     {
-        // TODO shadow?
         return [
             'author_id' => 'integer',
             'title' => 'string',
