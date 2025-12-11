@@ -7,5 +7,10 @@
                  class="Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Query\UpdateAccessControlEntityClassQuery">
             <tag name="sulu_phpcr_migration.post_migration_query"/>
         </service>
+
+        <service id="sulu_phpcr_migration.migrate_permission_contexts_query"
+                 class="Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Query\MigratePermissionContextsQuery">
+            <tag name="sulu_phpcr_migration.post_migration_query"/>
+        </service>
     </services>
 </container>
