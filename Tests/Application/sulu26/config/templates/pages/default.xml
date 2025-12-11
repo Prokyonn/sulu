@@ -1,0 +1,309 @@
+<?xml version="1.0" ?>
+<template xmlns="http://schemas.sulu.io/template/template"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://schemas.sulu.io/template/template http://schemas.sulu.io/template/template-1.0.xsd">
+
+    <key>default</key>
+
+    <view>pages/default</view>
+    <controller>Sulu\Bundle\WebsiteBundle\Controller\DefaultController::indexAction</controller>
+    <cacheLifetime>604800</cacheLifetime>
+
+    <meta>
+        <title lang="en">Default</title>
+        <title lang="de">Standard</title>
+    </meta>
+
+    <properties>
+        <property name="title" type="text_line" mandatory="true">
+            <meta>
+                <title lang="en">Title</title>
+                <title lang="de">Titel</title>
+            </meta>
+            <tag name="sulu.rlp.part"/>
+        </property>
+
+        <property name="url" type="resource_locator" mandatory="true">
+            <meta>
+                <title lang="en">Resource Locator</title>
+                <title lang="de">Adresse</title>
+            </meta>
+            <tag name="sulu.rlp"/>
+        </property>
+
+        <property name="subtitle" type="text_line">
+            <meta>
+                <title lang="en">Subtitle</title>
+                <title lang="de">Untertitel</title>
+            </meta>
+        </property>
+
+        <property name="headerImage" type="single_media_selection">
+            <meta>
+                <title lang="en">Header Image</title>
+                <title lang="de">Header Bild</title>
+            </meta>
+            <params>
+                <param name="types" value="image"/>
+            </params>
+        </property>
+
+        <property name="article" type="text_editor">
+            <meta>
+                <title lang="en">Article</title>
+                <title lang="de">Artikel</title>
+            </meta>
+        </property>
+
+        <block name="blocks" default-type="text" minOccurs="0">
+            <meta>
+                <title lang="en">Content Blocks</title>
+                <title lang="de">Inhaltsblöcke</title>
+            </meta>
+            <types>
+                <type name="text">
+                    <meta>
+                        <title lang="en">Text</title>
+                        <title lang="de">Text</title>
+                    </meta>
+                    <properties>
+                        <property name="title" type="text_line">
+                            <meta>
+                                <title lang="en">Title</title>
+                                <title lang="de">Titel</title>
+                            </meta>
+                        </property>
+                        <property name="description" type="text_editor">
+                            <meta>
+                                <title lang="en">Description</title>
+                                <title lang="de">Beschreibung</title>
+                            </meta>
+                        </property>
+                        <property name="image" type="single_media_selection">
+                            <meta>
+                                <title lang="en">Image</title>
+                                <title lang="de">Bild</title>
+                            </meta>
+                            <params>
+                                <param name="types" value="image"/>
+                                <param name="displayOptions" type="collection">
+                                    <param name="leftTop" value="true"/>
+                                    <param name="top" value="true"/>
+                                    <param name="rightTop" value="true"/>
+                                    <param name="left" value="true"/>
+                                    <param name="right" value="true"/>
+                                </param>
+                            </params>
+                        </property>
+                    </properties>
+                </type>
+                <type name="quote">
+                    <meta>
+                        <title lang="en">Quote</title>
+                        <title lang="de">Zitat</title>
+                    </meta>
+                    <properties>
+                        <property name="quote" type="text_area" mandatory="true">
+                            <meta>
+                                <title lang="en">Quote</title>
+                                <title lang="de">Zitat</title>
+                            </meta>
+                        </property>
+                        <property name="author" type="text_line">
+                            <meta>
+                                <title lang="en">Author</title>
+                                <title lang="de">Autor</title>
+                            </meta>
+                        </property>
+                        <property name="authorSnippet" type="single_snippet_selection">
+                            <meta>
+                                <title lang="en">Author Snippet</title>
+                                <title lang="de">Autor Schnipsel</title>
+                            </meta>
+                        </property>
+                    </properties>
+                </type>
+                <type name="gallery">
+                    <meta>
+                        <title lang="en">Gallery</title>
+                        <title lang="de">Galerie</title>
+                    </meta>
+                    <properties>
+                        <property name="title" type="text_line">
+                            <meta>
+                                <title lang="en">Title</title>
+                                <title lang="de">Titel</title>
+                            </meta>
+                        </property>
+                        <property name="images" type="media_selection">
+                            <meta>
+                                <title lang="en">Images</title>
+                                <title lang="de">Bilder</title>
+                            </meta>
+                            <params>
+                                <param name="types" value="image"/>
+                            </params>
+                        </property>
+                    </properties>
+                </type>
+                <type name="image_map">
+                    <meta>
+                        <title lang="en">Image Map</title>
+                        <title lang="de">Bildkarte</title>
+                    </meta>
+                    <properties>
+                        <property name="imageMap" type="image_map">
+                            <meta>
+                                <title lang="en">Image Map</title>
+                                <title lang="de">Bildkarte</title>
+                            </meta>
+                            <types>
+                                <type name="link">
+                                    <meta>
+                                        <title lang="en">Link Hotspot</title>
+                                        <title lang="de">Link Hotspot</title>
+                                    </meta>
+                                    <properties>
+                                        <property name="title" type="text_line">
+                                            <meta>
+                                                <title lang="en">Title</title>
+                                                <title lang="de">Titel</title>
+                                            </meta>
+                                        </property>
+                                        <property name="link" type="link">
+                                            <meta>
+                                                <title lang="en">Link</title>
+                                                <title lang="de">Link</title>
+                                            </meta>
+                                        </property>
+                                    </properties>
+                                </type>
+                                <type name="text">
+                                    <meta>
+                                        <title lang="en">Text Hotspot</title>
+                                        <title lang="de">Text Hotspot</title>
+                                    </meta>
+                                    <properties>
+                                        <property name="title" type="text_line">
+                                            <meta>
+                                                <title lang="en">Title</title>
+                                                <title lang="de">Titel</title>
+                                            </meta>
+                                        </property>
+                                        <property name="description" type="text_area">
+                                            <meta>
+                                                <title lang="en">Description</title>
+                                                <title lang="de">Beschreibung</title>
+                                            </meta>
+                                        </property>
+                                    </properties>
+                                </type>
+                            </types>
+                        </property>
+                    </properties>
+                </type>
+                <type name="smart_content_pages">
+                    <meta>
+                        <title lang="en">Smart Content (Pages)</title>
+                        <title lang="de">Smart Content (Seiten)</title>
+                    </meta>
+                    <properties>
+                        <property name="title" type="text_line">
+                            <meta>
+                                <title lang="en">Title</title>
+                                <title lang="de">Titel</title>
+                            </meta>
+                        </property>
+                        <property name="smartContent" type="smart_content">
+                            <meta>
+                                <title lang="en">Smart Content</title>
+                                <title lang="de">Smart Content</title>
+                            </meta>
+                            <params>
+                                <param name="provider" value="pages"/>
+                                <param name="max_per_page" value="10"/>
+                                <param name="properties" type="collection">
+                                    <param name="title" value="title"/>
+                                    <param name="url" value="url"/>
+                                </param>
+                            </params>
+                        </property>
+                    </properties>
+                </type>
+                <type name="nested">
+                    <meta>
+                        <title lang="en">Nested Block</title>
+                        <title lang="de">Verschachtelter Block</title>
+                    </meta>
+                    <properties>
+                        <property name="title" type="text_line">
+                            <meta>
+                                <title lang="en">Title</title>
+                                <title lang="de">Titel</title>
+                            </meta>
+                        </property>
+                        <block name="innerBlocks" default-type="inner_text" minOccurs="0">
+                            <meta>
+                                <title lang="en">Inner Blocks</title>
+                                <title lang="de">Innere Blöcke</title>
+                            </meta>
+                            <types>
+                                <type name="inner_text">
+                                    <meta>
+                                        <title lang="en">Inner Text</title>
+                                        <title lang="de">Innerer Text</title>
+                                    </meta>
+                                    <properties>
+                                        <property name="text" type="text_editor">
+                                            <meta>
+                                                <title lang="en">Text</title>
+                                                <title lang="de">Text</title>
+                                            </meta>
+                                        </property>
+                                    </properties>
+                                </type>
+                                <type name="inner_image">
+                                    <meta>
+                                        <title lang="en">Inner Image</title>
+                                        <title lang="de">Inneres Bild</title>
+                                    </meta>
+                                    <properties>
+                                        <property name="image" type="single_media_selection">
+                                            <meta>
+                                                <title lang="en">Image</title>
+                                                <title lang="de">Bild</title>
+                                            </meta>
+                                            <params>
+                                                <param name="types" value="image"/>
+                                            </params>
+                                        </property>
+                                        <property name="caption" type="text_line">
+                                            <meta>
+                                                <title lang="en">Caption</title>
+                                                <title lang="de">Bildunterschrift</title>
+                                            </meta>
+                                        </property>
+                                    </properties>
+                                </type>
+                            </types>
+                        </block>
+                    </properties>
+                </type>
+            </types>
+        </block>
+
+        <property name="sidebarSnippet" type="single_snippet_selection">
+            <meta>
+                <title lang="en">Sidebar Snippet</title>
+                <title lang="de">Seitenleisten Schnipsel</title>
+            </meta>
+        </property>
+
+        <property name="relatedPages" type="page_selection">
+            <meta>
+                <title lang="en">Related Pages</title>
+                <title lang="de">Verwandte Seiten</title>
+            </meta>
+        </property>
+    </properties>
+</template>

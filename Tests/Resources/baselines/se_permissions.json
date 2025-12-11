@@ -1,0 +1,149 @@
+[
+    {
+        "id": 1,
+        "context": "sulu.contact.people",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 2,
+        "context": "sulu.contact.organizations",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 3,
+        "context": "sulu.media.collections",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 4,
+        "context": "sulu.media.system_collections",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 5,
+        "context": "sulu.settings.categories",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 6,
+        "context": "sulu.settings.tags",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 7,
+        "context": "sulu.global.snippets",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 8,
+        "context": "sulu.modules.articles",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 9,
+        "context": "sulu.webspaces.website.default-snippets",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 10,
+        "context": "sulu.webspaces.website",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 11,
+        "context": "sulu.webspaces.website.analytics",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 12,
+        "context": "sulu.webspaces.website.custom-urls",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 13,
+        "context": "sulu.activities.activities",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 14,
+        "context": "sulu.trash.trash",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 15,
+        "context": "sulu.references.references",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 16,
+        "context": "sulu.modules.articles_blog",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 17,
+        "context": "sulu.modules.articles_article",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 18,
+        "context": "sulu.security.roles",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 19,
+        "context": "sulu.security.users",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 1
+    },
+    {
+        "id": 20,
+        "context": "sulu.media.collections",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 2
+    },
+    {
+        "id": 21,
+        "context": "sulu.webspaces.website",
+        "module": "",
+        "permissions": 127,
+        "idRoles": 2
+    }
+]

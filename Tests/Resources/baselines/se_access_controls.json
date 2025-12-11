@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "permissions": 115,
+        "entityId": "6dc030f9-9ee9-4f97-af14-bd9e696c32b5",
+        "entityClass": "Sulu\\Page\\Domain\\Model\\Page",
+        "entityIdInteger": "",
+        "idRoles": 1
+    },
+    {
+        "id": 2,
+        "permissions": 0,
+        "entityId": "a94e4697-b95f-46d6-9b25-f6cd606fb7c2",
+        "entityClass": "Sulu\\Page\\Domain\\Model\\Page",
+        "entityIdInteger": "",
+        "idRoles": 2
+    }
+]

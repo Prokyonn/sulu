@@ -1,0 +1,2839 @@
+-- MySQL dump 10.13  Distrib 9.5.0, for macos15.4 (arm64)
+--
+-- Host: 127.0.0.1    Database: migration_sulu_26
+-- ------------------------------------------------------
+-- Server version	8.0.32
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `ac_activities`
+--
+
+DROP TABLE IF EXISTS `ac_activities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ac_activities` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `context` json NOT NULL,
+  `timestamp` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+  `batch` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `payload` json DEFAULT NULL,
+  `resourceKey` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `resourceId` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `resourceLocale` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `resourceWebspaceKey` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `resourceTitle` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `resourceTitleLocale` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `resourceSecurityContext` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `resourceSecurityObjectType` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `resourceSecurityObjectId` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `userId` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_3EE015D064B64DCC` (`userId`),
+  KEY `timestamp_idx` (`timestamp`),
+  KEY `resourceKey_idx` (`resourceKey`),
+  KEY `resourceId_idx` (`resourceId`),
+  KEY `resourceSecurityContext_idx` (`resourceSecurityContext`),
+  KEY `resourceSecurityObjectType_idx` (`resourceSecurityObjectType`),
+  KEY `resourceSecurityObjectId_idx` (`resourceSecurityObjectId`),
+  CONSTRAINT `FK_3EE015D064B64DCC` FOREIGN KEY (`userId`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ac_activities`
+--
+
+LOCK TABLES `ac_activities` WRITE;
+/*!40000 ALTER TABLE `ac_activities` DISABLE KEYS */;
+INSERT INTO `ac_activities` VALUES (1,'created','[]','2025-12-09 09:37:45','6937ede9d6bbf2.90090747',NULL,'pages','db367f2b-7e1d-42e0-8ea2-b39b3d7511bf','de','website','Homepage','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','db367f2b-7e1d-42e0-8ea2-b39b3d7511bf',NULL),(2,'published','[]','2025-12-09 09:37:45','6937ede9d6bbf2.90090747',NULL,'pages','db367f2b-7e1d-42e0-8ea2-b39b3d7511bf','de','website','Homepage','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','db367f2b-7e1d-42e0-8ea2-b39b3d7511bf',NULL),(3,'translation_added','[]','2025-12-09 09:37:45','6937ede9d6bbf2.90090747',NULL,'pages','db367f2b-7e1d-42e0-8ea2-b39b3d7511bf','en','website','Homepage','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','db367f2b-7e1d-42e0-8ea2-b39b3d7511bf',NULL),(4,'published','[]','2025-12-09 09:37:45','6937ede9d6bbf2.90090747',NULL,'pages','db367f2b-7e1d-42e0-8ea2-b39b3d7511bf','en','website','Homepage','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','db367f2b-7e1d-42e0-8ea2-b39b3d7511bf',NULL),(5,'created','[]','2025-12-09 09:37:46','6937edea933693.49464403',NULL,'collections','1','en',NULL,'System','en','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','1',NULL),(6,'created','[]','2025-12-09 09:37:46','6937edea99fe63.14138548',NULL,'collections','2','en',NULL,'Sulu media','en','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','2',NULL),(7,'translation_added','[]','2025-12-09 09:37:46','6937edeaa67022.24844178',NULL,'collections','2','de',NULL,'Sulu Medien','de','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','2',NULL),(8,'created','[]','2025-12-09 09:37:46','6937edeaab2818.02561512',NULL,'collections','3','en',NULL,'Preview images','en','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','3',NULL),(9,'translation_added','[]','2025-12-09 09:37:46','6937edeabbc085.15996339',NULL,'collections','3','de',NULL,'Vorschaubilder','de','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','3',NULL),(10,'created','[]','2025-12-09 09:37:46','6937edeacce6e0.59788797',NULL,'collections','4','en',NULL,'Sulu contacts','en','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','4',NULL),(11,'translation_added','[]','2025-12-09 09:37:46','6937edead76555.28485086',NULL,'collections','4','de',NULL,'Sulu Kontakte','de','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','4',NULL),(12,'created','[]','2025-12-09 09:37:46','6937edeadc7617.87919903',NULL,'collections','5','en',NULL,'People','en','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','5',NULL),(13,'translation_added','[]','2025-12-09 09:37:46','6937edeae1da29.12404847',NULL,'collections','5','de',NULL,'Personen','de','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','5',NULL),(14,'created','[]','2025-12-09 09:37:46','6937edeae61453.88894480',NULL,'collections','6','en',NULL,'Organizations','en','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','6',NULL),(15,'translation_added','[]','2025-12-09 09:37:46','6937edeaeac959.17007171',NULL,'collections','6','de',NULL,'Organisationen','de','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','6',NULL),(16,'created','[]','2025-12-09 10:33:53','6937fb11d46db4.28800666',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(17,'published','[]','2025-12-09 10:33:53','6937fb11d46db4.28800666',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(18,'modified','[]','2025-12-09 10:34:47','6937fb473303f7.46663217',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(19,'published','[]','2025-12-09 10:34:47','6937fb473303f7.46663217',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(20,'created','[]','2025-12-09 10:35:14','6937fb6234b863.69911100',NULL,'snippets','43420664-7b06-464e-a6b1-f73a0847f1f9','de',NULL,'Test Default Snippet','de','sulu.global.snippets',NULL,'43420664-7b06-464e-a6b1-f73a0847f1f9',1),(21,'created','[]','2025-12-09 10:35:37','6937fb792835e3.21264104',NULL,'snippets','0784afdc-28e5-4df2-a314-967e4853fc71','de',NULL,'Footer Snippet','de','sulu.global.snippets',NULL,'0784afdc-28e5-4df2-a314-967e4853fc71',1),(22,'created','[]','2025-12-09 10:35:47','6937fb83447fc5.44885332',NULL,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','de',NULL,'Example Sidebar','de','sulu.global.snippets',NULL,'0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03',1),(23,'created','[]','2025-12-09 10:36:03','6937fb9386b2a8.71322826',NULL,'collections','7','de',NULL,'Example Collection','de','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','7',1),(24,'created','[]','2025-12-09 10:36:17','6937fba14595d0.41714679',NULL,'media','1','de',NULL,'26-4209x2769','de','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','7',1),(25,'created','[]','2025-12-09 10:36:17','6937fba1718d01.18577161',NULL,'media','2','de',NULL,'21-3008x2008','de','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','7',1),(26,'created','[]','2025-12-09 10:36:17','6937fba1ae5270.02459272',NULL,'media','3','de',NULL,'27-3264x1836','de','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','7',1),(27,'created','[]','2025-12-09 10:36:17','6937fba1e579e9.09120964',NULL,'media','4','de',NULL,'19-2500x1667','de','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','7',1),(28,'created','[]','2025-12-09 10:36:18','6937fba2464fb1.61916405',NULL,'media','5','de',NULL,'0-5000x3333','de','sulu.media.collections','Sulu\\Bundle\\MediaBundle\\Entity\\Collection','7',1),(29,'modified','[]','2025-12-09 10:36:30','6937fbae3e4ef7.96123535',NULL,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','de',NULL,'Example Sidebar','de','sulu.global.snippets',NULL,'0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03',1),(30,'created','[]','2025-12-09 10:36:36','6937fbb4b257e0.66108529',NULL,'tags','1',NULL,NULL,'Sidebar-Tag-1',NULL,'sulu.settings.tags',NULL,'1',1),(31,'modified','[]','2025-12-09 10:36:36','6937fbb4c53750.27518463',NULL,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','de',NULL,'Example Sidebar','de','sulu.global.snippets',NULL,'0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03',1),(32,'created','[]','2025-12-09 10:36:47','6937fbbf76af76.03848703',NULL,'categories','1','de',NULL,'Root','de','sulu.settings.categories',NULL,'1',1),(33,'created','[]','2025-12-09 10:36:56','6937fbc88c5721.68668303',NULL,'categories','2','de',NULL,'Child-1','de','sulu.settings.categories',NULL,'2',1),(34,'created','[]','2025-12-09 10:37:03','6937fbcfac3c61.09211334',NULL,'categories','3','de',NULL,'Child-2','de','sulu.settings.categories',NULL,'3',1),(35,'created','[]','2025-12-09 10:37:17','6937fbdd34cad5.00225798',NULL,'categories','4','de',NULL,'Grand-Child-1','de','sulu.settings.categories',NULL,'4',1),(36,'modified','[]','2025-12-09 10:37:44','6937fbf845bf19.16031521',NULL,'categories','4','de',NULL,'Child of Child-1','de','sulu.settings.categories',NULL,'4',1),(37,'created','[]','2025-12-09 10:38:02','6937fc0af3bd73.91627175',NULL,'tags','2',NULL,NULL,'Footer-Tag-1',NULL,'sulu.settings.tags',NULL,'2',1),(38,'modified','[]','2025-12-09 10:38:03','6937fc0b1704d3.00129860',NULL,'snippets','43420664-7b06-464e-a6b1-f73a0847f1f9','de',NULL,'Test Default Snippet','de','sulu.global.snippets',NULL,'43420664-7b06-464e-a6b1-f73a0847f1f9',1),(39,'created','[]','2025-12-09 10:38:14','6937fc161bb184.64343679',NULL,'tags','3',NULL,NULL,'Default-Snippet-Tag-1',NULL,'sulu.settings.tags',NULL,'3',1),(40,'modified','[]','2025-12-09 10:38:14','6937fc163025c5.18361901',NULL,'snippets','43420664-7b06-464e-a6b1-f73a0847f1f9','de',NULL,'Test Default Snippet','de','sulu.global.snippets',NULL,'43420664-7b06-464e-a6b1-f73a0847f1f9',1),(41,'modified','[]','2025-12-09 10:38:22','6937fc1e90c5f8.28378300',NULL,'snippets','0784afdc-28e5-4df2-a314-967e4853fc71','de',NULL,'Footer Snippet','de','sulu.global.snippets',NULL,'0784afdc-28e5-4df2-a314-967e4853fc71',1),(42,'modified','[]','2025-12-09 10:38:37','6937fc2d82fe57.67249335',NULL,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','de',NULL,'Example Sidebar','de','sulu.global.snippets',NULL,'0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03',1),(43,'modified','[]','2025-12-09 10:39:07','6937fc4ba01215.38752870',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(44,'published','[]','2025-12-09 10:39:07','6937fc4ba01215.38752870',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(45,'modified','[]','2025-12-09 10:39:27','6937fc6007d550.86219274',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(46,'published','[]','2025-12-09 10:39:27','6937fc6007d550.86219274',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(47,'modified','[]','2025-12-09 10:40:07','6937fc876a6637.06563564',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(48,'published','[]','2025-12-09 10:40:07','6937fc876a6637.06563564',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(49,'modified','[]','2025-12-09 10:40:27','6937fc9b536827.50963803',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(50,'published','[]','2025-12-09 10:40:27','6937fc9b536827.50963803',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(51,'copied','{\"sourcePageId\": \"16060395-4bbf-4e1d-9c8e-fe5265890c99\", \"sourcePageTitle\": \"Example Page 1\", \"sourcePageTitleLocale\": \"de\", \"sourcePageWebspaceKey\": \"website\"}','2025-12-09 10:42:08','6937fd000e7f89.22705648',NULL,'pages','786eedc0-e161-4fa4-871d-8a5765442dfd',NULL,'website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','786eedc0-e161-4fa4-871d-8a5765442dfd',1),(52,'modified','[]','2025-12-09 10:42:15','6937fd08079b61.96876227',NULL,'pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','website','Example Page 2','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','786eedc0-e161-4fa4-871d-8a5765442dfd',1),(53,'published','[]','2025-12-09 10:42:15','6937fd08079b61.96876227',NULL,'pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','website','Example Page 2','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','786eedc0-e161-4fa4-871d-8a5765442dfd',1),(54,'translation_copied','{\"sourceLocale\": \"de\"}','2025-12-09 10:42:24','6937fd10697188.24041924',NULL,'pages','786eedc0-e161-4fa4-871d-8a5765442dfd','en','website','Example Page 2','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','786eedc0-e161-4fa4-871d-8a5765442dfd',1),(55,'modified','[]','2025-12-09 10:42:27','6937fd13365052.39575032',NULL,'pages','786eedc0-e161-4fa4-871d-8a5765442dfd','en','website','Example Page 2','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','786eedc0-e161-4fa4-871d-8a5765442dfd',1),(56,'published','[]','2025-12-09 10:42:27','6937fd13365052.39575032',NULL,'pages','786eedc0-e161-4fa4-871d-8a5765442dfd','en','website','Example Page 2','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','786eedc0-e161-4fa4-871d-8a5765442dfd',1),(57,'modified','[]','2025-12-09 10:42:38','6937fd1ec2b2a4.48596373',NULL,'pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','website','Example Page 2 only DE','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','786eedc0-e161-4fa4-871d-8a5765442dfd',1),(58,'published','[]','2025-12-09 10:42:38','6937fd1ec2b2a4.48596373',NULL,'pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','website','Example Page 2 only DE','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','786eedc0-e161-4fa4-871d-8a5765442dfd',1),(59,'translation_removed','[]','2025-12-09 10:42:44','6937fd249ef4b0.85475088',NULL,'pages','786eedc0-e161-4fa4-871d-8a5765442dfd','en','website','Example Page 2','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','786eedc0-e161-4fa4-871d-8a5765442dfd',1),(60,'translation_copied','{\"sourceLocale\": \"de\"}','2025-12-09 10:42:48','6937fd29077065.29936405',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','website','Example Page 1','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(61,'modified','[]','2025-12-09 10:42:51','6937fd2bde1442.72595908',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','website','Example Page 1','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(62,'published','[]','2025-12-09 10:42:51','6937fd2bde1442.72595908',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','website','Example Page 1','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(63,'modified','[]','2025-12-09 10:43:07','6937fd3b58fa05.91199711',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','website','Example Page 1','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(64,'published','[]','2025-12-09 10:43:07','6937fd3b58fa05.91199711',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','website','Example Page 1','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(65,'modified','[]','2025-12-09 10:43:40','6937fd5c6524e6.36758334',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','website','Example Page 1','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(66,'published','[]','2025-12-09 10:43:40','6937fd5c6524e6.36758334',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','website','Example Page 1','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(67,'modified','[]','2025-12-09 10:43:47','6937fd636bacd6.38991288',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','website','Example Page 1','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(68,'published','[]','2025-12-09 10:43:47','6937fd636bacd6.38991288',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','website','Example Page 1','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(69,'translation_removed','[]','2025-12-09 10:44:02','6937fd723b3017.67385917',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(70,'translation_copied','{\"sourceLocale\": \"en\"}','2025-12-09 10:44:07','6937fd77450310.55083061',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(71,'modified','[]','2025-12-09 10:44:10','6937fd7a40ffc1.53293473',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(72,'published','[]','2025-12-09 10:44:10','6937fd7a40ffc1.53293473',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(73,'created','[]','2025-12-09 10:44:29','6937fd8d21b482.27510512',NULL,'pages','6dc030f9-9ee9-4f97-af14-bd9e696c32b5','de','website','Example Page 3 with permissions','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','6dc030f9-9ee9-4f97-af14-bd9e696c32b5',1),(74,'published','[]','2025-12-09 10:44:29','6937fd8d21b482.27510512',NULL,'pages','6dc030f9-9ee9-4f97-af14-bd9e696c32b5','de','website','Example Page 3 with permissions','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','6dc030f9-9ee9-4f97-af14-bd9e696c32b5',1),(75,'modified','[]','2025-12-09 10:50:39','6937feffdf1794.25476436',NULL,'pages','6dc030f9-9ee9-4f97-af14-bd9e696c32b5','de','website','Example Page 3 with admin permissions','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','6dc030f9-9ee9-4f97-af14-bd9e696c32b5',1),(76,'published','[]','2025-12-09 10:50:39','6937feffdf1794.25476436',NULL,'pages','6dc030f9-9ee9-4f97-af14-bd9e696c32b5','de','website','Example Page 3 with admin permissions','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','6dc030f9-9ee9-4f97-af14-bd9e696c32b5',1),(77,'created','[]','2025-12-09 10:52:15','6937ff5f7aeae1.19290876',NULL,'pages','a94e4697-b95f-46d6-9b25-f6cd606fb7c2','de','website','Example Page 4 with website permissions','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','a94e4697-b95f-46d6-9b25-f6cd606fb7c2',1),(78,'published','[]','2025-12-09 10:52:15','6937ff5f7aeae1.19290876',NULL,'pages','a94e4697-b95f-46d6-9b25-f6cd606fb7c2','de','website','Example Page 4 with website permissions','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','a94e4697-b95f-46d6-9b25-f6cd606fb7c2',1),(79,'created','[]','2025-12-09 10:52:51','6937ff840897a2.53468521',NULL,'pages','7f97b10e-b5fb-46da-ab1b-b85d88d74e39','de','website','Child Page 1 with external link','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','7f97b10e-b5fb-46da-ab1b-b85d88d74e39',1),(80,'published','[]','2025-12-09 10:52:52','6937ff840897a2.53468521',NULL,'pages','7f97b10e-b5fb-46da-ab1b-b85d88d74e39','de','website','Child Page 1 with external link','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','7f97b10e-b5fb-46da-ab1b-b85d88d74e39',1),(81,'modified','[]','2025-12-09 10:53:04','6937ff90950990.46292507',NULL,'pages','7f97b10e-b5fb-46da-ab1b-b85d88d74e39','de','website','Child Page 1 with external link','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','7f97b10e-b5fb-46da-ab1b-b85d88d74e39',1),(82,'published','[]','2025-12-09 10:53:04','6937ff90950990.46292507',NULL,'pages','7f97b10e-b5fb-46da-ab1b-b85d88d74e39','de','website','Child Page 1 with external link','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','7f97b10e-b5fb-46da-ab1b-b85d88d74e39',1),(83,'created','[]','2025-12-09 10:53:13','6937ff9a04e2c5.76123653',NULL,'pages','d632fcc7-8ad8-4d59-a195-ded6c24720fc','de','website','Child page 2 with internal link','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','d632fcc7-8ad8-4d59-a195-ded6c24720fc',1),(84,'modified','[]','2025-12-09 10:53:25','6937ffa5291c16.02436424',NULL,'pages','d632fcc7-8ad8-4d59-a195-ded6c24720fc','de','website','Child page 2 with internal link','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','d632fcc7-8ad8-4d59-a195-ded6c24720fc',1),(85,'published','[]','2025-12-09 10:53:25','6937ffa5291c16.02436424',NULL,'pages','d632fcc7-8ad8-4d59-a195-ded6c24720fc','de','website','Child page 2 with internal link','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','d632fcc7-8ad8-4d59-a195-ded6c24720fc',1),(86,'copied','{\"sourcePageId\": \"16060395-4bbf-4e1d-9c8e-fe5265890c99\", \"sourcePageTitle\": \"Example Page 1\", \"sourcePageTitleLocale\": \"de\", \"sourcePageWebspaceKey\": \"website\"}','2025-12-09 10:53:44','6937ffb8844ed3.85219850',NULL,'pages','c32200c7-1402-41ea-aff9-e19cf37f5f91',NULL,'website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','c32200c7-1402-41ea-aff9-e19cf37f5f91',1),(87,'modified','[]','2025-12-09 10:54:03','6937ffcba7c388.64187268',NULL,'pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','website','Example Page with shadow','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','c32200c7-1402-41ea-aff9-e19cf37f5f91',1),(88,'published','[]','2025-12-09 10:54:03','6937ffcba7c388.64187268',NULL,'pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','website','Example Page with shadow','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','c32200c7-1402-41ea-aff9-e19cf37f5f91',1),(89,'modified','[]','2025-12-09 10:54:13','6937ffd55141e9.86824213',NULL,'pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','website','Example Page 1','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','c32200c7-1402-41ea-aff9-e19cf37f5f91',1),(90,'published','[]','2025-12-09 10:54:13','6937ffd55141e9.86824213',NULL,'pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','website','Example Page 1','en','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','c32200c7-1402-41ea-aff9-e19cf37f5f91',1),(91,'removed','{\"url\": null}','2025-12-09 10:55:25','6938001d7ae9c4.35713975',NULL,'pages','3b18b1d6-d13a-4d51-8cea-45e2132ad5a5',NULL,'website','Child Page 1 with external link','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','3b18b1d6-d13a-4d51-8cea-45e2132ad5a5',1),(92,'removed','{\"url\": null}','2025-12-09 10:55:28','69380020a79516.66253652',NULL,'pages','1b328681-4fc7-42fe-8c0c-3c14c48a0aeb',NULL,'website','Child page 2 with internal link','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','1b328681-4fc7-42fe-8c0c-3c14c48a0aeb',1),(93,'created','[]','2025-12-09 13:18:38','693821af097cd6.33203755',NULL,'custom_urls','8985a284-c40c-47a5-a966-028753c572dd',NULL,'website','Example custom url',NULL,'sulu.webspaces.website.custom-urls',NULL,'8985a284-c40c-47a5-a966-028753c572dd',1),(94,'modified','[]','2025-12-09 13:18:56','693821c0cc3c20.35529753',NULL,'custom_urls','8985a284-c40c-47a5-a966-028753c572dd',NULL,'website','Example custom url',NULL,'sulu.webspaces.website.custom-urls',NULL,'8985a284-c40c-47a5-a966-028753c572dd',1),(95,'modified','[]','2025-12-09 13:19:37','693821e9b0ef48.78845598',NULL,'custom_urls','8985a284-c40c-47a5-a966-028753c572dd',NULL,'website','Example custom url',NULL,'sulu.webspaces.website.custom-urls',NULL,'8985a284-c40c-47a5-a966-028753c572dd',1),(96,'default_snippet_modified','{\"snippetId\": \"0784afdc-28e5-4df2-a314-967e4853fc71\", \"snippetTitle\": \"Footer Snippet\", \"snippetAreaKey\": \"footer\", \"snippetTitleLocale\": \"de\"}','2025-12-09 13:19:44','693821f0a55f66.60340837',NULL,'webspaces','website',NULL,'website','website',NULL,'sulu.webspaces.website.default-snippets',NULL,'website',1),(97,'default_snippet_modified','{\"snippetId\": \"0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03\", \"snippetTitle\": \"Example Sidebar\", \"snippetAreaKey\": \"sidebar\", \"snippetTitleLocale\": \"de\"}','2025-12-09 13:19:47','693821f3d93438.88744113',NULL,'webspaces','website',NULL,'website','website',NULL,'sulu.webspaces.website.default-snippets',NULL,'website',1),(98,'created','[]','2025-12-09 15:12:10','69383c4ab3ba97.06957496',NULL,'articles','52634b61-09b3-4224-a428-4a885dceb98f','de',NULL,'Example article','de','sulu.modules.articles',NULL,'52634b61-09b3-4224-a428-4a885dceb98f',1),(99,'published','[]','2025-12-09 15:12:10','69383c4ab3ba97.06957496',NULL,'articles','52634b61-09b3-4224-a428-4a885dceb98f','de',NULL,'Example article','de','sulu.modules.articles',NULL,'52634b61-09b3-4224-a428-4a885dceb98f',1),(100,'modified','[]','2025-12-09 15:12:23','69383c57e1aed6.45674168',NULL,'articles','52634b61-09b3-4224-a428-4a885dceb98f','de',NULL,'Example article','de','sulu.modules.articles',NULL,'52634b61-09b3-4224-a428-4a885dceb98f',1),(101,'published','[]','2025-12-09 15:12:23','69383c57e1aed6.45674168',NULL,'articles','52634b61-09b3-4224-a428-4a885dceb98f','de',NULL,'Example article','de','sulu.modules.articles',NULL,'52634b61-09b3-4224-a428-4a885dceb98f',1),(102,'modified','[]','2025-12-09 15:12:53','69383c758c4905.25778401',NULL,'articles','52634b61-09b3-4224-a428-4a885dceb98f','de',NULL,'Example article','de','sulu.modules.articles',NULL,'52634b61-09b3-4224-a428-4a885dceb98f',1),(103,'published','[]','2025-12-09 15:12:53','69383c758c4905.25778401',NULL,'articles','52634b61-09b3-4224-a428-4a885dceb98f','de',NULL,'Example article','de','sulu.modules.articles',NULL,'52634b61-09b3-4224-a428-4a885dceb98f',1),(104,'modified','[]','2025-12-09 15:13:21','69383c9119ab53.39073189',NULL,'articles','52634b61-09b3-4224-a428-4a885dceb98f','de',NULL,'Example article','de','sulu.modules.articles',NULL,'52634b61-09b3-4224-a428-4a885dceb98f',1),(105,'published','[]','2025-12-09 15:13:21','69383c9119ab53.39073189',NULL,'articles','52634b61-09b3-4224-a428-4a885dceb98f','de',NULL,'Example article','de','sulu.modules.articles',NULL,'52634b61-09b3-4224-a428-4a885dceb98f',1),(106,'modified','[]','2025-12-09 15:13:27','69383c977db148.09719220',NULL,'articles','52634b61-09b3-4224-a428-4a885dceb98f','de',NULL,'Example article','de','sulu.modules.articles',NULL,'52634b61-09b3-4224-a428-4a885dceb98f',1),(107,'published','[]','2025-12-09 15:13:27','69383c977db148.09719220',NULL,'articles','52634b61-09b3-4224-a428-4a885dceb98f','de',NULL,'Example article','de','sulu.modules.articles',NULL,'52634b61-09b3-4224-a428-4a885dceb98f',1),(108,'modified','[]','2025-12-09 15:13:36','69383ca0bd7106.69026794',NULL,'articles','52634b61-09b3-4224-a428-4a885dceb98f','de',NULL,'Example article','de','sulu.modules.articles',NULL,'52634b61-09b3-4224-a428-4a885dceb98f',1),(109,'published','[]','2025-12-09 15:13:36','69383ca0bd7106.69026794',NULL,'articles','52634b61-09b3-4224-a428-4a885dceb98f','de',NULL,'Example article','de','sulu.modules.articles',NULL,'52634b61-09b3-4224-a428-4a885dceb98f',1),(110,'modified','[]','2025-12-11 10:49:09','693aa1a5b71b24.19635808',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1),(111,'published','[]','2025-12-11 10:49:09','693aa1a5b71b24.19635808',NULL,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','website','Example Page 1','de','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99',1);
+/*!40000 ALTER TABLE `ac_activities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ca_categories`
+--
+
+DROP TABLE IF EXISTS `ca_categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ca_categories` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `category_key` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `default_locale` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lft` int NOT NULL,
+  `rgt` int NOT NULL,
+  `depth` int NOT NULL,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idCategoriesParent` int DEFAULT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_3D85D789AF5206F3` (`category_key`),
+  KEY `IDX_3D85D78937A3C3B1` (`idCategoriesParent`),
+  KEY `IDX_3D85D789DBF11E1D` (`idUsersCreator`),
+  KEY `IDX_3D85D78930D07CD5` (`idUsersChanger`),
+  CONSTRAINT `FK_3D85D78930D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_3D85D78937A3C3B1` FOREIGN KEY (`idCategoriesParent`) REFERENCES `ca_categories` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_3D85D789DBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ca_categories`
+--
+
+LOCK TABLES `ca_categories` WRITE;
+/*!40000 ALTER TABLE `ca_categories` DISABLE KEYS */;
+INSERT INTO `ca_categories` VALUES (1,'root','de',1,8,0,'2025-12-09 10:36:47','2025-12-09 10:36:47',NULL,1,1),(2,'child-1','de',2,5,1,'2025-12-09 10:36:56','2025-12-09 10:36:56',1,1,1),(3,'child-2','de',6,7,1,'2025-12-09 10:37:03','2025-12-09 10:37:03',1,1,1),(4,'child-of-child-1','de',3,4,2,'2025-12-09 10:37:17','2025-12-09 10:37:44',2,1,1);
+/*!40000 ALTER TABLE `ca_categories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ca_category_meta`
+--
+
+DROP TABLE IF EXISTS `ca_category_meta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ca_category_meta` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `meta_key` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `locale` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `idCategories` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_2575BBB0B8075882` (`idCategories`),
+  CONSTRAINT `FK_2575BBB0B8075882` FOREIGN KEY (`idCategories`) REFERENCES `ca_categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ca_category_meta`
+--
+
+LOCK TABLES `ca_category_meta` WRITE;
+/*!40000 ALTER TABLE `ca_category_meta` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ca_category_meta` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ca_category_translation_keywords`
+--
+
+DROP TABLE IF EXISTS `ca_category_translation_keywords`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ca_category_translation_keywords` (
+  `idKeywords` int NOT NULL,
+  `idCategoryTranslations` int NOT NULL,
+  PRIMARY KEY (`idKeywords`,`idCategoryTranslations`),
+  KEY `IDX_D15FBE37F9FC9F05` (`idKeywords`),
+  KEY `IDX_D15FBE3717CA14DA` (`idCategoryTranslations`),
+  CONSTRAINT `FK_D15FBE3717CA14DA` FOREIGN KEY (`idCategoryTranslations`) REFERENCES `ca_category_translations` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_D15FBE37F9FC9F05` FOREIGN KEY (`idKeywords`) REFERENCES `ca_keywords` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ca_category_translation_keywords`
+--
+
+LOCK TABLES `ca_category_translation_keywords` WRITE;
+/*!40000 ALTER TABLE `ca_category_translation_keywords` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ca_category_translation_keywords` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ca_category_translation_medias`
+--
+
+DROP TABLE IF EXISTS `ca_category_translation_medias`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ca_category_translation_medias` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `position` int NOT NULL DEFAULT '0',
+  `idCategoryTranslations` int NOT NULL,
+  `idMedia` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_39FC41BA17CA14DA` (`idCategoryTranslations`),
+  KEY `IDX_39FC41BA7DE8E211` (`idMedia`),
+  CONSTRAINT `FK_39FC41BA17CA14DA` FOREIGN KEY (`idCategoryTranslations`) REFERENCES `ca_category_translations` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_39FC41BA7DE8E211` FOREIGN KEY (`idMedia`) REFERENCES `me_media` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ca_category_translation_medias`
+--
+
+LOCK TABLES `ca_category_translation_medias` WRITE;
+/*!40000 ALTER TABLE `ca_category_translation_medias` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ca_category_translation_medias` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ca_category_translations`
+--
+
+DROP TABLE IF EXISTS `ca_category_translations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ca_category_translations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `translation` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `locale` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idCategories` int NOT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_5DCED5E3B8075882` (`idCategories`),
+  KEY `IDX_5DCED5E3DBF11E1D` (`idUsersCreator`),
+  KEY `IDX_5DCED5E330D07CD5` (`idUsersChanger`),
+  CONSTRAINT `FK_5DCED5E330D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_5DCED5E3B8075882` FOREIGN KEY (`idCategories`) REFERENCES `ca_categories` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_5DCED5E3DBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ca_category_translations`
+--
+
+LOCK TABLES `ca_category_translations` WRITE;
+/*!40000 ALTER TABLE `ca_category_translations` DISABLE KEYS */;
+INSERT INTO `ca_category_translations` VALUES (1,'Root','de',NULL,'2025-12-09 10:36:47','2025-12-09 10:36:47',1,1,1),(2,'Child-1','de',NULL,'2025-12-09 10:36:56','2025-12-09 10:36:56',2,1,1),(3,'Child-2','de',NULL,'2025-12-09 10:37:03','2025-12-09 10:37:03',3,1,1),(4,'Child of Child-1','de',NULL,'2025-12-09 10:37:17','2025-12-09 10:37:44',4,1,1);
+/*!40000 ALTER TABLE `ca_category_translations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ca_keywords`
+--
+
+DROP TABLE IF EXISTS `ca_keywords`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ca_keywords` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `locale` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `keyword` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_idx` (`keyword`,`locale`),
+  KEY `IDX_FE02CA0BDBF11E1D` (`idUsersCreator`),
+  KEY `IDX_FE02CA0B30D07CD5` (`idUsersChanger`),
+  KEY `IDX_FE02CA0B5A93713B` (`keyword`),
+  CONSTRAINT `FK_FE02CA0B30D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_FE02CA0BDBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ca_keywords`
+--
+
+LOCK TABLES `ca_keywords` WRITE;
+/*!40000 ALTER TABLE `ca_keywords` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ca_keywords` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_account_addresses`
+--
+
+DROP TABLE IF EXISTS `co_account_addresses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_account_addresses` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `main` tinyint(1) NOT NULL,
+  `idAddresses` int NOT NULL,
+  `idAccounts` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_4165FE4893205E40996BB4F7` (`idAddresses`,`idAccounts`),
+  KEY `IDX_4165FE4893205E40` (`idAddresses`),
+  KEY `IDX_4165FE48996BB4F7` (`idAccounts`),
+  CONSTRAINT `FK_4165FE4893205E40` FOREIGN KEY (`idAddresses`) REFERENCES `co_addresses` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_4165FE48996BB4F7` FOREIGN KEY (`idAccounts`) REFERENCES `co_accounts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_account_addresses`
+--
+
+LOCK TABLES `co_account_addresses` WRITE;
+/*!40000 ALTER TABLE `co_account_addresses` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_account_addresses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_account_bank_accounts`
+--
+
+DROP TABLE IF EXISTS `co_account_bank_accounts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_account_bank_accounts` (
+  `idAccounts` int NOT NULL,
+  `idBankAccounts` int NOT NULL,
+  PRIMARY KEY (`idAccounts`,`idBankAccounts`),
+  KEY `IDX_C873A532996BB4F7` (`idAccounts`),
+  KEY `IDX_C873A53237FCD1D8` (`idBankAccounts`),
+  CONSTRAINT `FK_C873A53237FCD1D8` FOREIGN KEY (`idBankAccounts`) REFERENCES `co_bank_account` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_C873A532996BB4F7` FOREIGN KEY (`idAccounts`) REFERENCES `co_accounts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_account_bank_accounts`
+--
+
+LOCK TABLES `co_account_bank_accounts` WRITE;
+/*!40000 ALTER TABLE `co_account_bank_accounts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_account_bank_accounts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_account_categories`
+--
+
+DROP TABLE IF EXISTS `co_account_categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_account_categories` (
+  `idAccounts` int NOT NULL,
+  `idCategories` int NOT NULL,
+  PRIMARY KEY (`idAccounts`,`idCategories`),
+  KEY `IDX_B60E9510996BB4F7` (`idAccounts`),
+  KEY `IDX_B60E9510B8075882` (`idCategories`),
+  CONSTRAINT `FK_B60E9510996BB4F7` FOREIGN KEY (`idAccounts`) REFERENCES `co_accounts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_B60E9510B8075882` FOREIGN KEY (`idCategories`) REFERENCES `ca_categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_account_categories`
+--
+
+LOCK TABLES `co_account_categories` WRITE;
+/*!40000 ALTER TABLE `co_account_categories` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_account_categories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_account_contacts`
+--
+
+DROP TABLE IF EXISTS `co_account_contacts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_account_contacts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `main` tinyint(1) NOT NULL,
+  `idPositions` int DEFAULT NULL,
+  `idContacts` int NOT NULL,
+  `idAccounts` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_28C6CA0E60E33F28996BB4F7` (`idContacts`,`idAccounts`),
+  KEY `IDX_28C6CA0E2A75CE2A` (`idPositions`),
+  KEY `IDX_28C6CA0E60E33F28` (`idContacts`),
+  KEY `IDX_28C6CA0E996BB4F7` (`idAccounts`),
+  CONSTRAINT `FK_28C6CA0E2A75CE2A` FOREIGN KEY (`idPositions`) REFERENCES `co_positions` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_28C6CA0E60E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_28C6CA0E996BB4F7` FOREIGN KEY (`idAccounts`) REFERENCES `co_accounts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_account_contacts`
+--
+
+LOCK TABLES `co_account_contacts` WRITE;
+/*!40000 ALTER TABLE `co_account_contacts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_account_contacts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_account_emails`
+--
+
+DROP TABLE IF EXISTS `co_account_emails`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_account_emails` (
+  `idAccounts` int NOT NULL,
+  `idEmails` int NOT NULL,
+  PRIMARY KEY (`idAccounts`,`idEmails`),
+  KEY `IDX_3E246FC3996BB4F7` (`idAccounts`),
+  KEY `IDX_3E246FC32F9040C8` (`idEmails`),
+  CONSTRAINT `FK_3E246FC32F9040C8` FOREIGN KEY (`idEmails`) REFERENCES `co_emails` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_3E246FC3996BB4F7` FOREIGN KEY (`idAccounts`) REFERENCES `co_accounts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_account_emails`
+--
+
+LOCK TABLES `co_account_emails` WRITE;
+/*!40000 ALTER TABLE `co_account_emails` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_account_emails` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_account_faxes`
+--
+
+DROP TABLE IF EXISTS `co_account_faxes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_account_faxes` (
+  `idAccounts` int NOT NULL,
+  `idFaxes` int NOT NULL,
+  PRIMARY KEY (`idAccounts`,`idFaxes`),
+  KEY `IDX_7A4E77DC996BB4F7` (`idAccounts`),
+  KEY `IDX_7A4E77DCCF6A2007` (`idFaxes`),
+  CONSTRAINT `FK_7A4E77DC996BB4F7` FOREIGN KEY (`idAccounts`) REFERENCES `co_accounts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_7A4E77DCCF6A2007` FOREIGN KEY (`idFaxes`) REFERENCES `co_faxes` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_account_faxes`
+--
+
+LOCK TABLES `co_account_faxes` WRITE;
+/*!40000 ALTER TABLE `co_account_faxes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_account_faxes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_account_medias`
+--
+
+DROP TABLE IF EXISTS `co_account_medias`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_account_medias` (
+  `idAccounts` int NOT NULL,
+  `idMedias` int NOT NULL,
+  PRIMARY KEY (`idAccounts`,`idMedias`),
+  KEY `IDX_60772810996BB4F7` (`idAccounts`),
+  KEY `IDX_6077281071C3071B` (`idMedias`),
+  CONSTRAINT `FK_6077281071C3071B` FOREIGN KEY (`idMedias`) REFERENCES `me_media` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_60772810996BB4F7` FOREIGN KEY (`idAccounts`) REFERENCES `co_accounts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_account_medias`
+--
+
+LOCK TABLES `co_account_medias` WRITE;
+/*!40000 ALTER TABLE `co_account_medias` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_account_medias` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_account_notes`
+--
+
+DROP TABLE IF EXISTS `co_account_notes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_account_notes` (
+  `idAccounts` int NOT NULL,
+  `idNotes` int NOT NULL,
+  PRIMARY KEY (`idAccounts`,`idNotes`),
+  KEY `IDX_A3FBB24A996BB4F7` (`idAccounts`),
+  KEY `IDX_A3FBB24A16DFE591` (`idNotes`),
+  CONSTRAINT `FK_A3FBB24A16DFE591` FOREIGN KEY (`idNotes`) REFERENCES `co_notes` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_A3FBB24A996BB4F7` FOREIGN KEY (`idAccounts`) REFERENCES `co_accounts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_account_notes`
+--
+
+LOCK TABLES `co_account_notes` WRITE;
+/*!40000 ALTER TABLE `co_account_notes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_account_notes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_account_phones`
+--
+
+DROP TABLE IF EXISTS `co_account_phones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_account_phones` (
+  `idAccounts` int NOT NULL,
+  `idPhones` int NOT NULL,
+  PRIMARY KEY (`idAccounts`,`idPhones`),
+  KEY `IDX_918DA964996BB4F7` (`idAccounts`),
+  KEY `IDX_918DA9648039866F` (`idPhones`),
+  CONSTRAINT `FK_918DA9648039866F` FOREIGN KEY (`idPhones`) REFERENCES `co_phones` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_918DA964996BB4F7` FOREIGN KEY (`idAccounts`) REFERENCES `co_accounts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_account_phones`
+--
+
+LOCK TABLES `co_account_phones` WRITE;
+/*!40000 ALTER TABLE `co_account_phones` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_account_phones` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_account_social_media_profiles`
+--
+
+DROP TABLE IF EXISTS `co_account_social_media_profiles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_account_social_media_profiles` (
+  `idAccounts` int NOT NULL,
+  `idSocialMediaProfiles` int NOT NULL,
+  PRIMARY KEY (`idAccounts`,`idSocialMediaProfiles`),
+  KEY `IDX_E06F75F5996BB4F7` (`idAccounts`),
+  KEY `IDX_E06F75F5573F8344` (`idSocialMediaProfiles`),
+  CONSTRAINT `FK_E06F75F5573F8344` FOREIGN KEY (`idSocialMediaProfiles`) REFERENCES `co_social_media_profiles` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_E06F75F5996BB4F7` FOREIGN KEY (`idAccounts`) REFERENCES `co_accounts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_account_social_media_profiles`
+--
+
+LOCK TABLES `co_account_social_media_profiles` WRITE;
+/*!40000 ALTER TABLE `co_account_social_media_profiles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_account_social_media_profiles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_account_tags`
+--
+
+DROP TABLE IF EXISTS `co_account_tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_account_tags` (
+  `idAccounts` int NOT NULL,
+  `idTags` int NOT NULL,
+  PRIMARY KEY (`idAccounts`,`idTags`),
+  KEY `IDX_E8D92005996BB4F7` (`idAccounts`),
+  KEY `IDX_E8D920051C41CAB8` (`idTags`),
+  CONSTRAINT `FK_E8D920051C41CAB8` FOREIGN KEY (`idTags`) REFERENCES `ta_tags` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_E8D92005996BB4F7` FOREIGN KEY (`idAccounts`) REFERENCES `co_accounts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_account_tags`
+--
+
+LOCK TABLES `co_account_tags` WRITE;
+/*!40000 ALTER TABLE `co_account_tags` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_account_tags` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_account_urls`
+--
+
+DROP TABLE IF EXISTS `co_account_urls`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_account_urls` (
+  `idAccounts` int NOT NULL,
+  `idUrls` int NOT NULL,
+  PRIMARY KEY (`idAccounts`,`idUrls`),
+  KEY `IDX_ADF18382996BB4F7` (`idAccounts`),
+  KEY `IDX_ADF183825969693F` (`idUrls`),
+  CONSTRAINT `FK_ADF183825969693F` FOREIGN KEY (`idUrls`) REFERENCES `co_urls` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_ADF18382996BB4F7` FOREIGN KEY (`idAccounts`) REFERENCES `co_accounts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_account_urls`
+--
+
+LOCK TABLES `co_account_urls` WRITE;
+/*!40000 ALTER TABLE `co_account_urls` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_account_urls` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_accounts`
+--
+
+DROP TABLE IF EXISTS `co_accounts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_accounts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `logo` int DEFAULT NULL,
+  `lft` int NOT NULL,
+  `rgt` int NOT NULL,
+  `depth` int NOT NULL,
+  `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `externalId` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `corporation` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `note` longtext COLLATE utf8mb4_unicode_ci,
+  `uid` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `registerNumber` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `placeOfJurisdiction` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mainEmail` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mainPhone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mainFax` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mainUrl` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idContactsMain` int DEFAULT NULL,
+  `idAccountsParent` int DEFAULT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_805CD14A6D4A8651` (`idContactsMain`),
+  KEY `IDX_805CD14AC9171171` (`idAccountsParent`),
+  KEY `IDX_805CD14AE48E9A13` (`logo`),
+  KEY `IDX_805CD14ADBF11E1D` (`idUsersCreator`),
+  KEY `IDX_805CD14A30D07CD5` (`idUsersChanger`),
+  KEY `IDX_805CD14A5E237E06` (`name`),
+  CONSTRAINT `FK_805CD14A30D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_805CD14A6D4A8651` FOREIGN KEY (`idContactsMain`) REFERENCES `co_contacts` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_805CD14AC9171171` FOREIGN KEY (`idAccountsParent`) REFERENCES `co_accounts` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_805CD14ADBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_805CD14AE48E9A13` FOREIGN KEY (`logo`) REFERENCES `me_media` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_accounts`
+--
+
+LOCK TABLES `co_accounts` WRITE;
+/*!40000 ALTER TABLE `co_accounts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_accounts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_address_types`
+--
+
+DROP TABLE IF EXISTS `co_address_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_address_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_address_types`
+--
+
+LOCK TABLES `co_address_types` WRITE;
+/*!40000 ALTER TABLE `co_address_types` DISABLE KEYS */;
+INSERT INTO `co_address_types` VALUES (1,'sulu_contact.work'),(2,'sulu_contact.private');
+/*!40000 ALTER TABLE `co_address_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_addresses`
+--
+
+DROP TABLE IF EXISTS `co_addresses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_addresses` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `primaryAddress` tinyint(1) DEFAULT NULL,
+  `deliveryAddress` tinyint(1) DEFAULT NULL,
+  `billingAddress` tinyint(1) DEFAULT NULL,
+  `street` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `number` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `addition` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `zip` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `city` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `state` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `countryCode` varchar(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `postboxNumber` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `postboxPostcode` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `postboxCity` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `latitude` double DEFAULT NULL,
+  `longitude` double DEFAULT NULL,
+  `note` longtext COLLATE utf8mb4_unicode_ci,
+  `idAdressTypes` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_26E9A6142A37021A` (`idAdressTypes`),
+  CONSTRAINT `FK_26E9A6142A37021A` FOREIGN KEY (`idAdressTypes`) REFERENCES `co_address_types` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_addresses`
+--
+
+LOCK TABLES `co_addresses` WRITE;
+/*!40000 ALTER TABLE `co_addresses` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_addresses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_bank_account`
+--
+
+DROP TABLE IF EXISTS `co_bank_account`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_bank_account` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `bankName` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bic` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `iban` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `public` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_bank_account`
+--
+
+LOCK TABLES `co_bank_account` WRITE;
+/*!40000 ALTER TABLE `co_bank_account` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_bank_account` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contact_addresses`
+--
+
+DROP TABLE IF EXISTS `co_contact_addresses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contact_addresses` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `main` tinyint(1) NOT NULL,
+  `idAddresses` int NOT NULL,
+  `idContacts` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_DEE056893205E4060E33F28` (`idAddresses`,`idContacts`),
+  KEY `IDX_DEE056893205E40` (`idAddresses`),
+  KEY `IDX_DEE056860E33F28` (`idContacts`),
+  CONSTRAINT `FK_DEE056860E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_DEE056893205E40` FOREIGN KEY (`idAddresses`) REFERENCES `co_addresses` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contact_addresses`
+--
+
+LOCK TABLES `co_contact_addresses` WRITE;
+/*!40000 ALTER TABLE `co_contact_addresses` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_contact_addresses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contact_bank_accounts`
+--
+
+DROP TABLE IF EXISTS `co_contact_bank_accounts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contact_bank_accounts` (
+  `idContacts` int NOT NULL,
+  `idBankAccounts` int NOT NULL,
+  PRIMARY KEY (`idContacts`,`idBankAccounts`),
+  KEY `IDX_76CDDA0660E33F28` (`idContacts`),
+  KEY `IDX_76CDDA0637FCD1D8` (`idBankAccounts`),
+  CONSTRAINT `FK_76CDDA0637FCD1D8` FOREIGN KEY (`idBankAccounts`) REFERENCES `co_bank_account` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_76CDDA0660E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contact_bank_accounts`
+--
+
+LOCK TABLES `co_contact_bank_accounts` WRITE;
+/*!40000 ALTER TABLE `co_contact_bank_accounts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_contact_bank_accounts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contact_categories`
+--
+
+DROP TABLE IF EXISTS `co_contact_categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contact_categories` (
+  `idContacts` int NOT NULL,
+  `idCategories` int NOT NULL,
+  PRIMARY KEY (`idContacts`,`idCategories`),
+  KEY `IDX_8D2C3E2360E33F28` (`idContacts`),
+  KEY `IDX_8D2C3E23B8075882` (`idCategories`),
+  CONSTRAINT `FK_8D2C3E2360E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_8D2C3E23B8075882` FOREIGN KEY (`idCategories`) REFERENCES `ca_categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contact_categories`
+--
+
+LOCK TABLES `co_contact_categories` WRITE;
+/*!40000 ALTER TABLE `co_contact_categories` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_contact_categories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contact_emails`
+--
+
+DROP TABLE IF EXISTS `co_contact_emails`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contact_emails` (
+  `idContacts` int NOT NULL,
+  `idEmails` int NOT NULL,
+  PRIMARY KEY (`idContacts`,`idEmails`),
+  KEY `IDX_8982963160E33F28` (`idContacts`),
+  KEY `IDX_898296312F9040C8` (`idEmails`),
+  CONSTRAINT `FK_898296312F9040C8` FOREIGN KEY (`idEmails`) REFERENCES `co_emails` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_8982963160E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contact_emails`
+--
+
+LOCK TABLES `co_contact_emails` WRITE;
+/*!40000 ALTER TABLE `co_contact_emails` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_contact_emails` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contact_faxes`
+--
+
+DROP TABLE IF EXISTS `co_contact_faxes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contact_faxes` (
+  `idContacts` int NOT NULL,
+  `idFaxes` int NOT NULL,
+  PRIMARY KEY (`idContacts`,`idFaxes`),
+  KEY `IDX_61EBBEA260E33F28` (`idContacts`),
+  KEY `IDX_61EBBEA2CF6A2007` (`idFaxes`),
+  CONSTRAINT `FK_61EBBEA260E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_61EBBEA2CF6A2007` FOREIGN KEY (`idFaxes`) REFERENCES `co_faxes` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contact_faxes`
+--
+
+LOCK TABLES `co_contact_faxes` WRITE;
+/*!40000 ALTER TABLE `co_contact_faxes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_contact_faxes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contact_locales`
+--
+
+DROP TABLE IF EXISTS `co_contact_locales`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contact_locales` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `locale` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idContacts` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_31E5672760E33F28` (`idContacts`),
+  CONSTRAINT `FK_31E5672760E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contact_locales`
+--
+
+LOCK TABLES `co_contact_locales` WRITE;
+/*!40000 ALTER TABLE `co_contact_locales` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_contact_locales` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contact_medias`
+--
+
+DROP TABLE IF EXISTS `co_contact_medias`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contact_medias` (
+  `idContacts` int NOT NULL,
+  `idMedias` int NOT NULL,
+  PRIMARY KEY (`idContacts`,`idMedias`),
+  KEY `IDX_D7D1D1E260E33F28` (`idContacts`),
+  KEY `IDX_D7D1D1E271C3071B` (`idMedias`),
+  CONSTRAINT `FK_D7D1D1E260E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_D7D1D1E271C3071B` FOREIGN KEY (`idMedias`) REFERENCES `me_media` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contact_medias`
+--
+
+LOCK TABLES `co_contact_medias` WRITE;
+/*!40000 ALTER TABLE `co_contact_medias` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_contact_medias` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contact_notes`
+--
+
+DROP TABLE IF EXISTS `co_contact_notes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contact_notes` (
+  `idContacts` int NOT NULL,
+  `idNotes` int NOT NULL,
+  PRIMARY KEY (`idContacts`,`idNotes`),
+  KEY `IDX_B85E7B3460E33F28` (`idContacts`),
+  KEY `IDX_B85E7B3416DFE591` (`idNotes`),
+  CONSTRAINT `FK_B85E7B3416DFE591` FOREIGN KEY (`idNotes`) REFERENCES `co_notes` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_B85E7B3460E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contact_notes`
+--
+
+LOCK TABLES `co_contact_notes` WRITE;
+/*!40000 ALTER TABLE `co_contact_notes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_contact_notes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contact_phones`
+--
+
+DROP TABLE IF EXISTS `co_contact_phones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contact_phones` (
+  `idContacts` int NOT NULL,
+  `idPhones` int NOT NULL,
+  PRIMARY KEY (`idContacts`,`idPhones`),
+  KEY `IDX_262B509660E33F28` (`idContacts`),
+  KEY `IDX_262B50968039866F` (`idPhones`),
+  CONSTRAINT `FK_262B509660E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_262B50968039866F` FOREIGN KEY (`idPhones`) REFERENCES `co_phones` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contact_phones`
+--
+
+LOCK TABLES `co_contact_phones` WRITE;
+/*!40000 ALTER TABLE `co_contact_phones` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_contact_phones` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contact_social_media_profiles`
+--
+
+DROP TABLE IF EXISTS `co_contact_social_media_profiles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contact_social_media_profiles` (
+  `idContacts` int NOT NULL,
+  `idSocialMediaProfiles` int NOT NULL,
+  PRIMARY KEY (`idContacts`,`idSocialMediaProfiles`),
+  KEY `IDX_74FF4CC060E33F28` (`idContacts`),
+  KEY `IDX_74FF4CC0573F8344` (`idSocialMediaProfiles`),
+  CONSTRAINT `FK_74FF4CC0573F8344` FOREIGN KEY (`idSocialMediaProfiles`) REFERENCES `co_social_media_profiles` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_74FF4CC060E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contact_social_media_profiles`
+--
+
+LOCK TABLES `co_contact_social_media_profiles` WRITE;
+/*!40000 ALTER TABLE `co_contact_social_media_profiles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_contact_social_media_profiles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contact_tags`
+--
+
+DROP TABLE IF EXISTS `co_contact_tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contact_tags` (
+  `idContacts` int NOT NULL,
+  `idTags` int NOT NULL,
+  PRIMARY KEY (`idContacts`,`idTags`),
+  KEY `IDX_4CB5255060E33F28` (`idContacts`),
+  KEY `IDX_4CB525501C41CAB8` (`idTags`),
+  CONSTRAINT `FK_4CB525501C41CAB8` FOREIGN KEY (`idTags`) REFERENCES `ta_tags` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_4CB5255060E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contact_tags`
+--
+
+LOCK TABLES `co_contact_tags` WRITE;
+/*!40000 ALTER TABLE `co_contact_tags` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_contact_tags` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contact_titles`
+--
+
+DROP TABLE IF EXISTS `co_contact_titles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contact_titles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_4463FC02B36786B` (`title`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contact_titles`
+--
+
+LOCK TABLES `co_contact_titles` WRITE;
+/*!40000 ALTER TABLE `co_contact_titles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_contact_titles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contact_urls`
+--
+
+DROP TABLE IF EXISTS `co_contact_urls`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contact_urls` (
+  `idContacts` int NOT NULL,
+  `idUrls` int NOT NULL,
+  PRIMARY KEY (`idContacts`,`idUrls`),
+  KEY `IDX_99D86D760E33F28` (`idContacts`),
+  KEY `IDX_99D86D75969693F` (`idUrls`),
+  CONSTRAINT `FK_99D86D75969693F` FOREIGN KEY (`idUrls`) REFERENCES `co_urls` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_99D86D760E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contact_urls`
+--
+
+LOCK TABLES `co_contact_urls` WRITE;
+/*!40000 ALTER TABLE `co_contact_urls` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_contact_urls` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_contacts`
+--
+
+DROP TABLE IF EXISTS `co_contacts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_contacts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `avatar` int DEFAULT NULL,
+  `firstName` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `middleName` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `lastName` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `birthday` date DEFAULT NULL,
+  `salutation` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `formOfAddress` int DEFAULT NULL,
+  `newsletter` tinyint(1) DEFAULT NULL,
+  `gender` varchar(1) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `note` longtext COLLATE utf8mb4_unicode_ci,
+  `mainEmail` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mainPhone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mainFax` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mainUrl` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idTitles` int DEFAULT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_79D45A95A254E939` (`idTitles`),
+  KEY `IDX_79D45A951677722F` (`avatar`),
+  KEY `IDX_79D45A95DBF11E1D` (`idUsersCreator`),
+  KEY `IDX_79D45A9530D07CD5` (`idUsersChanger`),
+  KEY `IDX_79D45A952392A156` (`firstName`),
+  KEY `IDX_79D45A9591161A88` (`lastName`),
+  CONSTRAINT `FK_79D45A951677722F` FOREIGN KEY (`avatar`) REFERENCES `me_media` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_79D45A9530D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_79D45A95A254E939` FOREIGN KEY (`idTitles`) REFERENCES `co_contact_titles` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_79D45A95DBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_contacts`
+--
+
+LOCK TABLES `co_contacts` WRITE;
+/*!40000 ALTER TABLE `co_contacts` DISABLE KEYS */;
+INSERT INTO `co_contacts` VALUES (1,NULL,'Adam',NULL,'Ministrator',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-12-09 09:37:46','2025-12-09 09:37:46',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `co_contacts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_email_types`
+--
+
+DROP TABLE IF EXISTS `co_email_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_email_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_email_types`
+--
+
+LOCK TABLES `co_email_types` WRITE;
+/*!40000 ALTER TABLE `co_email_types` DISABLE KEYS */;
+INSERT INTO `co_email_types` VALUES (1,'sulu_contact.work'),(2,'sulu_contact.private');
+/*!40000 ALTER TABLE `co_email_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_emails`
+--
+
+DROP TABLE IF EXISTS `co_emails`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_emails` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idEmailTypes` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_A2F2CB77D816E840` (`idEmailTypes`),
+  KEY `IDX_A2F2CB77E7927C74` (`email`),
+  CONSTRAINT `FK_A2F2CB77D816E840` FOREIGN KEY (`idEmailTypes`) REFERENCES `co_email_types` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_emails`
+--
+
+LOCK TABLES `co_emails` WRITE;
+/*!40000 ALTER TABLE `co_emails` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_emails` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_fax_types`
+--
+
+DROP TABLE IF EXISTS `co_fax_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_fax_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_fax_types`
+--
+
+LOCK TABLES `co_fax_types` WRITE;
+/*!40000 ALTER TABLE `co_fax_types` DISABLE KEYS */;
+INSERT INTO `co_fax_types` VALUES (1,'sulu_contact.work'),(2,'sulu_contact.private');
+/*!40000 ALTER TABLE `co_fax_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_faxes`
+--
+
+DROP TABLE IF EXISTS `co_faxes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_faxes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `fax` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idFaxTypes` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_A5EC6A18B466C5DA` (`idFaxTypes`),
+  CONSTRAINT `FK_A5EC6A18B466C5DA` FOREIGN KEY (`idFaxTypes`) REFERENCES `co_fax_types` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_faxes`
+--
+
+LOCK TABLES `co_faxes` WRITE;
+/*!40000 ALTER TABLE `co_faxes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_faxes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_notes`
+--
+
+DROP TABLE IF EXISTS `co_notes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_notes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `value` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_notes`
+--
+
+LOCK TABLES `co_notes` WRITE;
+/*!40000 ALTER TABLE `co_notes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_notes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_phone_types`
+--
+
+DROP TABLE IF EXISTS `co_phone_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_phone_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_phone_types`
+--
+
+LOCK TABLES `co_phone_types` WRITE;
+/*!40000 ALTER TABLE `co_phone_types` DISABLE KEYS */;
+INSERT INTO `co_phone_types` VALUES (1,'sulu_contact.work'),(2,'sulu_contact.private'),(3,'sulu_contact.mobile');
+/*!40000 ALTER TABLE `co_phone_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_phones`
+--
+
+DROP TABLE IF EXISTS `co_phones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_phones` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `phone` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idPhoneTypes` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_D5B0DD0A4249AD7` (`idPhoneTypes`),
+  CONSTRAINT `FK_D5B0DD0A4249AD7` FOREIGN KEY (`idPhoneTypes`) REFERENCES `co_phone_types` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_phones`
+--
+
+LOCK TABLES `co_phones` WRITE;
+/*!40000 ALTER TABLE `co_phones` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_phones` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_positions`
+--
+
+DROP TABLE IF EXISTS `co_positions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_positions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `position` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_9FBC367E462CE4F5` (`position`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_positions`
+--
+
+LOCK TABLES `co_positions` WRITE;
+/*!40000 ALTER TABLE `co_positions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_positions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_social_media_profile_types`
+--
+
+DROP TABLE IF EXISTS `co_social_media_profile_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_social_media_profile_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_social_media_profile_types`
+--
+
+LOCK TABLES `co_social_media_profile_types` WRITE;
+/*!40000 ALTER TABLE `co_social_media_profile_types` DISABLE KEYS */;
+INSERT INTO `co_social_media_profile_types` VALUES (1,'Facebook'),(2,'Twitter'),(3,'Instagram');
+/*!40000 ALTER TABLE `co_social_media_profile_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_social_media_profiles`
+--
+
+DROP TABLE IF EXISTS `co_social_media_profiles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_social_media_profiles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idSocialMediaTypes` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_DF585BFBB5BEA95F` (`idSocialMediaTypes`),
+  CONSTRAINT `FK_DF585BFBB5BEA95F` FOREIGN KEY (`idSocialMediaTypes`) REFERENCES `co_social_media_profile_types` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_social_media_profiles`
+--
+
+LOCK TABLES `co_social_media_profiles` WRITE;
+/*!40000 ALTER TABLE `co_social_media_profiles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_social_media_profiles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_url_types`
+--
+
+DROP TABLE IF EXISTS `co_url_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_url_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_url_types`
+--
+
+LOCK TABLES `co_url_types` WRITE;
+/*!40000 ALTER TABLE `co_url_types` DISABLE KEYS */;
+INSERT INTO `co_url_types` VALUES (1,'sulu_contact.work'),(2,'sulu_contact.private');
+/*!40000 ALTER TABLE `co_url_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `co_urls`
+--
+
+DROP TABLE IF EXISTS `co_urls`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `co_urls` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idUrlTypes` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_6F03842E882335CC` (`idUrlTypes`),
+  CONSTRAINT `FK_6F03842E882335CC` FOREIGN KEY (`idUrlTypes`) REFERENCES `co_url_types` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `co_urls`
+--
+
+LOCK TABLES `co_urls` WRITE;
+/*!40000 ALTER TABLE `co_urls` DISABLE KEYS */;
+/*!40000 ALTER TABLE `co_urls` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_collection_meta`
+--
+
+DROP TABLE IF EXISTS `me_collection_meta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_collection_meta` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci,
+  `locale` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idCollections` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_F8D5E71693782C96` (`idCollections`),
+  KEY `IDX_F8D5E7162B36786B` (`title`),
+  KEY `IDX_F8D5E7164180C698` (`locale`),
+  CONSTRAINT `FK_F8D5E71693782C96` FOREIGN KEY (`idCollections`) REFERENCES `me_collections` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_collection_meta`
+--
+
+LOCK TABLES `me_collection_meta` WRITE;
+/*!40000 ALTER TABLE `me_collection_meta` DISABLE KEYS */;
+INSERT INTO `me_collection_meta` VALUES (1,'System',NULL,'en',1),(2,'Sulu media',NULL,'en',2),(3,'Sulu Medien',NULL,'de',2),(4,'Preview images',NULL,'en',3),(5,'Vorschaubilder',NULL,'de',3),(6,'Sulu contacts',NULL,'en',4),(7,'Sulu Kontakte',NULL,'de',4),(8,'People',NULL,'en',5),(9,'Personen',NULL,'de',5),(10,'Organizations',NULL,'en',6),(11,'Organisationen',NULL,'de',6),(12,'Example Collection',NULL,'de',7);
+/*!40000 ALTER TABLE `me_collection_meta` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_collection_types`
+--
+
+DROP TABLE IF EXISTS `me_collection_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_collection_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `collection_type_key` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_FB78DFB179078378` (`collection_type_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_collection_types`
+--
+
+LOCK TABLES `me_collection_types` WRITE;
+/*!40000 ALTER TABLE `me_collection_types` DISABLE KEYS */;
+INSERT INTO `me_collection_types` VALUES (1,'Default','collection.default',NULL),(2,'System Collections','collection.system',NULL);
+/*!40000 ALTER TABLE `me_collection_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_collections`
+--
+
+DROP TABLE IF EXISTS `me_collections`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_collections` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `style` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `lft` int NOT NULL,
+  `rgt` int NOT NULL,
+  `depth` int NOT NULL,
+  `collection_key` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idCollectionsMetaDefault` int DEFAULT NULL,
+  `idCollectionTypes` int NOT NULL,
+  `idCollectionsParent` int DEFAULT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_F0D4887221904CD` (`collection_key`),
+  UNIQUE KEY `UNIQ_F0D4887CFA3F467` (`idCollectionsMetaDefault`),
+  KEY `IDX_F0D4887E67924D6` (`idCollectionTypes`),
+  KEY `IDX_F0D4887A4F2DCF8` (`idCollectionsParent`),
+  KEY `IDX_F0D4887DBF11E1D` (`idUsersCreator`),
+  KEY `IDX_F0D488730D07CD5` (`idUsersChanger`),
+  CONSTRAINT `FK_F0D488730D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_F0D4887A4F2DCF8` FOREIGN KEY (`idCollectionsParent`) REFERENCES `me_collections` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_F0D4887CFA3F467` FOREIGN KEY (`idCollectionsMetaDefault`) REFERENCES `me_collection_meta` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_F0D4887DBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_F0D4887E67924D6` FOREIGN KEY (`idCollectionTypes`) REFERENCES `me_collection_types` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_collections`
+--
+
+LOCK TABLES `me_collections` WRITE;
+/*!40000 ALTER TABLE `me_collections` DISABLE KEYS */;
+INSERT INTO `me_collections` VALUES (1,NULL,1,12,0,'system_collections','2025-12-09 09:37:46','2025-12-09 09:37:46',1,2,NULL,NULL,NULL),(2,NULL,2,5,1,'sulu_media','2025-12-09 09:37:46','2025-12-09 09:37:46',2,2,1,NULL,NULL),(3,NULL,3,4,2,'sulu_media.preview_image','2025-12-09 09:37:46','2025-12-09 09:37:46',4,2,2,NULL,NULL),(4,NULL,6,11,1,'sulu_contact','2025-12-09 09:37:46','2025-12-09 09:37:46',6,2,1,NULL,NULL),(5,NULL,7,8,2,'sulu_contact.contact','2025-12-09 09:37:46','2025-12-09 09:37:46',8,2,4,NULL,NULL),(6,NULL,9,10,2,'sulu_contact.account','2025-12-09 09:37:46','2025-12-09 09:37:46',10,2,4,NULL,NULL),(7,NULL,13,14,0,NULL,'2025-12-09 10:36:03','2025-12-09 10:36:03',12,1,NULL,1,1);
+/*!40000 ALTER TABLE `me_collections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_file_version_categories`
+--
+
+DROP TABLE IF EXISTS `me_file_version_categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_file_version_categories` (
+  `idFileVersions` int NOT NULL,
+  `idCategories` int NOT NULL,
+  PRIMARY KEY (`idFileVersions`,`idCategories`),
+  KEY `IDX_2F1E17D0911ADE33` (`idFileVersions`),
+  KEY `IDX_2F1E17D0B8075882` (`idCategories`),
+  CONSTRAINT `FK_2F1E17D0911ADE33` FOREIGN KEY (`idFileVersions`) REFERENCES `me_file_versions` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_2F1E17D0B8075882` FOREIGN KEY (`idCategories`) REFERENCES `ca_categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_file_version_categories`
+--
+
+LOCK TABLES `me_file_version_categories` WRITE;
+/*!40000 ALTER TABLE `me_file_version_categories` DISABLE KEYS */;
+/*!40000 ALTER TABLE `me_file_version_categories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_file_version_content_languages`
+--
+
+DROP TABLE IF EXISTS `me_file_version_content_languages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_file_version_content_languages` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `locale` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idFileVersions` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_F3FD652C911ADE33` (`idFileVersions`),
+  CONSTRAINT `FK_F3FD652C911ADE33` FOREIGN KEY (`idFileVersions`) REFERENCES `me_file_versions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_file_version_content_languages`
+--
+
+LOCK TABLES `me_file_version_content_languages` WRITE;
+/*!40000 ALTER TABLE `me_file_version_content_languages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `me_file_version_content_languages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_file_version_meta`
+--
+
+DROP TABLE IF EXISTS `me_file_version_meta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_file_version_meta` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci,
+  `copyright` longtext COLLATE utf8mb4_unicode_ci,
+  `credits` longtext COLLATE utf8mb4_unicode_ci,
+  `locale` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idFileVersions` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_AD44B0AD911ADE33` (`idFileVersions`),
+  KEY `IDX_AD44B0AD2B36786B` (`title`),
+  KEY `IDX_AD44B0AD4180C698` (`locale`),
+  CONSTRAINT `FK_AD44B0AD911ADE33` FOREIGN KEY (`idFileVersions`) REFERENCES `me_file_versions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_file_version_meta`
+--
+
+LOCK TABLES `me_file_version_meta` WRITE;
+/*!40000 ALTER TABLE `me_file_version_meta` DISABLE KEYS */;
+INSERT INTO `me_file_version_meta` VALUES (1,'26-4209x2769',NULL,NULL,NULL,'de',1),(2,'21-3008x2008',NULL,NULL,NULL,'de',2),(3,'27-3264x1836',NULL,NULL,NULL,'de',3),(4,'19-2500x1667',NULL,NULL,NULL,'de',4),(5,'0-5000x3333',NULL,NULL,NULL,'de',5);
+/*!40000 ALTER TABLE `me_file_version_meta` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_file_version_publish_languages`
+--
+
+DROP TABLE IF EXISTS `me_file_version_publish_languages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_file_version_publish_languages` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `locale` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idFileVersions` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_195DAB3C911ADE33` (`idFileVersions`),
+  CONSTRAINT `FK_195DAB3C911ADE33` FOREIGN KEY (`idFileVersions`) REFERENCES `me_file_versions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_file_version_publish_languages`
+--
+
+LOCK TABLES `me_file_version_publish_languages` WRITE;
+/*!40000 ALTER TABLE `me_file_version_publish_languages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `me_file_version_publish_languages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_file_version_tags`
+--
+
+DROP TABLE IF EXISTS `me_file_version_tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_file_version_tags` (
+  `idFileVersions` int NOT NULL,
+  `idTags` int NOT NULL,
+  PRIMARY KEY (`idFileVersions`,`idTags`),
+  KEY `IDX_150A30BE911ADE33` (`idFileVersions`),
+  KEY `IDX_150A30BE1C41CAB8` (`idTags`),
+  CONSTRAINT `FK_150A30BE1C41CAB8` FOREIGN KEY (`idTags`) REFERENCES `ta_tags` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_150A30BE911ADE33` FOREIGN KEY (`idFileVersions`) REFERENCES `me_file_versions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_file_version_tags`
+--
+
+LOCK TABLES `me_file_version_tags` WRITE;
+/*!40000 ALTER TABLE `me_file_version_tags` DISABLE KEYS */;
+/*!40000 ALTER TABLE `me_file_version_tags` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_file_versions`
+--
+
+DROP TABLE IF EXISTS `me_file_versions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_file_versions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `version` int NOT NULL,
+  `subVersion` int NOT NULL DEFAULT '0',
+  `size` int NOT NULL,
+  `downloadCounter` int NOT NULL DEFAULT '0',
+  `storageOptions` longtext COLLATE utf8mb4_unicode_ci,
+  `mimeType` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `properties` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `focusPointX` int DEFAULT NULL,
+  `focusPointY` int DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idFileVersionsMetaDefault` int DEFAULT NULL,
+  `idFiles` int DEFAULT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_7B6E89456B801096` (`idFileVersionsMetaDefault`),
+  KEY `IDX_7B6E894511F10344` (`idFiles`),
+  KEY `IDX_7B6E8945DBF11E1D` (`idUsersCreator`),
+  KEY `IDX_7B6E894530D07CD5` (`idUsersChanger`),
+  KEY `IDX_7B6E8945D8F2A087` (`mimeType`),
+  KEY `IDX_7B6E8945F7C0246A` (`size`),
+  KEY `IDX_7B6E8945BF1CD3C3` (`version`),
+  KEY `IDX_7B6E89455E237E06` (`name`),
+  CONSTRAINT `FK_7B6E894511F10344` FOREIGN KEY (`idFiles`) REFERENCES `me_files` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_7B6E894530D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_7B6E89456B801096` FOREIGN KEY (`idFileVersionsMetaDefault`) REFERENCES `me_file_version_meta` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_7B6E8945DBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_file_versions`
+--
+
+LOCK TABLES `me_file_versions` WRITE;
+/*!40000 ALTER TABLE `me_file_versions` DISABLE KEYS */;
+INSERT INTO `me_file_versions` VALUES (1,'26-4209x2769.jpg',1,0,1057754,0,'{\"segment\":\"10\",\"fileName\":\"26-4209x2769.jpg\"}','image/jpeg','{\"width\":4209,\"height\":2769}',NULL,NULL,'2025-12-09 10:36:17','2025-12-09 10:36:17',1,1,1,1),(2,'21-3008x2008.jpg',1,0,585221,0,'{\"segment\":\"09\",\"fileName\":\"21-3008x2008.jpg\"}','image/jpeg','{\"width\":3008,\"height\":2008}',NULL,NULL,'2025-12-09 10:36:17','2025-12-09 10:36:17',2,2,1,1),(3,'27-3264x1836.jpg',1,0,549606,0,'{\"segment\":\"10\",\"fileName\":\"27-3264x1836.jpg\"}','image/jpeg','{\"width\":3264,\"height\":1836}',NULL,NULL,'2025-12-09 10:36:17','2025-12-09 10:36:17',3,3,1,1),(4,'19-2500x1667.jpg',1,0,418422,0,'{\"segment\":\"02\",\"fileName\":\"19-2500x1667.jpg\"}','image/jpeg','{\"width\":2500,\"height\":1667}',NULL,NULL,'2025-12-09 10:36:17','2025-12-09 10:36:17',4,4,1,1),(5,'0-5000x3333.jpg',1,0,490823,0,'{\"segment\":\"03\",\"fileName\":\"0-5000x3333.jpg\"}','image/jpeg','{\"width\":5000,\"height\":3333}',NULL,NULL,'2025-12-09 10:36:18','2025-12-09 10:36:18',5,5,1,1);
+/*!40000 ALTER TABLE `me_file_versions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_files`
+--
+
+DROP TABLE IF EXISTS `me_files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_files` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `version` int NOT NULL,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idMedia` int NOT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_CA8D04277DE8E211` (`idMedia`),
+  KEY `IDX_CA8D0427DBF11E1D` (`idUsersCreator`),
+  KEY `IDX_CA8D042730D07CD5` (`idUsersChanger`),
+  KEY `IDX_CA8D0427BF1CD3C3` (`version`),
+  CONSTRAINT `FK_CA8D042730D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_CA8D04277DE8E211` FOREIGN KEY (`idMedia`) REFERENCES `me_media` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_CA8D0427DBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_files`
+--
+
+LOCK TABLES `me_files` WRITE;
+/*!40000 ALTER TABLE `me_files` DISABLE KEYS */;
+INSERT INTO `me_files` VALUES (1,1,'2025-12-09 10:36:17','2025-12-09 10:36:17',1,1,1),(2,1,'2025-12-09 10:36:17','2025-12-09 10:36:17',2,1,1),(3,1,'2025-12-09 10:36:17','2025-12-09 10:36:17',3,1,1),(4,1,'2025-12-09 10:36:17','2025-12-09 10:36:17',4,1,1),(5,1,'2025-12-09 10:36:18','2025-12-09 10:36:18',5,1,1);
+/*!40000 ALTER TABLE `me_files` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_format_options`
+--
+
+DROP TABLE IF EXISTS `me_format_options`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_format_options` (
+  `format_key` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `crop_x` int NOT NULL,
+  `crop_y` int NOT NULL,
+  `crop_width` int NOT NULL,
+  `crop_height` int NOT NULL,
+  `fileVersion` int NOT NULL,
+  PRIMARY KEY (`format_key`,`fileVersion`),
+  KEY `IDX_6D25443B31852B63` (`fileVersion`),
+  CONSTRAINT `FK_6D25443B31852B63` FOREIGN KEY (`fileVersion`) REFERENCES `me_file_versions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_format_options`
+--
+
+LOCK TABLES `me_format_options` WRITE;
+/*!40000 ALTER TABLE `me_format_options` DISABLE KEYS */;
+/*!40000 ALTER TABLE `me_format_options` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_media`
+--
+
+DROP TABLE IF EXISTS `me_media`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_media` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idMediaTypes` int NOT NULL,
+  `idPreviewImage` int DEFAULT NULL,
+  `idCollections` int NOT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_A694E572D1EB44DE` (`idPreviewImage`),
+  KEY `IDX_A694E57284671716` (`idMediaTypes`),
+  KEY `IDX_A694E57293782C96` (`idCollections`),
+  KEY `IDX_A694E572DBF11E1D` (`idUsersCreator`),
+  KEY `IDX_A694E57230D07CD5` (`idUsersChanger`),
+  KEY `IDX_A694E572A3F33DFA` (`changed`),
+  KEY `IDX_A694E572B23DB7B8` (`created`),
+  CONSTRAINT `FK_A694E57230D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_A694E57284671716` FOREIGN KEY (`idMediaTypes`) REFERENCES `me_media_types` (`id`),
+  CONSTRAINT `FK_A694E57293782C96` FOREIGN KEY (`idCollections`) REFERENCES `me_collections` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_A694E572D1EB44DE` FOREIGN KEY (`idPreviewImage`) REFERENCES `me_media` (`id`),
+  CONSTRAINT `FK_A694E572DBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_media`
+--
+
+LOCK TABLES `me_media` WRITE;
+/*!40000 ALTER TABLE `me_media` DISABLE KEYS */;
+INSERT INTO `me_media` VALUES (1,'2025-12-09 10:36:17','2025-12-09 10:36:17',2,NULL,7,1,1),(2,'2025-12-09 10:36:17','2025-12-09 10:36:17',2,NULL,7,1,1),(3,'2025-12-09 10:36:17','2025-12-09 10:36:17',2,NULL,7,1,1),(4,'2025-12-09 10:36:17','2025-12-09 10:36:17',2,NULL,7,1,1),(5,'2025-12-09 10:36:18','2025-12-09 10:36:18',2,NULL,7,1,1);
+/*!40000 ALTER TABLE `me_media` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_media_types`
+--
+
+DROP TABLE IF EXISTS `me_media_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_media_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `IDX_9A01D6E85E237E06` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_media_types`
+--
+
+LOCK TABLES `me_media_types` WRITE;
+/*!40000 ALTER TABLE `me_media_types` DISABLE KEYS */;
+INSERT INTO `me_media_types` VALUES (1,'document',NULL),(2,'image',NULL),(3,'video',NULL),(4,'audio',NULL);
+/*!40000 ALTER TABLE `me_media_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phpcr_binarydata`
+--
+
+DROP TABLE IF EXISTS `phpcr_binarydata`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `phpcr_binarydata` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `node_id` int NOT NULL,
+  `property_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `workspace_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idx` int NOT NULL DEFAULT '0',
+  `data` longblob NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_37E65615460D9FD7413BC13C1AC10DC4E7087E10` (`node_id`,`property_name`,`workspace_name`,`idx`),
+  KEY `IDX_37E65615460D9FD7` (`node_id`),
+  CONSTRAINT `FK_37E65615460D9FD7` FOREIGN KEY (`node_id`) REFERENCES `phpcr_nodes` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phpcr_binarydata`
+--
+
+LOCK TABLES `phpcr_binarydata` WRITE;
+/*!40000 ALTER TABLE `phpcr_binarydata` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phpcr_binarydata` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phpcr_internal_index_types`
+--
+
+DROP TABLE IF EXISTS `phpcr_internal_index_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `phpcr_internal_index_types` (
+  `type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `node_id` int NOT NULL,
+  PRIMARY KEY (`type`,`node_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phpcr_internal_index_types`
+--
+
+LOCK TABLES `phpcr_internal_index_types` WRITE;
+/*!40000 ALTER TABLE `phpcr_internal_index_types` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phpcr_internal_index_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phpcr_namespaces`
+--
+
+DROP TABLE IF EXISTS `phpcr_namespaces`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `phpcr_namespaces` (
+  `prefix` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uri` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`prefix`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phpcr_namespaces`
+--
+
+LOCK TABLES `phpcr_namespaces` WRITE;
+/*!40000 ALTER TABLE `phpcr_namespaces` DISABLE KEYS */;
+INSERT INTO `phpcr_namespaces` VALUES ('i18n','http://sulu.io/phpcr/locale'),('phpcrmig','http://www.danteech.com/phpcr-migrations'),('sec','http://sulu.io/phpcr/sec'),('settings','http://sulu.io/phpcr/settings'),('sulu','http://sulu.io/phpcr');
+/*!40000 ALTER TABLE `phpcr_namespaces` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phpcr_nodes`
+--
+
+DROP TABLE IF EXISTS `phpcr_nodes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `phpcr_nodes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `path` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parent` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `local_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `namespace` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `workspace_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `identifier` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `props` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `numerical_props` longtext COLLATE utf8mb4_unicode_ci,
+  `depth` int NOT NULL,
+  `sort_order` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_A4624AD7B548B0F1AC10DC4` (`path`,`workspace_name`),
+  UNIQUE KEY `UNIQ_A4624AD7772E836A1AC10DC4` (`identifier`,`workspace_name`),
+  KEY `IDX_A4624AD73D8E604F` (`parent`),
+  KEY `IDX_A4624AD78CDE5729` (`type`),
+  KEY `IDX_A4624AD7623C14D533E16B56` (`local_name`,`namespace`)
+) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phpcr_nodes`
+--
+
+LOCK TABLES `phpcr_nodes` WRITE;
+/*!40000 ALTER TABLE `phpcr_nodes` DISABLE KEYS */;
+INSERT INTO `phpcr_nodes` VALUES (1,'/','','','','default','38c3fc96-c125-4917-940b-3cd26627700e','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property></sv:node>\n',NULL,0,NULL),(2,'/','','','','default_live','9b1c67fe-f68f-4bb5-a254-d099b49e8477','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property></sv:node>\n',NULL,0,NULL),(3,'/cmf','/','cmf','','default','894f3a2a-5737-4643-9ea9-fd3d4eeeab75','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">894f3a2a-5737-4643-9ea9-fd3d4eeeab75</sv:value></sv:property></sv:node>\n',NULL,1,1),(4,'/cmf/website','/cmf','website','','default','c96576d9-db05-4517-9767-20e5a000b563','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">c96576d9-db05-4517-9767-20e5a000b563</sv:value></sv:property><sv:property sv:name=\"settings:snippets-footer\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">0784afdc-28e5-4df2-a314-967e4853fc71</sv:value></sv:property><sv:property sv:name=\"settings:snippets-sidebar\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property></sv:node>\n',NULL,2,1),(5,'/cmf/website/contents','/cmf/website','contents','','default','db367f2b-7e1d-42e0-8ea2-b39b3d7511bf','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:home</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">Homepage</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">/</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">homepage</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.698+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.698+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.698+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.770+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">Homepage</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-categories\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:en-excerpt-tags\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:en-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">/</sv:value></sv:property><sv:property sv:name=\"i18n:en-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:en-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">homepage</sv:value></sv:property><sv:property sv:name=\"i18n:en-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.779+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.779+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.779+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:en-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.787+00:00</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"i18n:en-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n',3,1),(6,'/cmf/website/routes','/cmf/website','routes','','default','d0c38ae8-b28c-4a29-8ebf-6239bc0a56c9','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">d0c38ae8-b28c-4a29-8ebf-6239bc0a56c9</sv:value></sv:property></sv:node>\n',NULL,3,2),(7,'/cmf/website/routes/de','/cmf/website/routes','de','','default','b6855442-daff-41c1-bf92-d4841d3d611e','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">b6855442-daff-41c1-bf92-d4841d3d611e</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.796+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.796+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property></sv:node>\n',NULL,4,1),(8,'/cmf/website/routes/en','/cmf/website/routes','en','','default','34238003-2e42-4d3a-9acb-f7fb91dac2ea','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">34238003-2e42-4d3a-9acb-f7fb91dac2ea</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.797+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.797+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property></sv:node>\n',NULL,4,2),(9,'/cmf','/','cmf','','default_live','894f3a2a-5737-4643-9ea9-fd3d4eeeab75','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">894f3a2a-5737-4643-9ea9-fd3d4eeeab75</sv:value></sv:property></sv:node>\n',NULL,1,2),(10,'/cmf/website','/cmf','website','','default_live','c96576d9-db05-4517-9767-20e5a000b563','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">c96576d9-db05-4517-9767-20e5a000b563</sv:value></sv:property><sv:property sv:name=\"settings:snippets-footer\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">0784afdc-28e5-4df2-a314-967e4853fc71</sv:value></sv:property><sv:property sv:name=\"settings:snippets-sidebar\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property></sv:node>\n',NULL,2,2),(11,'/cmf/website/contents','/cmf/website','contents','','default_live','db367f2b-7e1d-42e0-8ea2-b39b3d7511bf','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:home</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">Homepage</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">/</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">homepage</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.770+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.698+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.698+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.698+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">Homepage</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-categories\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:en-excerpt-tags\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:en-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">/</sv:value></sv:property><sv:property sv:name=\"i18n:en-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:en-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">homepage</sv:value></sv:property><sv:property sv:name=\"i18n:en-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.787+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.779+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.779+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.779+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:en-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"i18n:en-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n',3,3),(12,'/cmf/website/routes','/cmf/website','routes','','default_live','d0c38ae8-b28c-4a29-8ebf-6239bc0a56c9','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">d0c38ae8-b28c-4a29-8ebf-6239bc0a56c9</sv:value></sv:property></sv:node>\n',NULL,3,4),(13,'/cmf/website/routes/de','/cmf/website/routes','de','','default_live','b6855442-daff-41c1-bf92-d4841d3d611e','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">b6855442-daff-41c1-bf92-d4841d3d611e</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.796+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.796+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property></sv:node>\n',NULL,4,3),(14,'/cmf/website/routes/en','/cmf/website/routes','en','','default_live','34238003-2e42-4d3a-9acb-f7fb91dac2ea','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">34238003-2e42-4d3a-9acb-f7fb91dac2ea</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.797+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.797+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property></sv:node>\n',NULL,4,4),(15,'/cmf/snippets','/cmf','snippets','','default','84279d21-0cc5-44a2-8c23-ed9fb3807064','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property></sv:node>\n',NULL,2,3),(16,'/cmf/snippets','/cmf','snippets','','default_live','f07936f9-ee87-492c-9ccd-18ca26fb5e74','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property></sv:node>\n',NULL,2,4),(17,'/cmf/website/custom-urls','/cmf/website','custom-urls','','default','7c244f41-ba24-411d-bae0-a960105697b4','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">7c244f41-ba24-411d-bae0-a960105697b4</sv:value></sv:property></sv:node>\n',NULL,3,5),(18,'/cmf/website/custom-urls/items','/cmf/website/custom-urls','items','','default','2bb90cf2-8092-402e-9766-038952e4ed80','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">2bb90cf2-8092-402e-9766-038952e4ed80</sv:value></sv:property></sv:node>\n',NULL,4,1),(19,'/cmf/website/custom-urls/routes','/cmf/website/custom-urls','routes','','default','999f6668-d075-43a3-90aa-2226b696760a','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">999f6668-d075-43a3-90aa-2226b696760a</sv:value></sv:property></sv:node>\n',NULL,4,2),(20,'/cmf/articles','/cmf','articles','','default','ba6777aa-c0ef-4e29-8d3b-219e0b3c0c4e','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">ba6777aa-c0ef-4e29-8d3b-219e0b3c0c4e</sv:value></sv:property></sv:node>\n',NULL,2,5),(21,'/jcr:versions','/','versions','http://www.jcp.org/jcr/1.0','default','5394a364-bbf7-4564-b696-4d30ace913bf','phpcrmig:versions','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"17\">phpcrmig:versions</sv:value></sv:property></sv:node>\n',NULL,1,3),(22,'/jcr:versions/201504271608','/jcr:versions','201504271608','','default','e76efd18-8673-4b6f-9ad5-a20e9c92d541','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.972+00:00</sv:value></sv:property></sv:node>\n',NULL,2,1),(23,'/jcr:versions/201504281842','/jcr:versions','201504281842','','default','c6d048e4-fc20-4b4c-aa04-21f19d74f4e9','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.973+00:00</sv:value></sv:property></sv:node>\n',NULL,2,2),(24,'/jcr:versions/201507231648','/jcr:versions','201507231648','','default','446af443-da2c-4b0d-a761-cc2a68b0ac00','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.974+00:00</sv:value></sv:property></sv:node>\n',NULL,2,3),(25,'/jcr:versions/201507281529','/jcr:versions','201507281529','','default','d2737046-059b-418f-8d70-1b15b7830c6f','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.974+00:00</sv:value></sv:property></sv:node>\n',NULL,2,4),(26,'/jcr:versions/201510210733','/jcr:versions','201510210733','','default','4d3d8685-84d4-476a-ad88-37948c682b40','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.975+00:00</sv:value></sv:property></sv:node>\n',NULL,2,5),(27,'/jcr:versions/201511171538','/jcr:versions','201511171538','','default','ceb3a8fe-4a57-4fb5-9202-e6c64526a3ca','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.976+00:00</sv:value></sv:property></sv:node>\n',NULL,2,6),(28,'/jcr:versions/201511240843','/jcr:versions','201511240843','','default','fedcf406-c835-44bf-a7ee-d5c5bb0f65bf','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.977+00:00</sv:value></sv:property></sv:node>\n',NULL,2,7),(29,'/jcr:versions/201511240844','/jcr:versions','201511240844','','default','63a07b8c-2be8-45ef-9e5f-ec21e6360406','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.978+00:00</sv:value></sv:property></sv:node>\n',NULL,2,8),(30,'/jcr:versions/201512090753','/jcr:versions','201512090753','','default','7617daa4-4cfa-44bf-8987-9bb0832fcffc','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.978+00:00</sv:value></sv:property></sv:node>\n',NULL,2,9),(31,'/jcr:versions/201607181533','/jcr:versions','201607181533','','default','97ed0966-5e2c-4772-bd20-c2329a407e8b','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.981+00:00</sv:value></sv:property></sv:node>\n',NULL,2,10),(32,'/jcr:versions/201702021447','/jcr:versions','201702021447','','default','44703edb-d2f7-4fb5-a839-e4ae816c3ec5','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.982+00:00</sv:value></sv:property></sv:node>\n',NULL,2,11),(33,'/jcr:versions/201702211450','/jcr:versions','201702211450','','default','d38fb295-aae3-4807-877e-17e326b0c137','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.983+00:00</sv:value></sv:property></sv:node>\n',NULL,2,12),(34,'/jcr:versions/201712041018','/jcr:versions','201712041018','','default','4ef49477-27b4-4b92-b95c-9414d4a9bb48','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.984+00:00</sv:value></sv:property></sv:node>\n',NULL,2,13),(35,'/jcr:versions/201811091000','/jcr:versions','201811091000','','default','fa3d37e4-5d34-4ff8-b3e4-94be7a91c10d','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.984+00:00</sv:value></sv:property></sv:node>\n',NULL,2,14),(36,'/jcr:versions/201903271333','/jcr:versions','201903271333','','default','9864b384-cfc4-4b2d-adcb-dee75c9ae453','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.985+00:00</sv:value></sv:property></sv:node>\n',NULL,2,15),(37,'/jcr:versions/201904110902','/jcr:versions','201904110902','','default','f203dd42-0d0c-4c87-bd97-a875c7a0db14','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.986+00:00</sv:value></sv:property></sv:node>\n',NULL,2,16),(38,'/jcr:versions/201905071542','/jcr:versions','201905071542','','default','d2d3ab6d-d1d7-4279-b3b7-42676e8f1852','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.986+00:00</sv:value></sv:property></sv:node>\n',NULL,2,17),(39,'/jcr:versions/202005151141','/jcr:versions','202005151141','','default','7c63cfe8-e3bd-4dc1-a92f-390174b7387b','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.987+00:00</sv:value></sv:property></sv:node>\n',NULL,2,18),(40,'/jcr:versions/202005191116','/jcr:versions','202005191116','','default','f9da868d-0b50-42ac-b802-ac6844e55074','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.988+00:00</sv:value></sv:property></sv:node>\n',NULL,2,19),(41,'/jcr:versions/202005191117','/jcr:versions','202005191117','','default','c83bfb7b-bd32-4006-bde0-0852fae06c28','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.988+00:00</sv:value></sv:property></sv:node>\n',NULL,2,20),(42,'/jcr:versions/202005250917','/jcr:versions','202005250917','','default','66d5ce32-b44e-4724-a57c-dfb0bf30e943','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.989+00:00</sv:value></sv:property></sv:node>\n',NULL,2,21),(43,'/jcr:versions/202005250920','/jcr:versions','202005250920','','default','5928589d-b7a1-4b63-9fa2-07a9e9696e05','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.989+00:00</sv:value></sv:property></sv:node>\n',NULL,2,22),(44,'/jcr:versions/202105311447','/jcr:versions','202105311447','','default','833aad8b-59b6-4d63-90ae-91f761635850','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.990+00:00</sv:value></sv:property></sv:node>\n',NULL,2,23),(45,'/jcr:versions/202210140922','/jcr:versions','202210140922','','default','50e66543-16ec-4c98-9faf-9c3e4c0c085b','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.991+00:00</sv:value></sv:property></sv:node>\n',NULL,2,24),(46,'/jcr:versions/202210241106','/jcr:versions','202210241106','','default','cc689651-1d99-4543-a8b1-b43d13c65f51','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.992+00:00</sv:value></sv:property></sv:node>\n',NULL,2,25),(47,'/jcr:versions/202404051600','/jcr:versions','202404051600','','default','4e3a1574-a4f6-44af-a91c-18c232a44051','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.992+00:00</sv:value></sv:property></sv:node>\n',NULL,2,26),(48,'/jcr:versions/202404051700','/jcr:versions','202404051700','','default','6f94e13b-1797-4782-a322-309340d2d556','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.996+00:00</sv:value></sv:property></sv:node>\n',NULL,2,27),(49,'/jcr:versions/202407111600','/jcr:versions','202407111600','','default','74f9f200-5b90-4468-9344-121e936db259','phpcrmig:version','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"16\">phpcrmig:version</sv:value></sv:property><sv:property sv:name=\"jcr:createdBy\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">admin</sv:value></sv:property><sv:property sv:name=\"jcr:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T09:37:45.996+00:00</sv:value></sv:property></sv:node>\n',NULL,2,28),(50,'/cmf/website/contents/example-page-1','/cmf/website/contents','example-page-1','','default','16060395-4bbf-4e1d-9c8e-fe5265890c99','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">16060395-4bbf-4e1d-9c8e-fe5265890c99</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"i18n:en-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"14\">Example Page 1</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"9\">Seo Title</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">Seo Description</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"12\">Seo Keywords</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">this is my canonical</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"464\">&lt;p&gt;Magna deserunt dolore nisi consequat tempor Lorem dolor eiusmod nisi qui dolor id. Amet id ex enim cillum labore qui nulla deserunt exercitation id do occaecat. Aute magna occaecat aliqua duis est mollit. Magna quis eiusmod ea id deserunt occaecat dolor reprehenderit sunt sunt non est aliquip. Officia Lorem eu ipsum minim amet non laborum excepteur eiusmod. Minim enim elit sint veniam sunt officia culpa. Pariatur dolore anim adipisicing enim esse irure.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[1]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[3]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">/example-page-1</sv:value></sv:property><sv:property sv:name=\"i18n:en-subtitle\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"16\">Example subtitle</sv:value></sv:property><sv:property sv:name=\"i18n:en-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"id\":3}</sv:value></sv:property><sv:property sv:name=\"i18n:en-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"4\">text</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Lorem Ipsum</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-description#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-image#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">quote</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-quote#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"525\">Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-author#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">John Doe</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-authorSnippet#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">gallery</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">Images</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-images#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">{\"displayOption\":null,\"ids\":[5,1,2]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">smart_content_pages</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Smart Pages</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-smartContent#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"276\">{\"audienceTargeting\":null,\"categories\":null,\"categoryOperator\":\"or\",\"dataSource\":\"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\",\"includeSubFolders\":true,\"limitResult\":null,\"sortBy\":null,\"sortMethod\":\"asc\",\"tagOperator\":\"or\",\"tags\":null,\"types\":[\"homepage\",\"default\"],\"presentAs\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">nested</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"13\">Nested Blocks</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">inner_text</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-text#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"492\">&lt;p&gt;Aute aute elit velit est ipsum est in. Excepteur non quis sit voluptate proident sunt nisi dolore mollit velit consectetur aliquip nisi quis cillum. Do eu nisi nisi irure nulla reprehenderit laborum voluptate. Consectetur nisi non consectetur mollit nisi aliqua consequat. Minim aliqua voluptate magna id quis laboris reprehenderit. Dolor amet aliquip id commodo. Sint do aliquip amet eu veniam non occaecat. Amet nisi cupidatat consectetur sit quis elit ad dolor qui quis elit labore.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">inner_image</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-image#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"29\">{\"displayOption\":null,\"id\":4}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-caption#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"38\">Aute aute elit velit est ipsum est in.</sv:value></sv:property><sv:property sv:name=\"i18n:en-sidebarSnippet\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:en-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property><sv:property sv:name=\"i18n:en-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:en-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:48.978+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:43:47.332+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"><sv:value length=\"4\">main</sv:value><sv:value length=\"6\">footer</sv:value></sv:property><sv:property sv:name=\"i18n:en-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:51.841+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">This is my excerpt</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-more\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">This is my more text</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"14\">Example Page 1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"9\">Seo Title</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">Seo Description</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"12\">Seo Keywords</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">this is my canonical</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">This is my excerpt</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-more\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">This is my more text</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"464\">&lt;p&gt;Magna deserunt dolore nisi consequat tempor Lorem dolor eiusmod nisi qui dolor id. Amet id ex enim cillum labore qui nulla deserunt exercitation id do occaecat. Aute magna occaecat aliqua duis est mollit. Magna quis eiusmod ea id deserunt occaecat dolor reprehenderit sunt sunt non est aliquip. Officia Lorem eu ipsum minim amet non laborum excepteur eiusmod. Minim enim elit sint veniam sunt officia culpa. Pariatur dolore anim adipisicing enim esse irure.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[1]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[3]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"17\">/example-page-1-1</sv:value></sv:property><sv:property sv:name=\"i18n:de-subtitle\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"16\">Example subtitle</sv:value></sv:property><sv:property sv:name=\"i18n:de-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"id\":3}</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"4\">text</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Lorem Ipsum</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-description#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-image#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">quote</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-quote#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"525\">Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-author#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">John Doe</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-authorSnippet#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">gallery</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">Images</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-images#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">{\"displayOption\":null,\"ids\":[5,1,2]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">smart_content_pages</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Smart Pages</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-smartContent#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"276\">{\"audienceTargeting\":null,\"categories\":null,\"categoryOperator\":\"or\",\"dataSource\":\"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\",\"includeSubFolders\":true,\"limitResult\":null,\"sortBy\":null,\"sortMethod\":\"asc\",\"tagOperator\":\"or\",\"tags\":null,\"types\":[\"homepage\",\"default\"],\"presentAs\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">nested</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"13\">Nested Blocks</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">inner_text</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-text#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"492\">&lt;p&gt;Aute aute elit velit est ipsum est in. Excepteur non quis sit voluptate proident sunt nisi dolore mollit velit consectetur aliquip nisi quis cillum. Do eu nisi nisi irure nulla reprehenderit laborum voluptate. Consectetur nisi non consectetur mollit nisi aliqua consequat. Minim aliqua voluptate magna id quis laboris reprehenderit. Dolor amet aliquip id commodo. Sint do aliquip amet eu veniam non occaecat. Amet nisi cupidatat consectetur sit quis elit ad dolor qui quis elit labore.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">inner_image</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-image#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"29\">{\"displayOption\":null,\"id\":4}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-caption#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"38\">Aute aute elit velit est ipsum est in.</sv:value></sv:property><sv:property sv:name=\"i18n:de-sidebarSnippet\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:07.201+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-11T10:49:09.301+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"><sv:value length=\"4\">main</sv:value><sv:value length=\"6\">footer</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"219\">{\"hidden\":false,\"schedules_enabled\":true,\"schedules\":[{\"type\":\"fixed\",\"start\":\"2025-12-17T00:00:00\",\"end\":\"2025-12-31T00:00:00\"}],\"segment_enabled\":null,\"segments\":null,\"target_groups_enabled\":null,\"target_groups\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:10.172+00:00</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n',4,1),(51,'/cmf/website/routes/de/example-page-1','/cmf/website/routes/de','example-page-1','','default','f8dda34c-149b-42a4-94e1-9ad00a03d076','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">f8dda34c-149b-42a4-94e1-9ad00a03d076</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.802+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:10.189+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">72602934-3a37-4ab9-918e-e45d046291c0</sv:value></sv:property></sv:node>\n',NULL,5,1),(52,'/cmf/website/contents/example-page-1','/cmf/website/contents','example-page-1','','default_live','16060395-4bbf-4e1d-9c8e-fe5265890c99','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">16060395-4bbf-4e1d-9c8e-fe5265890c99</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"14\">Example Page 1</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"9\">Seo Title</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">Seo Description</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"12\">Seo Keywords</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">this is my canonical</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"464\">&lt;p&gt;Magna deserunt dolore nisi consequat tempor Lorem dolor eiusmod nisi qui dolor id. Amet id ex enim cillum labore qui nulla deserunt exercitation id do occaecat. Aute magna occaecat aliqua duis est mollit. Magna quis eiusmod ea id deserunt occaecat dolor reprehenderit sunt sunt non est aliquip. Officia Lorem eu ipsum minim amet non laborum excepteur eiusmod. Minim enim elit sint veniam sunt officia culpa. Pariatur dolore anim adipisicing enim esse irure.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[1]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[3]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">/example-page-1</sv:value></sv:property><sv:property sv:name=\"i18n:en-subtitle\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"16\">Example subtitle</sv:value></sv:property><sv:property sv:name=\"i18n:en-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"id\":3}</sv:value></sv:property><sv:property sv:name=\"i18n:en-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"4\">text</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Lorem Ipsum</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-description#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-image#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">quote</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-quote#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"525\">Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-author#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">John Doe</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-authorSnippet#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">gallery</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">Images</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-images#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">{\"displayOption\":null,\"ids\":[5,1,2]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">smart_content_pages</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Smart Pages</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-smartContent#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"276\">{\"audienceTargeting\":null,\"categories\":null,\"categoryOperator\":\"or\",\"dataSource\":\"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\",\"includeSubFolders\":true,\"limitResult\":null,\"sortBy\":null,\"sortMethod\":\"asc\",\"tagOperator\":\"or\",\"tags\":null,\"types\":[\"homepage\",\"default\"],\"presentAs\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">nested</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"13\">Nested Blocks</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">inner_text</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-text#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"492\">&lt;p&gt;Aute aute elit velit est ipsum est in. Excepteur non quis sit voluptate proident sunt nisi dolore mollit velit consectetur aliquip nisi quis cillum. Do eu nisi nisi irure nulla reprehenderit laborum voluptate. Consectetur nisi non consectetur mollit nisi aliqua consequat. Minim aliqua voluptate magna id quis laboris reprehenderit. Dolor amet aliquip id commodo. Sint do aliquip amet eu veniam non occaecat. Amet nisi cupidatat consectetur sit quis elit ad dolor qui quis elit labore.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">inner_image</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-image#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"29\">{\"displayOption\":null,\"id\":4}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-caption#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"38\">Aute aute elit velit est ipsum est in.</sv:value></sv:property><sv:property sv:name=\"i18n:en-sidebarSnippet\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:en-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property><sv:property sv:name=\"i18n:en-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:en-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:51.841+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:48.978+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:43:47.332+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"><sv:value length=\"4\">main</sv:value><sv:value length=\"6\">footer</sv:value></sv:property><sv:property sv:name=\"i18n:en-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">This is my excerpt</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-more\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">This is my more text</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"14\">Example Page 1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"9\">Seo Title</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">Seo Description</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"12\">Seo Keywords</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">this is my canonical</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">This is my excerpt</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-more\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">This is my more text</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"464\">&lt;p&gt;Magna deserunt dolore nisi consequat tempor Lorem dolor eiusmod nisi qui dolor id. Amet id ex enim cillum labore qui nulla deserunt exercitation id do occaecat. Aute magna occaecat aliqua duis est mollit. Magna quis eiusmod ea id deserunt occaecat dolor reprehenderit sunt sunt non est aliquip. Officia Lorem eu ipsum minim amet non laborum excepteur eiusmod. Minim enim elit sint veniam sunt officia culpa. Pariatur dolore anim adipisicing enim esse irure.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[1]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[3]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"17\">/example-page-1-1</sv:value></sv:property><sv:property sv:name=\"i18n:de-subtitle\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"16\">Example subtitle</sv:value></sv:property><sv:property sv:name=\"i18n:de-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"id\":3}</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"4\">text</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Lorem Ipsum</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-description#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-image#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">quote</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"219\">{\"hidden\":false,\"schedules_enabled\":true,\"schedules\":[{\"type\":\"fixed\",\"start\":\"2025-12-17T00:00:00\",\"end\":\"2025-12-31T00:00:00\"}],\"segment_enabled\":null,\"segments\":null,\"target_groups_enabled\":null,\"target_groups\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-quote#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"525\">Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-author#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">John Doe</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-authorSnippet#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">gallery</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">Images</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-images#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">{\"displayOption\":null,\"ids\":[5,1,2]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">smart_content_pages</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Smart Pages</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-smartContent#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"276\">{\"audienceTargeting\":null,\"categories\":null,\"categoryOperator\":\"or\",\"dataSource\":\"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\",\"includeSubFolders\":true,\"limitResult\":null,\"sortBy\":null,\"sortMethod\":\"asc\",\"tagOperator\":\"or\",\"tags\":null,\"types\":[\"homepage\",\"default\"],\"presentAs\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">nested</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"13\">Nested Blocks</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">inner_text</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-text#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"492\">&lt;p&gt;Aute aute elit velit est ipsum est in. Excepteur non quis sit voluptate proident sunt nisi dolore mollit velit consectetur aliquip nisi quis cillum. Do eu nisi nisi irure nulla reprehenderit laborum voluptate. Consectetur nisi non consectetur mollit nisi aliqua consequat. Minim aliqua voluptate magna id quis laboris reprehenderit. Dolor amet aliquip id commodo. Sint do aliquip amet eu veniam non occaecat. Amet nisi cupidatat consectetur sit quis elit ad dolor qui quis elit labore.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">inner_image</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-image#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"29\">{\"displayOption\":null,\"id\":4}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-caption#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"38\">Aute aute elit velit est ipsum est in.</sv:value></sv:property><sv:property sv:name=\"i18n:de-sidebarSnippet\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:10.172+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:07.201+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-11T10:49:09.301+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"><sv:value length=\"4\">main</sv:value><sv:value length=\"6\">footer</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n',4,2),(53,'/cmf/website/routes/de/example-page-1','/cmf/website/routes/de','example-page-1','','default_live','f8dda34c-149b-42a4-94e1-9ad00a03d076','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">f8dda34c-149b-42a4-94e1-9ad00a03d076</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.802+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:10.189+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">72602934-3a37-4ab9-918e-e45d046291c0</sv:value></sv:property></sv:node>\n',NULL,5,2),(54,'/cmf/snippets/default','/cmf/snippets','default','','default','845e4c21-3afd-49a3-ad1b-f472de658ed4','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">845e4c21-3afd-49a3-ad1b-f472de658ed4</sv:value></sv:property></sv:node>\n',NULL,3,1),(55,'/cmf/snippets/default/test-default-snippet','/cmf/snippets/default','test-default-snippet','','default','43420664-7b06-464e-a6b1-f73a0847f1f9','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"12\">sulu:snippet</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">43420664-7b06-464e-a6b1-f73a0847f1f9</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">Test Default Snippet</sv:value></sv:property><sv:property sv:name=\"i18n:de-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"81\">&lt;p&gt;Sit deserunt id ex tempor. Quis mollit non eiusmod Lorem nulla incididunt.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:35:14.119+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:38:14.123+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:35:14.143+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property></sv:node>\n',4,1),(56,'/cmf/snippets/default','/cmf/snippets','default','','default_live','845e4c21-3afd-49a3-ad1b-f472de658ed4','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">845e4c21-3afd-49a3-ad1b-f472de658ed4</sv:value></sv:property></sv:node>\n',NULL,3,2),(57,'/cmf/snippets/default/test-default-snippet','/cmf/snippets/default','test-default-snippet','','default_live','43420664-7b06-464e-a6b1-f73a0847f1f9','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"12\">sulu:snippet</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">43420664-7b06-464e-a6b1-f73a0847f1f9</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">Test Default Snippet</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"81\">&lt;p&gt;Sit deserunt id ex tempor. Quis mollit non eiusmod Lorem nulla incididunt.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:35:14.143+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:35:14.119+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:38:14.123+00:00</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n',4,2),(58,'/cmf/snippets/footer','/cmf/snippets','footer','','default','9ed0e252-3f6f-4fba-9f70-9dbfbc43c939','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">9ed0e252-3f6f-4fba-9f70-9dbfbc43c939</sv:value></sv:property></sv:node>\n',NULL,3,3),(59,'/cmf/snippets/footer/footer-snippet','/cmf/snippets/footer','footer-snippet','','default','0784afdc-28e5-4df2-a314-967e4853fc71','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"12\">sulu:snippet</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0784afdc-28e5-4df2-a314-967e4853fc71</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"14\">Footer Snippet</sv:value></sv:property><sv:property sv:name=\"i18n:de-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"591\">&lt;p&gt;Nisi id Lorem esse sit et. Pariatur laborum proident quis laborum non eu ex magna cillum aliquip anim consequat sunt veniam culpa. Aliqua tempor aliqua in mollit dolore nostrud excepteur. Commodo incididunt aliquip ipsum elit labore ex cupidatat officia voluptate reprehenderit esse Lorem labore eiusmod enim. Velit in voluptate excepteur amet et cillum ad laborum aliqua ipsum consectetur. Aliquip do sint est eiusmod duis mollit labore. Est laborum ut irure et quis est culpa dolore consequat fugiat cupidatat nulla nostrud minim. Ipsum elit elit velit minim nulla nulla ad officia.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-copyrightText\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"119\">Ut ad occaecat magna incididunt proident reprehenderit do consequat nulla duis consectetur reprehenderit veniam cillum.</sv:value></sv:property><sv:property sv:name=\"template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">footer</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:35:37.080+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:38:22.526+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:35:37.111+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">2</sv:value></sv:property></sv:node>\n',4,1),(60,'/cmf/snippets/footer','/cmf/snippets','footer','','default_live','9ed0e252-3f6f-4fba-9f70-9dbfbc43c939','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">9ed0e252-3f6f-4fba-9f70-9dbfbc43c939</sv:value></sv:property></sv:node>\n',NULL,3,4),(61,'/cmf/snippets/footer/footer-snippet','/cmf/snippets/footer','footer-snippet','','default_live','0784afdc-28e5-4df2-a314-967e4853fc71','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"12\">sulu:snippet</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0784afdc-28e5-4df2-a314-967e4853fc71</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"14\">Footer Snippet</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"591\">&lt;p&gt;Nisi id Lorem esse sit et. Pariatur laborum proident quis laborum non eu ex magna cillum aliquip anim consequat sunt veniam culpa. Aliqua tempor aliqua in mollit dolore nostrud excepteur. Commodo incididunt aliquip ipsum elit labore ex cupidatat officia voluptate reprehenderit esse Lorem labore eiusmod enim. Velit in voluptate excepteur amet et cillum ad laborum aliqua ipsum consectetur. Aliquip do sint est eiusmod duis mollit labore. Est laborum ut irure et quis est culpa dolore consequat fugiat cupidatat nulla nostrud minim. Ipsum elit elit velit minim nulla nulla ad officia.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-copyrightText\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"119\">Ut ad occaecat magna incididunt proident reprehenderit do consequat nulla duis consectetur reprehenderit veniam cillum.</sv:value></sv:property><sv:property sv:name=\"template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">footer</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:35:37.111+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:35:37.080+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:38:22.526+00:00</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n',4,2),(62,'/cmf/snippets/sidebar','/cmf/snippets','sidebar','','default','76feb093-dcd7-4309-8a1f-59a4b4b47900','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">76feb093-dcd7-4309-8a1f-59a4b4b47900</sv:value></sv:property></sv:node>\n',NULL,3,5),(63,'/cmf/snippets/sidebar/example-sidebar','/cmf/snippets/sidebar','example-sidebar','','default','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"12\">sulu:snippet</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">Example Sidebar</sv:value></sv:property><sv:property sv:name=\"i18n:de-content\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"126\">&lt;p&gt;Ut ad occaecat magna incididunt proident reprehenderit do consequat nulla duis consectetur reprehenderit veniam cillum.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">sidebar</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:35:47.173+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:38:37.442+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:35:47.192+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-image\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"id\":5}</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n',4,1),(64,'/cmf/snippets/sidebar','/cmf/snippets','sidebar','','default_live','76feb093-dcd7-4309-8a1f-59a4b4b47900','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">76feb093-dcd7-4309-8a1f-59a4b4b47900</sv:value></sv:property></sv:node>\n',NULL,3,6),(65,'/cmf/snippets/sidebar/example-sidebar','/cmf/snippets/sidebar','example-sidebar','','default_live','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"12\">sulu:snippet</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">Example Sidebar</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-content\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"126\">&lt;p&gt;Ut ad occaecat magna incididunt proident reprehenderit do consequat nulla duis consectetur reprehenderit veniam cillum.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">sidebar</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:35:47.192+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:35:47.173+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:38:37.442+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-image\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"id\":5}</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n',4,2),(66,'/cmf/website/contents/example-page-2','/cmf/website/contents','example-page-2','','default','786eedc0-e161-4fa4-871d-8a5765442dfd','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">786eedc0-e161-4fa4-871d-8a5765442dfd</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"22\">Example Page 2 only DE</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">/example-page-2</sv:value></sv:property><sv:property sv:name=\"i18n:de-subtitle\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"16\">Example subtitle</sv:value></sv:property><sv:property sv:name=\"i18n:de-showInNavigation\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-pageStyle\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.754+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:38.699+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"id\":3}</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"4\">text</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Lorem Ipsum</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-description#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">quote</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-quote#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"525\">Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-author#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">John Doe</sv:value></sv:property><sv:property sv:name=\"i18n:de-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-image#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-authorSnippet#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">gallery</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">Images</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-images#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">{\"displayOption\":null,\"ids\":[5,1,2]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">smart_content_pages</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Smart Pages</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-smartContent#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"276\">{\"audienceTargeting\":null,\"categories\":null,\"categoryOperator\":\"or\",\"dataSource\":\"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\",\"includeSubFolders\":true,\"limitResult\":null,\"sortBy\":null,\"sortMethod\":\"asc\",\"tagOperator\":\"or\",\"tags\":null,\"types\":[\"homepage\",\"default\"],\"presentAs\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">nested</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"13\">Nested Blocks</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">inner_text</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-text#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"492\">&lt;p&gt;Aute aute elit velit est ipsum est in. Excepteur non quis sit voluptate proident sunt nisi dolore mollit velit consectetur aliquip nisi quis cillum. Do eu nisi nisi irure nulla reprehenderit laborum voluptate. Consectetur nisi non consectetur mollit nisi aliqua consequat. Minim aliqua voluptate magna id quis laboris reprehenderit. Dolor amet aliquip id commodo. Sint do aliquip amet eu veniam non occaecat. Amet nisi cupidatat consectetur sit quis elit ad dolor qui quis elit labore.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">inner_image</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-image#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"29\">{\"displayOption\":null,\"id\":4}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-caption#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"38\">Aute aute elit velit est ipsum est in.</sv:value></sv:property><sv:property sv:name=\"i18n:de-sidebarSnippet\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:15.943+00:00</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property></sv:node>\n',4,5),(67,'/cmf/website/contents/example-page-2','/cmf/website/contents','example-page-2','','default_live','786eedc0-e161-4fa4-871d-8a5765442dfd','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">786eedc0-e161-4fa4-871d-8a5765442dfd</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"22\">Example Page 2 only DE</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">/example-page-2</sv:value></sv:property><sv:property sv:name=\"i18n:de-subtitle\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"16\">Example subtitle</sv:value></sv:property><sv:property sv:name=\"i18n:de-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"id\":3}</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"4\">text</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Lorem Ipsum</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-description#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-image#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">quote</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-quote#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"525\">Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-author#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">John Doe</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-authorSnippet#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">gallery</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">Images</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-images#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">{\"displayOption\":null,\"ids\":[5,1,2]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">smart_content_pages</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Smart Pages</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-smartContent#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"276\">{\"audienceTargeting\":null,\"categories\":null,\"categoryOperator\":\"or\",\"dataSource\":\"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\",\"includeSubFolders\":true,\"limitResult\":null,\"sortBy\":null,\"sortMethod\":\"asc\",\"tagOperator\":\"or\",\"tags\":null,\"types\":[\"homepage\",\"default\"],\"presentAs\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">nested</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"13\">Nested Blocks</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">inner_text</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-text#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"492\">&lt;p&gt;Aute aute elit velit est ipsum est in. Excepteur non quis sit voluptate proident sunt nisi dolore mollit velit consectetur aliquip nisi quis cillum. Do eu nisi nisi irure nulla reprehenderit laborum voluptate. Consectetur nisi non consectetur mollit nisi aliqua consequat. Minim aliqua voluptate magna id quis laboris reprehenderit. Dolor amet aliquip id commodo. Sint do aliquip amet eu veniam non occaecat. Amet nisi cupidatat consectetur sit quis elit ad dolor qui quis elit labore.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">inner_image</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-image#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"29\">{\"displayOption\":null,\"id\":4}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-caption#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"38\">Aute aute elit velit est ipsum est in.</sv:value></sv:property><sv:property sv:name=\"i18n:de-sidebarSnippet\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:15.943+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.754+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:38.699+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property></sv:node>\n',4,6),(68,'/cmf/website/routes/de/example-page-2','/cmf/website/routes/de','example-page-2','','default','45d7be89-9e77-4452-aaa4-eea66c79b74d','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">45d7be89-9e77-4452-aaa4-eea66c79b74d</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:15.954+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:15.954+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">786eedc0-e161-4fa4-871d-8a5765442dfd</sv:value></sv:property></sv:node>\n',NULL,5,3),(69,'/cmf/website/routes/de/example-page-2','/cmf/website/routes/de','example-page-2','','default_live','45d7be89-9e77-4452-aaa4-eea66c79b74d','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">45d7be89-9e77-4452-aaa4-eea66c79b74d</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:15.954+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:15.954+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">786eedc0-e161-4fa4-871d-8a5765442dfd</sv:value></sv:property></sv:node>\n',NULL,5,4),(70,'/cmf/website/routes/en/example-page-2','/cmf/website/routes/en','example-page-2','','default','5c19ca9b-7270-4901-96aa-2beebb6c5100','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">5c19ca9b-7270-4901-96aa-2beebb6c5100</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:27.142+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:27.142+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">786eedc0-e161-4fa4-871d-8a5765442dfd</sv:value></sv:property></sv:node>\n',NULL,5,1),(71,'/cmf/website/routes/en/example-page-2','/cmf/website/routes/en','example-page-2','','default_live','5c19ca9b-7270-4901-96aa-2beebb6c5100','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">5c19ca9b-7270-4901-96aa-2beebb6c5100</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:27.142+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:27.142+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">786eedc0-e161-4fa4-871d-8a5765442dfd</sv:value></sv:property></sv:node>\n',NULL,5,2),(72,'/cmf/website/routes/en/example-page-1','/cmf/website/routes/en','example-page-1','','default','54eaaf4f-5b41-4aed-9b97-7c8d096c9daf','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">54eaaf4f-5b41-4aed-9b97-7c8d096c9daf</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:51.847+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:51.847+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">16060395-4bbf-4e1d-9c8e-fe5265890c99</sv:value></sv:property></sv:node>\n',NULL,5,3),(73,'/cmf/website/routes/en/example-page-1','/cmf/website/routes/en','example-page-1','','default_live','54eaaf4f-5b41-4aed-9b97-7c8d096c9daf','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">54eaaf4f-5b41-4aed-9b97-7c8d096c9daf</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:51.847+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:51.847+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">16060395-4bbf-4e1d-9c8e-fe5265890c99</sv:value></sv:property></sv:node>\n',NULL,5,4),(74,'/cmf/website/routes/de/example-page-1-1','/cmf/website/routes/de','example-page-1-1','','default','72602934-3a37-4ab9-918e-e45d046291c0','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">72602934-3a37-4ab9-918e-e45d046291c0</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:10.180+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:10.180+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">16060395-4bbf-4e1d-9c8e-fe5265890c99</sv:value></sv:property></sv:node>\n',NULL,5,5),(75,'/cmf/website/routes/de/example-page-1-1','/cmf/website/routes/de','example-page-1-1','','default_live','72602934-3a37-4ab9-918e-e45d046291c0','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">72602934-3a37-4ab9-918e-e45d046291c0</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:10.180+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:10.180+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">16060395-4bbf-4e1d-9c8e-fe5265890c99</sv:value></sv:property></sv:node>\n',NULL,5,6),(76,'/cmf/website/contents/example-page-3-with-permissions','/cmf/website/contents','example-page-3-with-permissions','','default','6dc030f9-9ee9-4f97-af14-bd9e696c32b5','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">6dc030f9-9ee9-4f97-af14-bd9e696c32b5</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"37\">Example Page 3 with admin permissions</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"32\">/example-page-3-with-permissions</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"45\">{\"1\":[\"view\",\"add\",\"edit\",\"live\",\"security\"]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:28.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:29.005+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:50:39.859+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">40</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:29.044+00:00</sv:value></sv:property><sv:property sv:name=\"sec:role-1\" sv:type=\"String\" sv:multi-valued=\"1\"><sv:value length=\"4\">view</sv:value><sv:value length=\"3\">add</sv:value><sv:value length=\"4\">edit</sv:value><sv:value length=\"4\">live</sv:value><sv:value length=\"8\">security</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"/></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">40</sv:value></sv:property></sv:node>\n',4,7),(77,'/cmf/website/routes/de/example-page-3-with-permissions','/cmf/website/routes/de','example-page-3-with-permissions','','default','3acd85bb-c64a-4e67-826f-6b2015fd5f25','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">3acd85bb-c64a-4e67-826f-6b2015fd5f25</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:29.046+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:29.046+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">6dc030f9-9ee9-4f97-af14-bd9e696c32b5</sv:value></sv:property></sv:node>\n',NULL,5,7),(78,'/cmf/website/contents/example-page-3-with-permissions','/cmf/website/contents','example-page-3-with-permissions','','default_live','6dc030f9-9ee9-4f97-af14-bd9e696c32b5','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">6dc030f9-9ee9-4f97-af14-bd9e696c32b5</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"37\">Example Page 3 with admin permissions</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"32\">/example-page-3-with-permissions</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:29.044+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:28.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:29.005+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:50:39.859+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">40</sv:value></sv:property><sv:property sv:name=\"sec:role-1\" sv:type=\"String\" sv:multi-valued=\"1\"><sv:value length=\"4\">view</sv:value><sv:value length=\"3\">add</sv:value><sv:value length=\"4\">edit</sv:value><sv:value length=\"4\">live</sv:value><sv:value length=\"8\">security</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"45\">{\"1\":[\"view\",\"add\",\"edit\",\"live\",\"security\"]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"/></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">40</sv:value></sv:property></sv:node>\n',4,8),(79,'/cmf/website/routes/de/example-page-3-with-permissions','/cmf/website/routes/de','example-page-3-with-permissions','','default_live','3acd85bb-c64a-4e67-826f-6b2015fd5f25','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">3acd85bb-c64a-4e67-826f-6b2015fd5f25</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:29.046+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:29.046+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">6dc030f9-9ee9-4f97-af14-bd9e696c32b5</sv:value></sv:property></sv:node>\n',NULL,5,8),(80,'/cmf/website/contents/example-page-4-with-website-permissions','/cmf/website/contents','example-page-4-with-website-permissions','','default','a94e4697-b95f-46d6-9b25-f6cd606fb7c2','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">a94e4697-b95f-46d6-9b25-f6cd606fb7c2</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"39\">Example Page 4 with website permissions</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"40\">/example-page-4-with-website-permissions</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"2\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:15.120+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:15.130+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:15.130+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">50</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:15.270+00:00</sv:value></sv:property><sv:property sv:name=\"sec:role-2\" sv:type=\"String\" sv:multi-valued=\"1\"/></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">50</sv:value></sv:property></sv:node>\n',4,9),(81,'/cmf/website/routes/de/example-page-4-with-website-permissions','/cmf/website/routes/de','example-page-4-with-website-permissions','','default','a9336f14-698b-45d8-8db0-55841baa5ae2','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">a9336f14-698b-45d8-8db0-55841baa5ae2</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:15.282+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:15.282+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">a94e4697-b95f-46d6-9b25-f6cd606fb7c2</sv:value></sv:property></sv:node>\n',NULL,5,9),(82,'/cmf/website/contents/example-page-4-with-website-permissions','/cmf/website/contents','example-page-4-with-website-permissions','','default_live','a94e4697-b95f-46d6-9b25-f6cd606fb7c2','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">a94e4697-b95f-46d6-9b25-f6cd606fb7c2</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"39\">Example Page 4 with website permissions</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"40\">/example-page-4-with-website-permissions</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:15.270+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:15.120+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:15.130+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:15.130+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">50</sv:value></sv:property><sv:property sv:name=\"sec:role-2\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"2\":[]}</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">50</sv:value></sv:property></sv:node>\n',4,10),(83,'/cmf/website/routes/de/example-page-4-with-website-permissions','/cmf/website/routes/de','example-page-4-with-website-permissions','','default_live','a9336f14-698b-45d8-8db0-55841baa5ae2','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">a9336f14-698b-45d8-8db0-55841baa5ae2</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:15.282+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:15.282+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">a94e4697-b95f-46d6-9b25-f6cd606fb7c2</sv:value></sv:property></sv:node>\n',NULL,5,10),(84,'/cmf/website/contents/example-page-1/child-page-1-with-external-link','/cmf/website/contents/example-page-1','child-page-1-with-external-link','','default','7f97b10e-b5fb-46da-ab1b-b85d88d74e39','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">7f97b10e-b5fb-46da-ab1b-b85d88d74e39</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"31\">Child Page 1 with external link</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"49\">/example-page-1-1/child-page-1-with-external-link</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:51.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:51.913+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:04.557+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">4</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:51.958+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-external\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"14\">http://sulu.io</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">4</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property></sv:node>\n',5,1),(85,'/cmf/website/routes/de/example-page-1-1/child-page-1-with-external-link','/cmf/website/routes/de/example-page-1-1','child-page-1-with-external-link','','default','9c2350d1-9f44-48cc-ac5f-5ca795ac740a','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">9c2350d1-9f44-48cc-ac5f-5ca795ac740a</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:51.961+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:51.961+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">7f97b10e-b5fb-46da-ab1b-b85d88d74e39</sv:value></sv:property></sv:node>\n',NULL,6,1),(86,'/cmf/website/contents/example-page-1/child-page-1-with-external-link','/cmf/website/contents/example-page-1','child-page-1-with-external-link','','default_live','7f97b10e-b5fb-46da-ab1b-b85d88d74e39','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">7f97b10e-b5fb-46da-ab1b-b85d88d74e39</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"31\">Child Page 1 with external link</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"49\">/example-page-1-1/child-page-1-with-external-link</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:51.958+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:51.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:51.913+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:04.557+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">4</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-external\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"14\">http://sulu.io</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">4</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property></sv:node>\n',5,2),(87,'/cmf/website/routes/de/example-page-1-1/child-page-1-with-external-link','/cmf/website/routes/de/example-page-1-1','child-page-1-with-external-link','','default_live','9c2350d1-9f44-48cc-ac5f-5ca795ac740a','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">9c2350d1-9f44-48cc-ac5f-5ca795ac740a</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:51.961+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:52:51.961+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">7f97b10e-b5fb-46da-ab1b-b85d88d74e39</sv:value></sv:property></sv:node>\n',NULL,6,2),(88,'/cmf/website/contents/example-page-1/child-page-2-with-internal-link','/cmf/website/contents/example-page-1','child-page-2-with-internal-link','','default','d632fcc7-8ad8-4d59-a195-ded6c24720fc','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">d632fcc7-8ad8-4d59-a195-ded6c24720fc</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"31\">Child page 2 with internal link</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"49\">/example-page-1-1/child-page-2-with-internal-link</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:13.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:13.939+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:25.087+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">30</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-internal_link\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">16060395-4bbf-4e1d-9c8e-fe5265890c99</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:25.104+00:00</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">30</sv:value></sv:property></sv:node>\n',5,3),(89,'/cmf/website/contents/example-page-1/child-page-2-with-internal-link','/cmf/website/contents/example-page-1','child-page-2-with-internal-link','','default_live','d632fcc7-8ad8-4d59-a195-ded6c24720fc','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">d632fcc7-8ad8-4d59-a195-ded6c24720fc</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"31\">Child page 2 with internal link</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">{\"ids\":[]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"49\">/example-page-1-1/child-page-2-with-internal-link</sv:value></sv:property><sv:property sv:name=\"i18n:de-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"0\"></sv:value></sv:property><sv:property sv:name=\"i18n:de-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:25.104+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:13.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:13.939+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:25.087+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"/><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-internal_link\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">16060395-4bbf-4e1d-9c8e-fe5265890c99</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">30</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">30</sv:value></sv:property></sv:node>\n',5,4),(90,'/cmf/website/routes/de/example-page-1-1/child-page-2-with-internal-link','/cmf/website/routes/de/example-page-1-1','child-page-2-with-internal-link','','default','cdd2bc7c-19cc-4032-a49d-f45a50aa45c0','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">cdd2bc7c-19cc-4032-a49d-f45a50aa45c0</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:25.112+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:25.112+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">d632fcc7-8ad8-4d59-a195-ded6c24720fc</sv:value></sv:property></sv:node>\n',NULL,6,3),(91,'/cmf/website/routes/de/example-page-1-1/child-page-2-with-internal-link','/cmf/website/routes/de/example-page-1-1','child-page-2-with-internal-link','','default_live','cdd2bc7c-19cc-4032-a49d-f45a50aa45c0','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">cdd2bc7c-19cc-4032-a49d-f45a50aa45c0</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:25.112+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:53:25.112+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">d632fcc7-8ad8-4d59-a195-ded6c24720fc</sv:value></sv:property></sv:node>\n',NULL,6,4),(92,'/cmf/website/contents/example-page-1-1','/cmf/website/contents','example-page-1-1','','default','c32200c7-1402-41ea-aff9-e19cf37f5f91','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">c32200c7-1402-41ea-aff9-e19cf37f5f91</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"i18n:en-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"14\">Example Page 1</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"9\">Seo Title</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">Seo Description</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"12\">Seo Keywords</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">this is my canonical</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"464\">&lt;p&gt;Magna deserunt dolore nisi consequat tempor Lorem dolor eiusmod nisi qui dolor id. Amet id ex enim cillum labore qui nulla deserunt exercitation id do occaecat. Aute magna occaecat aliqua duis est mollit. Magna quis eiusmod ea id deserunt occaecat dolor reprehenderit sunt sunt non est aliquip. Officia Lorem eu ipsum minim amet non laborum excepteur eiusmod. Minim enim elit sint veniam sunt officia culpa. Pariatur dolore anim adipisicing enim esse irure.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[1]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[3]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"17\">/example-page-1-1</sv:value></sv:property><sv:property sv:name=\"i18n:en-subtitle\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"16\">Example subtitle</sv:value></sv:property><sv:property sv:name=\"i18n:en-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"id\":3}</sv:value></sv:property><sv:property sv:name=\"i18n:en-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"4\">text</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Lorem Ipsum</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-description#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-image#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">quote</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-quote#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"525\">Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-author#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">John Doe</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-authorSnippet#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">gallery</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">Images</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-images#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">{\"displayOption\":null,\"ids\":[5,1,2]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">smart_content_pages</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Smart Pages</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-smartContent#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"276\">{\"audienceTargeting\":null,\"categories\":null,\"categoryOperator\":\"or\",\"dataSource\":\"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\",\"includeSubFolders\":true,\"limitResult\":null,\"sortBy\":null,\"sortMethod\":\"asc\",\"tagOperator\":\"or\",\"tags\":null,\"types\":[\"homepage\",\"default\"],\"presentAs\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">nested</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"13\">Nested Blocks</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">inner_text</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-text#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"492\">&lt;p&gt;Aute aute elit velit est ipsum est in. Excepteur non quis sit voluptate proident sunt nisi dolore mollit velit consectetur aliquip nisi quis cillum. Do eu nisi nisi irure nulla reprehenderit laborum voluptate. Consectetur nisi non consectetur mollit nisi aliqua consequat. Minim aliqua voluptate magna id quis laboris reprehenderit. Dolor amet aliquip id commodo. Sint do aliquip amet eu veniam non occaecat. Amet nisi cupidatat consectetur sit quis elit ad dolor qui quis elit labore.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">inner_image</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-image#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"29\">{\"displayOption\":null,\"id\":4}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-caption#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"38\">Aute aute elit velit est ipsum est in.</sv:value></sv:property><sv:property sv:name=\"i18n:en-sidebarSnippet\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:en-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property><sv:property sv:name=\"i18n:en-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:en-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:48.978+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:13.198+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"><sv:value length=\"4\">main</sv:value><sv:value length=\"6\">footer</sv:value></sv:property><sv:property sv:name=\"i18n:en-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">This is my excerpt</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-more\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">This is my more text</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"24\">Example Page with shadow</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"9\">Seo Title</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">Seo Description</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"12\">Seo Keywords</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">this is my canonical</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">This is my excerpt</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-more\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">This is my more text</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"464\">&lt;p&gt;Magna deserunt dolore nisi consequat tempor Lorem dolor eiusmod nisi qui dolor id. Amet id ex enim cillum labore qui nulla deserunt exercitation id do occaecat. Aute magna occaecat aliqua duis est mollit. Magna quis eiusmod ea id deserunt occaecat dolor reprehenderit sunt sunt non est aliquip. Officia Lorem eu ipsum minim amet non laborum excepteur eiusmod. Minim enim elit sint veniam sunt officia culpa. Pariatur dolore anim adipisicing enim esse irure.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[1]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[3]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">/example-page-1-1-1</sv:value></sv:property><sv:property sv:name=\"i18n:de-subtitle\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"16\">Example subtitle</sv:value></sv:property><sv:property sv:name=\"i18n:de-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"id\":3}</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"4\">text</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Lorem Ipsum</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-description#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-image#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">quote</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-quote#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"525\">Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-author#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">John Doe</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-authorSnippet#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">gallery</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">Images</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-images#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">{\"displayOption\":null,\"ids\":[5,1,2]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">smart_content_pages</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Smart Pages</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-smartContent#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"276\">{\"audienceTargeting\":null,\"categories\":null,\"categoryOperator\":\"or\",\"dataSource\":\"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\",\"includeSubFolders\":true,\"limitResult\":null,\"sortBy\":null,\"sortMethod\":\"asc\",\"tagOperator\":\"or\",\"tags\":null,\"types\":[\"homepage\",\"default\"],\"presentAs\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">nested</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"13\">Nested Blocks</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">inner_text</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-text#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"492\">&lt;p&gt;Aute aute elit velit est ipsum est in. Excepteur non quis sit voluptate proident sunt nisi dolore mollit velit consectetur aliquip nisi quis cillum. Do eu nisi nisi irure nulla reprehenderit laborum voluptate. Consectetur nisi non consectetur mollit nisi aliqua consequat. Minim aliqua voluptate magna id quis laboris reprehenderit. Dolor amet aliquip id commodo. Sint do aliquip amet eu veniam non occaecat. Amet nisi cupidatat consectetur sit quis elit ad dolor qui quis elit labore.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">inner_image</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-image#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"29\">{\"displayOption\":null,\"id\":4}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-caption#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"38\">Aute aute elit velit est ipsum est in.</sv:value></sv:property><sv:property sv:name=\"i18n:de-sidebarSnippet\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:07.201+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:03.516+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"><sv:value length=\"4\">main</sv:value><sv:value length=\"6\">footer</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:03.560+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-shadow-on\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-shadow-base\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">de</sv:value></sv:property><sv:property sv:name=\"i18n:en-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:13.231+00:00</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n',4,11),(95,'/cmf/website/contents/example-page-1-1','/cmf/website/contents','example-page-1-1','','default_live','c32200c7-1402-41ea-aff9-e19cf37f5f91','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:page</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">c32200c7-1402-41ea-aff9-e19cf37f5f91</sv:value></sv:property><sv:property sv:name=\"sec:permissions\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"24\">Example Page with shadow</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"9\">Seo Title</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">Seo Description</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"12\">Seo Keywords</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">this is my canonical</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">This is my excerpt</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-more\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">This is my more text</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"464\">&lt;p&gt;Magna deserunt dolore nisi consequat tempor Lorem dolor eiusmod nisi qui dolor id. Amet id ex enim cillum labore qui nulla deserunt exercitation id do occaecat. Aute magna occaecat aliqua duis est mollit. Magna quis eiusmod ea id deserunt occaecat dolor reprehenderit sunt sunt non est aliquip. Officia Lorem eu ipsum minim amet non laborum excepteur eiusmod. Minim enim elit sint veniam sunt officia culpa. Pariatur dolore anim adipisicing enim esse irure.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[1]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[3]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">/example-page-1-1-1</sv:value></sv:property><sv:property sv:name=\"i18n:de-subtitle\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"16\">Example subtitle</sv:value></sv:property><sv:property sv:name=\"i18n:de-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"id\":3}</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"4\">text</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Lorem Ipsum</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-description#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-image#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">quote</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-quote#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"525\">Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-author#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">John Doe</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-authorSnippet#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">gallery</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">Images</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-images#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">{\"displayOption\":null,\"ids\":[5,1,2]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">smart_content_pages</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Smart Pages</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-smartContent#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"276\">{\"audienceTargeting\":null,\"categories\":null,\"categoryOperator\":\"or\",\"dataSource\":\"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\",\"includeSubFolders\":true,\"limitResult\":null,\"sortBy\":null,\"sortMethod\":\"asc\",\"tagOperator\":\"or\",\"tags\":null,\"types\":[\"homepage\",\"default\"],\"presentAs\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-type#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">nested</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-settings#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-title#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"13\">Nested Blocks</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">inner_text</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-text#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"492\">&lt;p&gt;Aute aute elit velit est ipsum est in. Excepteur non quis sit voluptate proident sunt nisi dolore mollit velit consectetur aliquip nisi quis cillum. Do eu nisi nisi irure nulla reprehenderit laborum voluptate. Consectetur nisi non consectetur mollit nisi aliqua consequat. Minim aliqua voluptate magna id quis laboris reprehenderit. Dolor amet aliquip id commodo. Sint do aliquip amet eu veniam non occaecat. Amet nisi cupidatat consectetur sit quis elit ad dolor qui quis elit labore.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">inner_image</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-image#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"29\">{\"displayOption\":null,\"id\":4}</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-caption#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"38\">Aute aute elit velit est ipsum est in.</sv:value></sv:property><sv:property sv:name=\"i18n:de-sidebarSnippet\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:de-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:03.560+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:44:07.201+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:03.516+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"><sv:value length=\"4\">main</sv:value><sv:value length=\"6\">footer</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"i18n:en-shadow-on\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-shadow-base\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">de</sv:value></sv:property><sv:property sv:name=\"i18n:en-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"14\">Example Page 1</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"9\">Seo Title</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">Seo Description</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"12\">Seo Keywords</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">this is my canonical</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">This is my excerpt</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-more\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"20\">This is my more text</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"464\">&lt;p&gt;Magna deserunt dolore nisi consequat tempor Lorem dolor eiusmod nisi qui dolor id. Amet id ex enim cillum labore qui nulla deserunt exercitation id do occaecat. Aute magna occaecat aliqua duis est mollit. Magna quis eiusmod ea id deserunt occaecat dolor reprehenderit sunt sunt non est aliquip. Officia Lorem eu ipsum minim amet non laborum excepteur eiusmod. Minim enim elit sint veniam sunt officia culpa. Pariatur dolore anim adipisicing enim esse irure.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[1]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[3]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-url\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"17\">/example-page-1-1</sv:value></sv:property><sv:property sv:name=\"i18n:en-subtitle\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"16\">Example subtitle</sv:value></sv:property><sv:property sv:name=\"i18n:en-headerImage\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">{\"id\":3}</sv:value></sv:property><sv:property sv:name=\"i18n:en-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"4\">text</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Lorem Ipsum</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-description#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"532\">&lt;p&gt;Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-image#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"id\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">quote</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-quote#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"525\">Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-author#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"8\">John Doe</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-authorSnippet#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">gallery</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">Images</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-images#2\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">{\"displayOption\":null,\"ids\":[5,1,2]}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">smart_content_pages</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">Smart Pages</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-smartContent#3\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"276\">{\"audienceTargeting\":null,\"categories\":null,\"categoryOperator\":\"or\",\"dataSource\":\"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\",\"includeSubFolders\":true,\"limitResult\":null,\"sortBy\":null,\"sortMethod\":\"asc\",\"tagOperator\":\"or\",\"tags\":null,\"types\":[\"homepage\",\"default\"],\"presentAs\":null}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-type#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"6\">nested</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-settings#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-title#4\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"13\">Nested Blocks</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-type#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"10\">inner_text</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-settings#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-text#0\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"492\">&lt;p&gt;Aute aute elit velit est ipsum est in. Excepteur non quis sit voluptate proident sunt nisi dolore mollit velit consectetur aliquip nisi quis cillum. Do eu nisi nisi irure nulla reprehenderit laborum voluptate. Consectetur nisi non consectetur mollit nisi aliqua consequat. Minim aliqua voluptate magna id quis laboris reprehenderit. Dolor amet aliquip id commodo. Sint do aliquip amet eu veniam non occaecat. Amet nisi cupidatat consectetur sit quis elit ad dolor qui quis elit labore.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-type#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">inner_image</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-settings#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">[]</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-image#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"29\">{\"displayOption\":null,\"id\":4}</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-caption#1\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"38\">Aute aute elit velit est ipsum est in.</sv:value></sv:property><sv:property sv:name=\"i18n:en-sidebarSnippet\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03</sv:value></sv:property><sv:property sv:name=\"i18n:en-relatedPages\" sv:type=\"Reference\" sv:multi-valued=\"1\"><sv:value length=\"36\">db367f2b-7e1d-42e0-8ea2-b39b3d7511bf</sv:value></sv:property><sv:property sv:name=\"i18n:en-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:en-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:13.231+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:33:53.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:42:48.978+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:13.198+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:en-navContexts\" sv:type=\"String\" sv:multi-valued=\"1\"><sv:value length=\"4\">main</sv:value><sv:value length=\"6\">footer</sv:value></sv:property><sv:property sv:name=\"i18n:en-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:de-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:order\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"2\">20</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">5</sv:value></sv:property><sv:property sv:name=\"i18n:en-blocks-innerBlocks#4-length\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:en-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:en-nodeType\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n',4,12),(98,'/cmf/website/routes/de/example-page-1-1-1','/cmf/website/routes/de','example-page-1-1-1','','default','e73de6bc-1e14-4f62-8df1-d1b1ca4d5a16','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">e73de6bc-1e14-4f62-8df1-d1b1ca4d5a16</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:03.567+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:03.567+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">c32200c7-1402-41ea-aff9-e19cf37f5f91</sv:value></sv:property></sv:node>\n',NULL,5,11),(99,'/cmf/website/routes/de/example-page-1-1-1','/cmf/website/routes/de','example-page-1-1-1','','default_live','e73de6bc-1e14-4f62-8df1-d1b1ca4d5a16','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">e73de6bc-1e14-4f62-8df1-d1b1ca4d5a16</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:03.567+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:03.567+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">c32200c7-1402-41ea-aff9-e19cf37f5f91</sv:value></sv:property></sv:node>\n',NULL,5,12),(100,'/cmf/website/routes/en/example-page-1-1','/cmf/website/routes/en','example-page-1-1','','default','233f6fc4-660d-4455-8b38-077763f3609b','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">233f6fc4-660d-4455-8b38-077763f3609b</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:13.237+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:13.237+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">c32200c7-1402-41ea-aff9-e19cf37f5f91</sv:value></sv:property></sv:node>\n',NULL,5,5),(101,'/cmf/website/routes/en/example-page-1-1','/cmf/website/routes/en','example-page-1-1','','default_live','233f6fc4-660d-4455-8b38-077763f3609b','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"9\">sulu:path</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">233f6fc4-660d-4455-8b38-077763f3609b</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:13.237+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T10:54:13.237+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">c32200c7-1402-41ea-aff9-e19cf37f5f91</sv:value></sv:property></sv:node>\n',NULL,5,6),(102,'/cmf/website/custom-urls/items/example-custom-url','/cmf/website/custom-urls/items','example-custom-url','','default','8985a284-c40c-47a5-a966-028753c572dd','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"15\">sulu:custom_url</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">8985a284-c40c-47a5-a966-028753c572dd</sv:value></sv:property><sv:property sv:name=\"title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">Example custom url</sv:value></sv:property><sv:property sv:name=\"sulu:creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:18:38.942+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:19:37.632+00:00</sv:value></sv:property><sv:property sv:name=\"published\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"baseDomain\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">*.*/*</sv:value></sv:property><sv:property sv:name=\"domainParts\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"38\">[\"127.0.0\",\"1\",\"example-custom-url-3\"]</sv:value></sv:property><sv:property sv:name=\"canonical\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"redirect\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"targetLocale\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">de</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">16060395-4bbf-4e1d-9c8e-fe5265890c99</sv:value></sv:property><sv:property sv:name=\"sulu:noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"sulu:creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n',5,1),(103,'/cmf/website/custom-urls/routes/127.0.0.1','/cmf/website/custom-urls/routes','127.0.0.1','','default','70dcfa56-b807-460a-a5d4-b352d9e0be4c','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">70dcfa56-b807-460a-a5d4-b352d9e0be4c</sv:value></sv:property></sv:node>\n',NULL,5,1),(104,'/cmf/website/custom-urls/routes/127.0.0.1/example-custom-url','/cmf/website/custom-urls/routes/127.0.0.1','example-custom-url','','default','ea2ee12f-950f-4c7e-8eea-cd9fff303df9','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"21\">sulu:custom_url_route</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">ea2ee12f-950f-4c7e-8eea-cd9fff303df9</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:18:38.953+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:19:37.658+00:00</sv:value></sv:property><sv:property sv:name=\"locale\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">de</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">e89c2f2b-af47-4505-af00-23e477aaf6ea</sv:value></sv:property></sv:node>\n',NULL,6,1),(105,'/cmf/website/custom-urls','/cmf/website','custom-urls','','default_live','7c244f41-ba24-411d-bae0-a960105697b4','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">7c244f41-ba24-411d-bae0-a960105697b4</sv:value></sv:property></sv:node>\n',NULL,3,6),(106,'/cmf/website/custom-urls/routes','/cmf/website/custom-urls','routes','','default_live','999f6668-d075-43a3-90aa-2226b696760a','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">999f6668-d075-43a3-90aa-2226b696760a</sv:value></sv:property></sv:node>\n',NULL,4,3),(107,'/cmf/website/custom-urls/routes/127.0.0.1','/cmf/website/custom-urls/routes','127.0.0.1','','default_live','70dcfa56-b807-460a-a5d4-b352d9e0be4c','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">70dcfa56-b807-460a-a5d4-b352d9e0be4c</sv:value></sv:property></sv:node>\n',NULL,5,2),(108,'/cmf/website/custom-urls/routes/127.0.0.1/example-custom-url','/cmf/website/custom-urls/routes/127.0.0.1','example-custom-url','','default_live','ea2ee12f-950f-4c7e-8eea-cd9fff303df9','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"21\">sulu:custom_url_route</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">ea2ee12f-950f-4c7e-8eea-cd9fff303df9</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:18:38.953+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:19:37.658+00:00</sv:value></sv:property><sv:property sv:name=\"locale\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">de</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">e89c2f2b-af47-4505-af00-23e477aaf6ea</sv:value></sv:property></sv:node>\n',NULL,6,2),(109,'/cmf/website/custom-urls/items','/cmf/website/custom-urls','items','','default_live','2bb90cf2-8092-402e-9766-038952e4ed80','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">2bb90cf2-8092-402e-9766-038952e4ed80</sv:value></sv:property></sv:node>\n',NULL,4,4),(110,'/cmf/website/custom-urls/items/example-custom-url','/cmf/website/custom-urls/items','example-custom-url','','default_live','8985a284-c40c-47a5-a966-028753c572dd','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"15\">sulu:custom_url</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">8985a284-c40c-47a5-a966-028753c572dd</sv:value></sv:property><sv:property sv:name=\"title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">Example custom url</sv:value></sv:property><sv:property sv:name=\"sulu:creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:18:38.942+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:19:37.632+00:00</sv:value></sv:property><sv:property sv:name=\"published\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"baseDomain\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"5\">*.*/*</sv:value></sv:property><sv:property sv:name=\"domainParts\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"38\">[\"127.0.0\",\"1\",\"example-custom-url-3\"]</sv:value></sv:property><sv:property sv:name=\"canonical\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"redirect\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"targetLocale\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">de</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">16060395-4bbf-4e1d-9c8e-fe5265890c99</sv:value></sv:property><sv:property sv:name=\"sulu:noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"sulu:creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n',5,2),(111,'/cmf/website/custom-urls/routes/127.0.0.1/example-custom-url-1','/cmf/website/custom-urls/routes/127.0.0.1','example-custom-url-1','','default','027caf7d-7a6d-48cb-9de7-2958d4aad63b','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"21\">sulu:custom_url_route</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">027caf7d-7a6d-48cb-9de7-2958d4aad63b</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:18:56.746+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:19:37.654+00:00</sv:value></sv:property><sv:property sv:name=\"locale\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">de</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">e89c2f2b-af47-4505-af00-23e477aaf6ea</sv:value></sv:property></sv:node>\n',NULL,6,3),(112,'/cmf/website/custom-urls/routes/127.0.0.1/example-custom-url-1','/cmf/website/custom-urls/routes/127.0.0.1','example-custom-url-1','','default_live','027caf7d-7a6d-48cb-9de7-2958d4aad63b','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"21\">sulu:custom_url_route</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">027caf7d-7a6d-48cb-9de7-2958d4aad63b</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:18:56.746+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:19:37.654+00:00</sv:value></sv:property><sv:property sv:name=\"locale\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">de</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">e89c2f2b-af47-4505-af00-23e477aaf6ea</sv:value></sv:property></sv:node>\n',NULL,6,4),(113,'/cmf/website/custom-urls/routes/127.0.0.1/example-custom-url-3','/cmf/website/custom-urls/routes/127.0.0.1','example-custom-url-3','','default','e89c2f2b-af47-4505-af00-23e477aaf6ea','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"21\">sulu:custom_url_route</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">e89c2f2b-af47-4505-af00-23e477aaf6ea</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:19:37.644+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:19:37.644+00:00</sv:value></sv:property><sv:property sv:name=\"locale\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">de</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">8985a284-c40c-47a5-a966-028753c572dd</sv:value></sv:property></sv:node>\n',NULL,6,5),(114,'/cmf/website/custom-urls/routes/127.0.0.1/example-custom-url-3','/cmf/website/custom-urls/routes/127.0.0.1','example-custom-url-3','','default_live','e89c2f2b-af47-4505-af00-23e477aaf6ea','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"21\">sulu:custom_url_route</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">e89c2f2b-af47-4505-af00-23e477aaf6ea</sv:value></sv:property><sv:property sv:name=\"sulu:history\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"0\">0</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:19:37.644+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T13:19:37.644+00:00</sv:value></sv:property><sv:property sv:name=\"locale\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"2\">de</sv:value></sv:property><sv:property sv:name=\"sulu:content\" sv:type=\"Reference\" sv:multi-valued=\"0\"><sv:value length=\"36\">8985a284-c40c-47a5-a966-028753c572dd</sv:value></sv:property></sv:node>\n',NULL,6,6),(115,'/cmf/articles/2025','/cmf/articles','2025','','default','e6a95d0d-57c5-456f-a968-04890187e1f0','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">e6a95d0d-57c5-456f-a968-04890187e1f0</sv:value></sv:property></sv:node>\n',NULL,3,1),(116,'/cmf/articles/2025/12','/cmf/articles/2025','12','','default','b0759b2b-279d-4877-a224-c6e15c301216','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">b0759b2b-279d-4877-a224-c6e15c301216</sv:value></sv:property></sv:node>\n',NULL,4,1),(117,'/cmf/articles/2025/12/example-article','/cmf/articles/2025/12','example-article','','default','52634b61-09b3-4224-a428-4a885dceb98f','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"12\">sulu:article</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">52634b61-09b3-4224-a428-4a885dceb98f</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">Example article</sv:value></sv:property><sv:property sv:name=\"i18n:de-routePath\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"21\">/blog/example-article</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T15:12:10.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T15:12:10.602+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T15:13:36.644+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-suluPages\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"128\">[{\"uuid\":\"52634b61-09b3-4224-a428-4a885dceb98f\",\"title\":\"Example article\",\"routePath\":\"\\/blog\\/example-article\",\"pageNumber\":1}]</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T15:12:10.650+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"17\">Article seo title</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"23\">Article seo description</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"22\">Article, Seo, Keywords</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">article-seo-url.io</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"32\">&lt;p&gt;ArticleExcerptDescription&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value><sv:value length=\"1\">2</sv:value><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value><sv:value length=\"1\">2</sv:value><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[2]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[3]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"603\">&lt;p&gt;Fugiat exercitation elit labore laborum consequat proident qui fugiat fugiat sit. Nostrud ullamco Lorem eiusmod enim aute officia duis velit consectetur amet enim consectetur. Consectetur do pariatur deserunt commodo eu magna irure dolor. Nisi deserunt qui deserunt veniam veniam adipisicing in eu aute officia cillum enim quis Lorem ex. Do aliquip adipisicing non qui sint esse aliqua deserunt anim ea eiusmod labore elit. Sunt qui Lorem ad veniam occaecat duis id exercitation ullamco. Irure aliquip elit ea aliqua Lorem eiusmod anim tempor ut officia in. Labore nostrud eiusmod ea consectetur.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">ArticleExcerptTitle</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-more\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">ArticleExcerptMore</sv:value></sv:property><sv:property sv:name=\"i18n:de-mainWebspace\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">website</sv:value></sv:property><sv:property sv:name=\"i18n:de-additionalWebspaces\" sv:type=\"String\" sv:multi-valued=\"1\"><sv:value length=\"7\">website</sv:value></sv:property><sv:property sv:name=\"i18n:de-lastModified\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-03T00:00:00.000+00:00</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value><sv:value length=\"1\">2</sv:value><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value><sv:value length=\"1\">2</sv:value><sv:value length=\"1\">3</sv:value></sv:property></sv:node>\n',5,1),(118,'/cmf/articles','/cmf','articles','','default_live','ba6777aa-c0ef-4e29-8d3b-219e0b3c0c4e','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">ba6777aa-c0ef-4e29-8d3b-219e0b3c0c4e</sv:value></sv:property></sv:node>\n',NULL,2,6),(119,'/cmf/articles/2025','/cmf/articles','2025','','default_live','e6a95d0d-57c5-456f-a968-04890187e1f0','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">e6a95d0d-57c5-456f-a968-04890187e1f0</sv:value></sv:property></sv:node>\n',NULL,3,2),(120,'/cmf/articles/2025/12','/cmf/articles/2025','12','','default_live','b0759b2b-279d-4877-a224-c6e15c301216','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">b0759b2b-279d-4877-a224-c6e15c301216</sv:value></sv:property></sv:node>\n',NULL,4,2),(121,'/cmf/articles/2025/12/example-article','/cmf/articles/2025/12','example-article','','default_live','52634b61-09b3-4224-a428-4a885dceb98f','nt:unstructured','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"jcr:primaryType\" sv:type=\"Name\" sv:multi-valued=\"0\"><sv:value length=\"15\">nt:unstructured</sv:value></sv:property><sv:property sv:name=\"jcr:mixinTypes\" sv:type=\"Name\" sv:multi-valued=\"1\"><sv:value length=\"17\">mix:referenceable</sv:value><sv:value length=\"12\">sulu:article</sv:value></sv:property><sv:property sv:name=\"jcr:uuid\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"36\">52634b61-09b3-4224-a428-4a885dceb98f</sv:value></sv:property><sv:property sv:name=\"i18n:de-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"15\">Example article</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"17\">Article seo title</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"23\">Article seo description</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-keywords\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"22\">Article, Seo, Keywords</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-canonicalUrl\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">article-seo-url.io</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noIndex\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-noFollow\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-seo-hideInSitemap\" sv:type=\"Boolean\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-description\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"32\">&lt;p&gt;ArticleExcerptDescription&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value><sv:value length=\"1\">2</sv:value><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value><sv:value length=\"1\">2</sv:value><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-icon\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[2]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-images\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"11\">{\"ids\":[3]}</sv:value></sv:property><sv:property sv:name=\"i18n:de-routePath\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"21\">/blog/example-article</sv:value></sv:property><sv:property sv:name=\"i18n:de-template\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">default</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-published\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T15:12:10.650+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-authored\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T15:12:10.000+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-author\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"sulu:created\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T15:12:10.602+00:00</sv:value></sv:property><sv:property sv:name=\"sulu:changed\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-09T15:13:36.644+00:00</sv:value></sv:property><sv:property sv:name=\"i18n:de-suluPages\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"128\">[{\"uuid\":\"52634b61-09b3-4224-a428-4a885dceb98f\",\"title\":\"Example article\",\"routePath\":\"\\/blog\\/example-article\",\"pageNumber\":1}]</sv:value></sv:property><sv:property sv:name=\"i18n:de-article\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"603\">&lt;p&gt;Fugiat exercitation elit labore laborum consequat proident qui fugiat fugiat sit. Nostrud ullamco Lorem eiusmod enim aute officia duis velit consectetur amet enim consectetur. Consectetur do pariatur deserunt commodo eu magna irure dolor. Nisi deserunt qui deserunt veniam veniam adipisicing in eu aute officia cillum enim quis Lorem ex. Do aliquip adipisicing non qui sint esse aliqua deserunt anim ea eiusmod labore elit. Sunt qui Lorem ad veniam occaecat duis id exercitation ullamco. Irure aliquip elit ea aliqua Lorem eiusmod anim tempor ut officia in. Labore nostrud eiusmod ea consectetur.&lt;/p&gt;</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-title\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"19\">ArticleExcerptTitle</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-more\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"18\">ArticleExcerptMore</sv:value></sv:property><sv:property sv:name=\"i18n:de-mainWebspace\" sv:type=\"String\" sv:multi-valued=\"0\"><sv:value length=\"7\">website</sv:value></sv:property><sv:property sv:name=\"i18n:de-additionalWebspaces\" sv:type=\"String\" sv:multi-valued=\"1\"><sv:value length=\"7\">website</sv:value></sv:property><sv:property sv:name=\"i18n:de-lastModified\" sv:type=\"Date\" sv:multi-valued=\"0\"><sv:value length=\"29\">2025-12-03T00:00:00.000+00:00</sv:value></sv:property></sv:node>\n','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sv:node xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:rep=\"internal\"><sv:property sv:name=\"i18n:de-excerpt-categories\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value><sv:value length=\"1\">2</sv:value><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-excerpt-tags\" sv:type=\"Long\" sv:multi-valued=\"1\"><sv:value length=\"1\">1</sv:value><sv:value length=\"1\">2</sv:value><sv:value length=\"1\">3</sv:value></sv:property><sv:property sv:name=\"i18n:de-state\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">2</sv:value></sv:property><sv:property sv:name=\"i18n:de-creator\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property><sv:property sv:name=\"i18n:de-changer\" sv:type=\"Long\" sv:multi-valued=\"0\"><sv:value length=\"1\">1</sv:value></sv:property></sv:node>\n',5,2);
+/*!40000 ALTER TABLE `phpcr_nodes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phpcr_nodes_references`
+--
+
+DROP TABLE IF EXISTS `phpcr_nodes_references`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `phpcr_nodes_references` (
+  `source_id` int NOT NULL,
+  `source_property_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `target_id` int NOT NULL,
+  PRIMARY KEY (`source_id`,`source_property_name`,`target_id`),
+  KEY `IDX_F3BF7E1158E0B66` (`target_id`),
+  KEY `IDX_F3BF7E1953C1C61` (`source_id`),
+  CONSTRAINT `FK_F3BF7E1953C1C61` FOREIGN KEY (`source_id`) REFERENCES `phpcr_nodes` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phpcr_nodes_references`
+--
+
+LOCK TABLES `phpcr_nodes_references` WRITE;
+/*!40000 ALTER TABLE `phpcr_nodes_references` DISABLE KEYS */;
+INSERT INTO `phpcr_nodes_references` VALUES (7,'sulu:content',5),(8,'sulu:content',5),(50,'i18n:de-relatedPages',5),(50,'i18n:en-relatedPages',5),(66,'i18n:de-relatedPages',5),(92,'i18n:de-relatedPages',5),(92,'i18n:en-relatedPages',5),(13,'sulu:content',11),(14,'sulu:content',11),(52,'i18n:de-relatedPages',11),(52,'i18n:en-relatedPages',11),(67,'i18n:de-relatedPages',11),(95,'i18n:de-relatedPages',11),(95,'i18n:en-relatedPages',11),(72,'sulu:content',50),(74,'sulu:content',50),(88,'i18n:de-internal_link',50),(102,'sulu:content',50),(73,'sulu:content',52),(75,'sulu:content',52),(89,'i18n:de-internal_link',52),(110,'sulu:content',52),(4,'settings:snippets-footer',59),(10,'settings:snippets-footer',61),(4,'settings:snippets-sidebar',63),(10,'settings:snippets-sidebar',65),(68,'sulu:content',66),(70,'sulu:content',66),(69,'sulu:content',67),(71,'sulu:content',67),(51,'sulu:content',74),(53,'sulu:content',75),(77,'sulu:content',76),(79,'sulu:content',78),(81,'sulu:content',80),(83,'sulu:content',82),(85,'sulu:content',84),(87,'sulu:content',86),(90,'sulu:content',88),(91,'sulu:content',89),(98,'sulu:content',92),(100,'sulu:content',92),(99,'sulu:content',95),(101,'sulu:content',95),(113,'sulu:content',102),(114,'sulu:content',110),(104,'sulu:content',113),(111,'sulu:content',113),(108,'sulu:content',114),(112,'sulu:content',114);
+/*!40000 ALTER TABLE `phpcr_nodes_references` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phpcr_nodes_weakreferences`
+--
+
+DROP TABLE IF EXISTS `phpcr_nodes_weakreferences`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `phpcr_nodes_weakreferences` (
+  `source_id` int NOT NULL,
+  `source_property_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `target_id` int NOT NULL,
+  PRIMARY KEY (`source_id`,`source_property_name`,`target_id`),
+  KEY `IDX_F0E4F6FA158E0B66` (`target_id`),
+  KEY `IDX_F0E4F6FA953C1C61` (`source_id`),
+  CONSTRAINT `FK_F0E4F6FA158E0B66` FOREIGN KEY (`target_id`) REFERENCES `phpcr_nodes` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_F0E4F6FA953C1C61` FOREIGN KEY (`source_id`) REFERENCES `phpcr_nodes` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phpcr_nodes_weakreferences`
+--
+
+LOCK TABLES `phpcr_nodes_weakreferences` WRITE;
+/*!40000 ALTER TABLE `phpcr_nodes_weakreferences` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phpcr_nodes_weakreferences` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phpcr_type_childs`
+--
+
+DROP TABLE IF EXISTS `phpcr_type_childs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `phpcr_type_childs` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `node_type_id` int NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `protected` tinyint(1) NOT NULL,
+  `auto_created` tinyint(1) NOT NULL,
+  `mandatory` tinyint(1) NOT NULL,
+  `on_parent_version` int NOT NULL,
+  `primary_types` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `default_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phpcr_type_childs`
+--
+
+LOCK TABLES `phpcr_type_childs` WRITE;
+/*!40000 ALTER TABLE `phpcr_type_childs` DISABLE KEYS */;
+INSERT INTO `phpcr_type_childs` VALUES (1,9,'*',0,0,0,1,'',NULL),(2,12,'*',0,0,0,1,'phpcrmig:version',NULL);
+/*!40000 ALTER TABLE `phpcr_type_childs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phpcr_type_nodes`
+--
+
+DROP TABLE IF EXISTS `phpcr_type_nodes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `phpcr_type_nodes` (
+  `node_type_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `supertypes` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_abstract` tinyint(1) NOT NULL,
+  `is_mixin` tinyint(1) NOT NULL,
+  `queryable` tinyint(1) NOT NULL,
+  `orderable_child_nodes` tinyint(1) NOT NULL,
+  `primary_item` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`node_type_id`),
+  UNIQUE KEY `UNIQ_34B0A8095E237E06` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phpcr_type_nodes`
+--
+
+LOCK TABLES `phpcr_type_nodes` WRITE;
+/*!40000 ALTER TABLE `phpcr_type_nodes` DISABLE KEYS */;
+INSERT INTO `phpcr_type_nodes` VALUES (1,'sulu:base','mix:referenceable',1,1,0,0,NULL),(2,'sulu:path','sulu:base',0,1,0,0,NULL),(3,'sulu:content','sulu:base',0,1,0,0,NULL),(4,'sulu:snippet','sulu:content',0,1,0,0,NULL),(5,'sulu:page','sulu:content',0,1,0,0,NULL),(6,'sulu:home','sulu:content',0,1,0,0,NULL),(7,'sulu:custom_url','sulu:base',0,1,0,0,NULL),(8,'sulu:custom_url_route','sulu:base',0,1,0,0,NULL),(9,'sulu:article','sulu:base',0,1,0,0,NULL),(10,'sulu:articlepage','sulu:article',0,1,0,0,NULL),(11,'phpcrmig:version','nt:base mix:created',0,0,1,0,NULL),(12,'phpcrmig:versions','nt:base',0,0,1,0,NULL);
+/*!40000 ALTER TABLE `phpcr_type_nodes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phpcr_type_props`
+--
+
+DROP TABLE IF EXISTS `phpcr_type_props`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `phpcr_type_props` (
+  `node_type_id` int NOT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `protected` tinyint(1) NOT NULL,
+  `auto_created` tinyint(1) NOT NULL,
+  `mandatory` tinyint(1) NOT NULL,
+  `on_parent_version` int NOT NULL,
+  `multiple` tinyint(1) NOT NULL,
+  `fulltext_searchable` tinyint(1) NOT NULL,
+  `query_orderable` tinyint(1) NOT NULL,
+  `required_type` int NOT NULL,
+  `query_operators` int NOT NULL,
+  `default_value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`node_type_id`,`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phpcr_type_props`
+--
+
+LOCK TABLES `phpcr_type_props` WRITE;
+/*!40000 ALTER TABLE `phpcr_type_props` DISABLE KEYS */;
+INSERT INTO `phpcr_type_props` VALUES (2,'sulu:content',0,0,1,1,0,0,0,9,0,NULL),(2,'sulu:history',0,1,1,1,0,0,0,6,0,'');
+/*!40000 ALTER TABLE `phpcr_type_props` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phpcr_workspaces`
+--
+
+DROP TABLE IF EXISTS `phpcr_workspaces`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `phpcr_workspaces` (
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phpcr_workspaces`
+--
+
+LOCK TABLES `phpcr_workspaces` WRITE;
+/*!40000 ALTER TABLE `phpcr_workspaces` DISABLE KEYS */;
+INSERT INTO `phpcr_workspaces` VALUES ('default'),('default_live');
+/*!40000 ALTER TABLE `phpcr_workspaces` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pr_preview_links`
+--
+
+DROP TABLE IF EXISTS `pr_preview_links`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pr_preview_links` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `token` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `resourceKey` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `resourceId` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `locale` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` json NOT NULL,
+  `visitCount` int NOT NULL,
+  `lastVisit` datetime DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_EFB5DBF25F37A13B` (`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pr_preview_links`
+--
+
+LOCK TABLES `pr_preview_links` WRITE;
+/*!40000 ALTER TABLE `pr_preview_links` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pr_preview_links` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `re_references`
+--
+
+DROP TABLE IF EXISTS `re_references`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `re_references` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `resourceKey` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `resourceId` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `referenceResourceKey` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `referenceResourceId` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `referenceLocale` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `referenceRouterAttributes` json NOT NULL,
+  `referenceTitle` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `referenceProperty` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `referenceContext` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `resource_idx` (`resourceKey`,`resourceId`)
+) ENGINE=InnoDB AUTO_INCREMENT=289 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `re_references`
+--
+
+LOCK TABLES `re_references` WRITE;
+/*!40000 ALTER TABLE `re_references` DISABLE KEYS */;
+INSERT INTO `re_references` VALUES (5,'media','5','snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','de','{\"locale\": \"de\"}','Example Sidebar','image','admin','2025-12-09 10:38:37','2025-12-09 10:38:37'),(6,'media','5','snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','de','{\"locale\": \"de\"}','Example Sidebar','image','website','2025-12-09 10:38:37','2025-12-09 10:38:37'),(95,'media','3','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','headerImage','admin','2025-12-09 10:42:38','2025-12-09 10:42:38'),(96,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','blocks[1].authorSnippet','admin','2025-12-09 10:42:38','2025-12-09 10:42:38'),(97,'media','5','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','blocks[2].images','admin','2025-12-09 10:42:38','2025-12-09 10:42:38'),(98,'media','1','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','blocks[2].images','admin','2025-12-09 10:42:38','2025-12-09 10:42:38'),(99,'media','2','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','blocks[2].images','admin','2025-12-09 10:42:38','2025-12-09 10:42:38'),(100,'media','4','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','blocks[4].innerBlocks[1].image','admin','2025-12-09 10:42:38','2025-12-09 10:42:38'),(101,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','sidebarSnippet','admin','2025-12-09 10:42:38','2025-12-09 10:42:38'),(102,'media','3','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','headerImage','website','2025-12-09 10:42:38','2025-12-09 10:42:38'),(103,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','blocks[1].authorSnippet','website','2025-12-09 10:42:38','2025-12-09 10:42:38'),(104,'media','5','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','blocks[2].images','website','2025-12-09 10:42:38','2025-12-09 10:42:38'),(105,'media','1','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','blocks[2].images','website','2025-12-09 10:42:38','2025-12-09 10:42:38'),(106,'media','2','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','blocks[2].images','website','2025-12-09 10:42:38','2025-12-09 10:42:38'),(107,'media','4','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','blocks[4].innerBlocks[1].image','website','2025-12-09 10:42:38','2025-12-09 10:42:38'),(108,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','786eedc0-e161-4fa4-871d-8a5765442dfd','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 2 only DE','sidebarSnippet','website','2025-12-09 10:42:38','2025-12-09 10:42:38'),(169,'media','3','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','headerImage','admin','2025-12-09 10:43:47','2025-12-09 10:43:47'),(170,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[1].authorSnippet','admin','2025-12-09 10:43:47','2025-12-09 10:43:47'),(171,'media','5','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','admin','2025-12-09 10:43:47','2025-12-09 10:43:47'),(172,'media','1','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','admin','2025-12-09 10:43:47','2025-12-09 10:43:47'),(173,'media','2','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','admin','2025-12-09 10:43:47','2025-12-09 10:43:47'),(174,'media','4','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[4].innerBlocks[1].image','admin','2025-12-09 10:43:47','2025-12-09 10:43:47'),(175,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','sidebarSnippet','admin','2025-12-09 10:43:47','2025-12-09 10:43:47'),(176,'media','1','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','excerpt.icon','admin','2025-12-09 10:43:47','2025-12-09 10:43:47'),(177,'media','3','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','excerpt.images','admin','2025-12-09 10:43:47','2025-12-09 10:43:47'),(178,'media','3','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','headerImage','website','2025-12-09 10:43:47','2025-12-09 10:43:47'),(179,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[1].authorSnippet','website','2025-12-09 10:43:47','2025-12-09 10:43:47'),(180,'media','5','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','website','2025-12-09 10:43:47','2025-12-09 10:43:47'),(181,'media','1','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','website','2025-12-09 10:43:47','2025-12-09 10:43:47'),(182,'media','2','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','website','2025-12-09 10:43:47','2025-12-09 10:43:47'),(183,'media','4','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[4].innerBlocks[1].image','website','2025-12-09 10:43:47','2025-12-09 10:43:47'),(184,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','sidebarSnippet','website','2025-12-09 10:43:47','2025-12-09 10:43:47'),(185,'media','1','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','excerpt.icon','website','2025-12-09 10:43:47','2025-12-09 10:43:47'),(186,'media','3','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','excerpt.images','website','2025-12-09 10:43:47','2025-12-09 10:43:47'),(223,'media','3','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','headerImage','admin','2025-12-09 10:54:03','2025-12-09 10:54:03'),(224,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','blocks[1].authorSnippet','admin','2025-12-09 10:54:03','2025-12-09 10:54:03'),(225,'media','5','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','blocks[2].images','admin','2025-12-09 10:54:03','2025-12-09 10:54:03'),(226,'media','1','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','blocks[2].images','admin','2025-12-09 10:54:03','2025-12-09 10:54:03'),(227,'media','2','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','blocks[2].images','admin','2025-12-09 10:54:03','2025-12-09 10:54:03'),(228,'media','4','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','blocks[4].innerBlocks[1].image','admin','2025-12-09 10:54:03','2025-12-09 10:54:03'),(229,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','sidebarSnippet','admin','2025-12-09 10:54:03','2025-12-09 10:54:03'),(230,'media','1','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','excerpt.icon','admin','2025-12-09 10:54:03','2025-12-09 10:54:03'),(231,'media','3','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','excerpt.images','admin','2025-12-09 10:54:03','2025-12-09 10:54:03'),(232,'media','3','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','headerImage','website','2025-12-09 10:54:03','2025-12-09 10:54:03'),(233,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','blocks[1].authorSnippet','website','2025-12-09 10:54:03','2025-12-09 10:54:03'),(234,'media','5','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','blocks[2].images','website','2025-12-09 10:54:03','2025-12-09 10:54:03'),(235,'media','1','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','blocks[2].images','website','2025-12-09 10:54:03','2025-12-09 10:54:03'),(236,'media','2','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','blocks[2].images','website','2025-12-09 10:54:03','2025-12-09 10:54:03'),(237,'media','4','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','blocks[4].innerBlocks[1].image','website','2025-12-09 10:54:03','2025-12-09 10:54:03'),(238,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','sidebarSnippet','website','2025-12-09 10:54:03','2025-12-09 10:54:03'),(239,'media','1','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','excerpt.icon','website','2025-12-09 10:54:03','2025-12-09 10:54:03'),(240,'media','3','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page with shadow','excerpt.images','website','2025-12-09 10:54:03','2025-12-09 10:54:03'),(241,'media','3','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','headerImage','admin','2025-12-09 10:54:13','2025-12-09 10:54:13'),(242,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[1].authorSnippet','admin','2025-12-09 10:54:13','2025-12-09 10:54:13'),(243,'media','5','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','admin','2025-12-09 10:54:13','2025-12-09 10:54:13'),(244,'media','1','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','admin','2025-12-09 10:54:13','2025-12-09 10:54:13'),(245,'media','2','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','admin','2025-12-09 10:54:13','2025-12-09 10:54:13'),(246,'media','4','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[4].innerBlocks[1].image','admin','2025-12-09 10:54:13','2025-12-09 10:54:13'),(247,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','sidebarSnippet','admin','2025-12-09 10:54:13','2025-12-09 10:54:13'),(248,'media','1','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','excerpt.icon','admin','2025-12-09 10:54:13','2025-12-09 10:54:13'),(249,'media','3','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','excerpt.images','admin','2025-12-09 10:54:13','2025-12-09 10:54:13'),(250,'media','3','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','headerImage','website','2025-12-09 10:54:13','2025-12-09 10:54:13'),(251,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[1].authorSnippet','website','2025-12-09 10:54:13','2025-12-09 10:54:13'),(252,'media','5','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','website','2025-12-09 10:54:13','2025-12-09 10:54:13'),(253,'media','1','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','website','2025-12-09 10:54:13','2025-12-09 10:54:13'),(254,'media','2','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','website','2025-12-09 10:54:13','2025-12-09 10:54:13'),(255,'media','4','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','blocks[4].innerBlocks[1].image','website','2025-12-09 10:54:13','2025-12-09 10:54:13'),(256,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','sidebarSnippet','website','2025-12-09 10:54:13','2025-12-09 10:54:13'),(257,'media','1','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','excerpt.icon','website','2025-12-09 10:54:13','2025-12-09 10:54:13'),(258,'media','3','pages','c32200c7-1402-41ea-aff9-e19cf37f5f91','en','{\"locale\": \"en\", \"webspace\": \"website\"}','Example Page 1','excerpt.images','website','2025-12-09 10:54:13','2025-12-09 10:54:13'),(267,'media','2','articles','52634b61-09b3-4224-a428-4a885dceb98f','de','{\"locale\": \"de\"}','Example article','excerpt.icon','admin','2025-12-09 15:13:36','2025-12-09 15:13:36'),(268,'media','3','articles','52634b61-09b3-4224-a428-4a885dceb98f','de','{\"locale\": \"de\"}','Example article','excerpt.images','admin','2025-12-09 15:13:36','2025-12-09 15:13:36'),(269,'media','2','articles','52634b61-09b3-4224-a428-4a885dceb98f','de','{\"locale\": \"de\"}','Example article','excerpt.icon','website','2025-12-09 15:13:36','2025-12-09 15:13:36'),(270,'media','3','articles','52634b61-09b3-4224-a428-4a885dceb98f','de','{\"locale\": \"de\"}','Example article','excerpt.images','website','2025-12-09 15:13:36','2025-12-09 15:13:36'),(271,'media','3','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','headerImage','admin','2025-12-11 10:49:09','2025-12-11 10:49:09'),(272,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','blocks[1].authorSnippet','admin','2025-12-11 10:49:09','2025-12-11 10:49:09'),(273,'media','5','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','admin','2025-12-11 10:49:09','2025-12-11 10:49:09'),(274,'media','1','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','admin','2025-12-11 10:49:09','2025-12-11 10:49:09'),(275,'media','2','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','admin','2025-12-11 10:49:09','2025-12-11 10:49:09'),(276,'media','4','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','blocks[4].innerBlocks[1].image','admin','2025-12-11 10:49:09','2025-12-11 10:49:09'),(277,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','sidebarSnippet','admin','2025-12-11 10:49:09','2025-12-11 10:49:09'),(278,'media','1','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','excerpt.icon','admin','2025-12-11 10:49:09','2025-12-11 10:49:09'),(279,'media','3','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','excerpt.images','admin','2025-12-11 10:49:09','2025-12-11 10:49:09'),(280,'media','3','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','headerImage','website','2025-12-11 10:49:09','2025-12-11 10:49:09'),(281,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','blocks[1].authorSnippet','website','2025-12-11 10:49:09','2025-12-11 10:49:09'),(282,'media','5','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','website','2025-12-11 10:49:09','2025-12-11 10:49:09'),(283,'media','1','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','website','2025-12-11 10:49:09','2025-12-11 10:49:09'),(284,'media','2','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','blocks[2].images','website','2025-12-11 10:49:09','2025-12-11 10:49:09'),(285,'media','4','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','blocks[4].innerBlocks[1].image','website','2025-12-11 10:49:09','2025-12-11 10:49:09'),(286,'snippets','0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','sidebarSnippet','website','2025-12-11 10:49:09','2025-12-11 10:49:09'),(287,'media','1','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','excerpt.icon','website','2025-12-11 10:49:09','2025-12-11 10:49:09'),(288,'media','3','pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','de','{\"locale\": \"de\", \"webspace\": \"website\"}','Example Page 1','excerpt.images','website','2025-12-11 10:49:09','2025-12-11 10:49:09');
+/*!40000 ALTER TABLE `re_references` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ro_routes`
+--
+
+DROP TABLE IF EXISTS `ro_routes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ro_routes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `target_id` int DEFAULT NULL,
+  `path` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `locale` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `entity_class` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `entity_id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `history` tinyint(1) NOT NULL,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_671DB7A4B548B0F4180C698` (`path`,`locale`),
+  KEY `IDX_671DB7A4158E0B66` (`target_id`),
+  KEY `IDX_671DB7A4DBF11E1D` (`idUsersCreator`),
+  KEY `IDX_671DB7A430D07CD5` (`idUsersChanger`),
+  KEY `IDX_671DB7A4B548B0F` (`path`),
+  KEY `IDX_671DB7A44180C698` (`locale`),
+  KEY `idx_resource` (`entity_id`,`entity_class`),
+  KEY `idx_history` (`history`),
+  CONSTRAINT `FK_671DB7A4158E0B66` FOREIGN KEY (`target_id`) REFERENCES `ro_routes` (`id`),
+  CONSTRAINT `FK_671DB7A430D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_671DB7A4DBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ro_routes`
+--
+
+LOCK TABLES `ro_routes` WRITE;
+/*!40000 ALTER TABLE `ro_routes` DISABLE KEYS */;
+INSERT INTO `ro_routes` VALUES (1,NULL,'/blog/example-article','de','Sulu\\Bundle\\ArticleBundle\\Document\\ArticleDocument','52634b61-09b3-4224-a428-4a885dceb98f',0,'2025-12-09 15:12:10','2025-12-09 15:12:10',1,1);
+/*!40000 ALTER TABLE `ro_routes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `se_access_controls`
+--
+
+DROP TABLE IF EXISTS `se_access_controls`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `se_access_controls` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `permissions` smallint NOT NULL,
+  `entityId` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `entityClass` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `entityIdInteger` int DEFAULT NULL,
+  `idRoles` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_C526DC52A1FA6DDA` (`idRoles`),
+  KEY `IDX_C526DC52F62829FC` (`entityId`),
+  KEY `IDX_C526DC523963FFAB` (`entityClass`),
+  KEY `IDX_C526DC524473BB7A` (`entityIdInteger`),
+  CONSTRAINT `FK_C526DC52A1FA6DDA` FOREIGN KEY (`idRoles`) REFERENCES `se_roles` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `se_access_controls`
+--
+
+LOCK TABLES `se_access_controls` WRITE;
+/*!40000 ALTER TABLE `se_access_controls` DISABLE KEYS */;
+INSERT INTO `se_access_controls` VALUES (1,115,'6dc030f9-9ee9-4f97-af14-bd9e696c32b5','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior',NULL,1),(2,0,'a94e4697-b95f-46d6-9b25-f6cd606fb7c2','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior',NULL,2);
+/*!40000 ALTER TABLE `se_access_controls` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `se_group_roles`
+--
+
+DROP TABLE IF EXISTS `se_group_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `se_group_roles` (
+  `idGroups` int NOT NULL,
+  `idRoles` int NOT NULL,
+  PRIMARY KEY (`idGroups`,`idRoles`),
+  KEY `IDX_9713F725937C91EA` (`idGroups`),
+  KEY `IDX_9713F725A1FA6DDA` (`idRoles`),
+  CONSTRAINT `FK_9713F725937C91EA` FOREIGN KEY (`idGroups`) REFERENCES `se_groups` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_9713F725A1FA6DDA` FOREIGN KEY (`idRoles`) REFERENCES `se_roles` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `se_group_roles`
+--
+
+LOCK TABLES `se_group_roles` WRITE;
+/*!40000 ALTER TABLE `se_group_roles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `se_group_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `se_groups`
+--
+
+DROP TABLE IF EXISTS `se_groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `se_groups` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `lft` int NOT NULL,
+  `rgt` int NOT NULL,
+  `depth` int NOT NULL,
+  `name` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idGroupsParent` int DEFAULT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_231E44ECBF274AB0` (`idGroupsParent`),
+  KEY `IDX_231E44ECDBF11E1D` (`idUsersCreator`),
+  KEY `IDX_231E44EC30D07CD5` (`idUsersChanger`),
+  CONSTRAINT `FK_231E44EC30D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_231E44ECBF274AB0` FOREIGN KEY (`idGroupsParent`) REFERENCES `se_groups` (`id`),
+  CONSTRAINT `FK_231E44ECDBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `se_groups`
+--
+
+LOCK TABLES `se_groups` WRITE;
+/*!40000 ALTER TABLE `se_groups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `se_groups` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `se_permissions`
+--
+
+DROP TABLE IF EXISTS `se_permissions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `se_permissions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `context` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `module` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `permissions` smallint NOT NULL,
+  `idRoles` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_5CEC3EEAE25D857EC242628A1FA6DDA` (`context`,`module`,`idRoles`),
+  KEY `IDX_5CEC3EEAA1FA6DDA` (`idRoles`),
+  CONSTRAINT `FK_5CEC3EEAA1FA6DDA` FOREIGN KEY (`idRoles`) REFERENCES `se_roles` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `se_permissions`
+--
+
+LOCK TABLES `se_permissions` WRITE;
+/*!40000 ALTER TABLE `se_permissions` DISABLE KEYS */;
+INSERT INTO `se_permissions` VALUES (1,'sulu.contact.people',NULL,127,1),(2,'sulu.contact.organizations',NULL,127,1),(3,'sulu.media.collections',NULL,127,1),(4,'sulu.media.system_collections',NULL,127,1),(5,'sulu.settings.categories',NULL,127,1),(6,'sulu.settings.tags',NULL,127,1),(7,'sulu.global.snippets',NULL,127,1),(8,'sulu.modules.articles',NULL,127,1),(9,'sulu.webspaces.website.default-snippets',NULL,127,1),(10,'sulu.webspaces.website',NULL,127,1),(11,'sulu.webspaces.website.analytics',NULL,127,1),(12,'sulu.webspaces.website.custom-urls',NULL,127,1),(13,'sulu.activities.activities',NULL,127,1),(14,'sulu.trash.trash',NULL,127,1),(15,'sulu.references.references',NULL,127,1),(16,'sulu.modules.articles_blog',NULL,127,1),(17,'sulu.modules.articles_article',NULL,127,1),(18,'sulu.security.roles',NULL,127,1),(19,'sulu.security.users',NULL,127,1),(20,'sulu.media.collections',NULL,127,2),(21,'sulu.webspaces.website',NULL,127,2);
+/*!40000 ALTER TABLE `se_permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `se_role_settings`
+--
+
+DROP TABLE IF EXISTS `se_role_settings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `se_role_settings` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `settingKey` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` json NOT NULL,
+  `roleId` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_DAD1C8CB3AA9950BB8C2FD88` (`settingKey`,`roleId`),
+  KEY `IDX_DAD1C8CBB8C2FD88` (`roleId`),
+  KEY `IDX_DAD1C8CB3AA9950B` (`settingKey`),
+  CONSTRAINT `FK_DAD1C8CBB8C2FD88` FOREIGN KEY (`roleId`) REFERENCES `se_roles` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `se_role_settings`
+--
+
+LOCK TABLES `se_role_settings` WRITE;
+/*!40000 ALTER TABLE `se_role_settings` DISABLE KEYS */;
+/*!40000 ALTER TABLE `se_role_settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `se_roles`
+--
+
+DROP TABLE IF EXISTS `se_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `se_roles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role_key` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `securitySystem` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `anonymous` tinyint(1) NOT NULL DEFAULT '0',
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idSecurityTypes` int DEFAULT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_13B749A05E237E06` (`name`),
+  UNIQUE KEY `UNIQ_13B749A03EF22FDB` (`role_key`),
+  KEY `IDX_13B749A0D02106C0` (`idSecurityTypes`),
+  KEY `IDX_13B749A0DBF11E1D` (`idUsersCreator`),
+  KEY `IDX_13B749A030D07CD5` (`idUsersChanger`),
+  CONSTRAINT `FK_13B749A030D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_13B749A0D02106C0` FOREIGN KEY (`idSecurityTypes`) REFERENCES `se_security_types` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_13B749A0DBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `se_roles`
+--
+
+LOCK TABLES `se_roles` WRITE;
+/*!40000 ALTER TABLE `se_roles` DISABLE KEYS */;
+INSERT INTO `se_roles` VALUES (1,'User',NULL,'Sulu',0,'2025-12-09 09:37:46','2025-12-09 09:37:46',NULL,NULL,NULL),(2,'Anonymous User website',NULL,'website',1,'2025-12-09 10:52:26','2025-12-09 10:52:26',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `se_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `se_security_types`
+--
+
+DROP TABLE IF EXISTS `se_security_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `se_security_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `se_security_types`
+--
+
+LOCK TABLES `se_security_types` WRITE;
+/*!40000 ALTER TABLE `se_security_types` DISABLE KEYS */;
+/*!40000 ALTER TABLE `se_security_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `se_user_groups`
+--
+
+DROP TABLE IF EXISTS `se_user_groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `se_user_groups` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `locale` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idGroups` int DEFAULT NULL,
+  `idUsers` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_E43ED0C8937C91EA` (`idGroups`),
+  KEY `IDX_E43ED0C8347E6F4` (`idUsers`),
+  CONSTRAINT `FK_E43ED0C8347E6F4` FOREIGN KEY (`idUsers`) REFERENCES `se_users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_E43ED0C8937C91EA` FOREIGN KEY (`idGroups`) REFERENCES `se_groups` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `se_user_groups`
+--
+
+LOCK TABLES `se_user_groups` WRITE;
+/*!40000 ALTER TABLE `se_user_groups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `se_user_groups` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `se_user_roles`
+--
+
+DROP TABLE IF EXISTS `se_user_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `se_user_roles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `locale` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idUsers` int DEFAULT NULL,
+  `idRoles` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_E48BD9DB347E6F4` (`idUsers`),
+  KEY `IDX_E48BD9DBA1FA6DDA` (`idRoles`),
+  CONSTRAINT `FK_E48BD9DB347E6F4` FOREIGN KEY (`idUsers`) REFERENCES `se_users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_E48BD9DBA1FA6DDA` FOREIGN KEY (`idRoles`) REFERENCES `se_roles` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `se_user_roles`
+--
+
+LOCK TABLES `se_user_roles` WRITE;
+/*!40000 ALTER TABLE `se_user_roles` DISABLE KEYS */;
+INSERT INTO `se_user_roles` VALUES (1,'[\"de\",\"en\"]',1,1);
+/*!40000 ALTER TABLE `se_user_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `se_user_settings`
+--
+
+DROP TABLE IF EXISTS `se_user_settings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `se_user_settings` (
+  `settingsValue` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `settingsKey` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idUsers` int NOT NULL,
+  PRIMARY KEY (`settingsKey`,`idUsers`),
+  KEY `IDX_108FCAFA347E6F4` (`idUsers`),
+  CONSTRAINT `FK_108FCAFA347E6F4` FOREIGN KEY (`idUsers`) REFERENCES `se_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `se_user_settings`
+--
+
+LOCK TABLES `se_user_settings` WRITE;
+/*!40000 ALTER TABLE `se_user_settings` DISABLE KEYS */;
+INSERT INTO `se_user_settings` VALUES ('true','sulu_admin.application.navigation_pinned',1),('\"de\"','sulu_admin.content_locale',1),('[]','sulu_admin.list_store.activities.list.filter',1),('\"16060395-4bbf-4e1d-9c8e-fe5265890c99\"','sulu_admin.list_store.analytics.list.active',1),('[]','sulu_admin.list_store.analytics.list.filter',1),('[]','sulu_admin.list_store.articles.list.filter',1),('4','sulu_admin.list_store.categories.list.active',1),('[]','sulu_admin.list_store.categories.list.filter',1),('1','sulu_admin.list_store.categories.selection.active',1),('\"title\"','sulu_admin.list_store.collections.media_overview.sort_column',1),('\"asc\"','sulu_admin.list_store.collections.media_overview.sort_order',1),('\"16060395-4bbf-4e1d-9c8e-fe5265890c99\"','sulu_admin.list_store.custom_urls.list.active',1),('[]','sulu_admin.list_store.custom_urls.list.filter',1),('[]','sulu_admin.list_store.media.media_overview.filter',1),('\"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\"','sulu_admin.list_store.pages.multi_list_overlay.active',1),('\"16060395-4bbf-4e1d-9c8e-fe5265890c99\"','sulu_admin.list_store.pages.page_list_website.active',1),('\"16060395-4bbf-4e1d-9c8e-fe5265890c99\"','sulu_admin.list_store.pages.single_list_overlay.active',1),('[]','sulu_admin.list_store.snippets.list.filter',1);
+/*!40000 ALTER TABLE `se_user_settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `se_user_two_factors`
+--
+
+DROP TABLE IF EXISTS `se_user_two_factors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `se_user_two_factors` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `method` varchar(12) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `options` longtext COLLATE utf8mb4_unicode_ci,
+  `idUsers` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_732E8321347E6F4` (`idUsers`),
+  CONSTRAINT `FK_732E8321347E6F4` FOREIGN KEY (`idUsers`) REFERENCES `se_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `se_user_two_factors`
+--
+
+LOCK TABLES `se_user_two_factors` WRITE;
+/*!40000 ALTER TABLE `se_user_two_factors` DISABLE KEYS */;
+/*!40000 ALTER TABLE `se_user_two_factors` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `se_users`
+--
+
+DROP TABLE IF EXISTS `se_users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `se_users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `locale` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `salt` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `locked` tinyint(1) NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `lastLogin` datetime DEFAULT NULL,
+  `confirmationKey` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `passwordResetToken` varchar(80) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `passwordResetTokenExpiresAt` datetime DEFAULT NULL,
+  `passwordResetTokenEmailsSent` int DEFAULT '0',
+  `privateKey` varchar(2000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `apiKey` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '(DC2Type:guid)',
+  `email` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idContacts` int NOT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_B10AC28EF85E0677` (`username`),
+  UNIQUE KEY `UNIQ_B10AC28E60E33F28` (`idContacts`),
+  UNIQUE KEY `UNIQ_B10AC28EADC1CD13` (`passwordResetToken`),
+  UNIQUE KEY `UNIQ_B10AC28EE7927C74` (`email`),
+  KEY `IDX_B10AC28EDBF11E1D` (`idUsersCreator`),
+  KEY `IDX_B10AC28E30D07CD5` (`idUsersChanger`),
+  CONSTRAINT `FK_B10AC28E30D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_B10AC28E60E33F28` FOREIGN KEY (`idContacts`) REFERENCES `co_contacts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_B10AC28EDBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `se_users`
+--
+
+LOCK TABLES `se_users` WRITE;
+/*!40000 ALTER TABLE `se_users` DISABLE KEYS */;
+INSERT INTO `se_users` VALUES (1,'admin','$2y$13$Nl41Z4rKp.Y3X5/kWZP6.eWJ9AyvT18pk3NSZ8w6VBfk7ZPmZrcli','en','gHpHuTaATubZoglSLPkz/NpsXB+0fGdrHZo6jVV7W1w=',0,1,'2025-12-09 13:17:38',NULL,NULL,NULL,NULL,NULL,'9cef63ce0eca59e51fb6b00e901be267','admin@example.com','2025-12-09 09:37:46','2025-12-09 13:17:38',1,NULL,1);
+/*!40000 ALTER TABLE `se_users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ta_tags`
+--
+
+DROP TABLE IF EXISTS `ta_tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ta_tags` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created` datetime NOT NULL,
+  `changed` datetime NOT NULL,
+  `idUsersCreator` int DEFAULT NULL,
+  `idUsersChanger` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_B258E4995E237E06` (`name`),
+  KEY `IDX_B258E499DBF11E1D` (`idUsersCreator`),
+  KEY `IDX_B258E49930D07CD5` (`idUsersChanger`),
+  CONSTRAINT `FK_B258E49930D07CD5` FOREIGN KEY (`idUsersChanger`) REFERENCES `se_users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK_B258E499DBF11E1D` FOREIGN KEY (`idUsersCreator`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ta_tags`
+--
+
+LOCK TABLES `ta_tags` WRITE;
+/*!40000 ALTER TABLE `ta_tags` DISABLE KEYS */;
+INSERT INTO `ta_tags` VALUES (1,'Sidebar-Tag-1','2025-12-09 10:36:36','2025-12-09 10:36:36',1,1),(2,'Footer-Tag-1','2025-12-09 10:38:02','2025-12-09 10:38:02',1,1),(3,'Default-Snippet-Tag-1','2025-12-09 10:38:14','2025-12-09 10:38:14',1,1);
+/*!40000 ALTER TABLE `ta_tags` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tr_trash_item_translations`
+--
+
+DROP TABLE IF EXISTS `tr_trash_item_translations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tr_trash_item_translations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `locale` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `title` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `trashItemId` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_8264DAF45C8D7CA4180C698` (`trashItemId`,`locale`),
+  KEY `IDX_8264DAF45C8D7CA` (`trashItemId`),
+  CONSTRAINT `FK_8264DAF45C8D7CA` FOREIGN KEY (`trashItemId`) REFERENCES `tr_trash_items` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tr_trash_item_translations`
+--
+
+LOCK TABLES `tr_trash_item_translations` WRITE;
+/*!40000 ALTER TABLE `tr_trash_item_translations` DISABLE KEYS */;
+INSERT INTO `tr_trash_item_translations` VALUES (1,'en','Example Page 2',1),(2,'de','Example Page 1',2),(3,'de','Child Page 1 with external link',3),(4,'de','Child page 2 with internal link',4);
+/*!40000 ALTER TABLE `tr_trash_item_translations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tr_trash_items`
+--
+
+DROP TABLE IF EXISTS `tr_trash_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tr_trash_items` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `resourceKey` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `resourceId` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `restoreData` json NOT NULL,
+  `restoreType` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `restoreOptions` json NOT NULL,
+  `resourceSecurityContext` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `resourceSecurityObjectType` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `resourceSecurityObjectId` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `storeTimestamp` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+  `defaultLocale` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `userId` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_102989B64B64DCC` (`userId`),
+  KEY `IDX_102989B5DAEB55C8CF57CB1` (`resourceKey`,`resourceId`),
+  CONSTRAINT `FK_102989B64B64DCC` FOREIGN KEY (`userId`) REFERENCES `se_users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tr_trash_items`
+--
+
+LOCK TABLES `tr_trash_items` WRITE;
+/*!40000 ALTER TABLE `tr_trash_items` DISABLE KEYS */;
+INSERT INTO `tr_trash_items` VALUES (1,'pages','786eedc0-e161-4fa4-871d-8a5765442dfd','{\"locales\": [{\"title\": \"Example Page 2\", \"author\": \"1\", \"locale\": \"en\", \"created\": \"2025-12-09T10:42:24+00:00\", \"creator\": 1, \"authored\": \"2025-12-09T10:33:53+00:00\", \"suluOrder\": 20, \"permissions\": [], \"lastModified\": null, \"redirectType\": 1, \"shadowLocale\": null, \"structureData\": {\"url\": \"/example-page-2\", \"title\": \"Example Page 2\", \"blocks\": [{\"type\": \"text\", \"image\": {\"id\": null}, \"title\": \"Lorem Ipsum\", \"settings\": {}, \"description\": \"<p>Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</p>\"}, {\"type\": \"quote\", \"quote\": \"Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.\", \"author\": \"John Doe\", \"settings\": {}, \"authorSnippet\": \"0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03\"}, {\"type\": \"gallery\", \"title\": \"Images\", \"images\": {\"ids\": [5, 1, 2], \"displayOption\": null}, \"settings\": {}}, {\"type\": \"smart_content_pages\", \"title\": \"Smart Pages\", \"settings\": {}, \"smartContent\": {\"tags\": null, \"types\": [\"homepage\", \"default\"], \"sortBy\": null, \"presentAs\": null, \"categories\": null, \"dataSource\": \"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\", \"sortMethod\": \"asc\", \"limitResult\": null, \"tagOperator\": \"or\", \"categoryOperator\": \"or\", \"audienceTargeting\": null, \"includeSubFolders\": true}}, {\"type\": \"nested\", \"title\": \"Nested Blocks\", \"settings\": {}, \"innerBlocks\": [{\"text\": \"<p>Aute aute elit velit est ipsum est in. Excepteur non quis sit voluptate proident sunt nisi dolore mollit velit consectetur aliquip nisi quis cillum. Do eu nisi nisi irure nulla reprehenderit laborum voluptate. Consectetur nisi non consectetur mollit nisi aliqua consequat. Minim aliqua voluptate magna id quis laboris reprehenderit. Dolor amet aliquip id commodo. Sint do aliquip amet eu veniam non occaecat. Amet nisi cupidatat consectetur sit quis elit ad dolor qui quis elit labore.</p>\", \"type\": \"inner_text\", \"settings\": {}}, {\"type\": \"inner_image\", \"image\": {\"id\": 4, \"displayOption\": null}, \"caption\": \"Aute aute elit velit est ipsum est in.\", \"settings\": {}}]}], \"article\": \"<p>Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</p>\", \"subtitle\": \"Example subtitle\", \"headerImage\": {\"id\": 3}, \"relatedPages\": [\"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\"], \"sidebarSnippet\": \"0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03\"}, \"structureType\": \"default\", \"extensionsData\": {\"seo\": {\"title\": \"\", \"noIndex\": false, \"keywords\": \"\", \"noFollow\": false, \"description\": \"\", \"canonicalUrl\": \"\", \"hideInSitemap\": false}, \"excerpt\": {\"icon\": {\"ids\": []}, \"more\": \"\", \"tags\": [], \"title\": \"\", \"images\": {\"ids\": []}, \"segments\": [], \"categories\": [], \"description\": \"\"}}, \"resourceSegment\": \"/example-page-2\", \"redirectExternal\": null, \"navigationContexts\": [], \"redirectTargetUuid\": null, \"shadowLocaleEnabled\": false}], \"parentUuid\": \"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\"}','translation','{\"locale\": \"en\"}','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','786eedc0-e161-4fa4-871d-8a5765442dfd','2025-12-09 10:42:44','en',1),(2,'pages','16060395-4bbf-4e1d-9c8e-fe5265890c99','{\"locales\": [{\"title\": \"Example Page 1\", \"author\": \"1\", \"locale\": \"de\", \"created\": \"2025-12-09T10:33:53+00:00\", \"creator\": 1, \"authored\": \"2025-12-09T10:33:53+00:00\", \"suluOrder\": 20, \"permissions\": [], \"lastModified\": null, \"redirectType\": 1, \"shadowLocale\": null, \"structureData\": {\"url\": \"/example-page-1\", \"title\": \"Example Page 1\", \"blocks\": [{\"type\": \"text\", \"image\": {\"id\": null}, \"title\": \"Lorem Ipsum\", \"settings\": {}, \"description\": \"<p>Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</p>\"}, {\"type\": \"quote\", \"quote\": \"Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.\", \"author\": \"John Doe\", \"settings\": {}, \"authorSnippet\": \"0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03\"}, {\"type\": \"gallery\", \"title\": \"Images\", \"images\": {\"ids\": [5, 1, 2], \"displayOption\": null}, \"settings\": {}}, {\"type\": \"smart_content_pages\", \"title\": \"Smart Pages\", \"settings\": {}, \"smartContent\": {\"tags\": null, \"types\": [\"homepage\", \"default\"], \"sortBy\": null, \"presentAs\": null, \"categories\": null, \"dataSource\": \"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\", \"sortMethod\": \"asc\", \"limitResult\": null, \"tagOperator\": \"or\", \"categoryOperator\": \"or\", \"audienceTargeting\": null, \"includeSubFolders\": true}}, {\"type\": \"nested\", \"title\": \"Nested Blocks\", \"settings\": {}, \"innerBlocks\": [{\"text\": \"<p>Aute aute elit velit est ipsum est in. Excepteur non quis sit voluptate proident sunt nisi dolore mollit velit consectetur aliquip nisi quis cillum. Do eu nisi nisi irure nulla reprehenderit laborum voluptate. Consectetur nisi non consectetur mollit nisi aliqua consequat. Minim aliqua voluptate magna id quis laboris reprehenderit. Dolor amet aliquip id commodo. Sint do aliquip amet eu veniam non occaecat. Amet nisi cupidatat consectetur sit quis elit ad dolor qui quis elit labore.</p>\", \"type\": \"inner_text\", \"settings\": {}}, {\"type\": \"inner_image\", \"image\": {\"id\": 4, \"displayOption\": null}, \"caption\": \"Aute aute elit velit est ipsum est in.\", \"settings\": {}}]}], \"article\": \"<p>Anim cillum aliqua laborum do sint laborum. Non aliquip aliqua cillum fugiat magna non nulla in laboris culpa fugiat quis. Dolore est in esse pariatur reprehenderit sit Lorem sunt duis ad magna ad. In deserunt ipsum eu reprehenderit sit adipisicing magna anim in exercitation ex velit aliqua ad non. Excepteur id cupidatat exercitation aliquip fugiat magna ea id esse dolore. Voluptate magna sunt proident ipsum deserunt sint quis sit mollit. Amet ex laborum consequat ipsum nostrud exercitation et mollit ipsum commodo amet.</p>\", \"subtitle\": \"Example subtitle\", \"headerImage\": {\"id\": 3}, \"relatedPages\": [\"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\"], \"sidebarSnippet\": \"0f628bb6-b4c7-4dc5-9c57-df2d6f4cca03\"}, \"structureType\": \"default\", \"extensionsData\": {\"seo\": {\"title\": \"\", \"noIndex\": false, \"keywords\": \"\", \"noFollow\": false, \"description\": \"\", \"canonicalUrl\": \"\", \"hideInSitemap\": false}, \"excerpt\": {\"icon\": {\"ids\": []}, \"more\": \"\", \"tags\": [], \"title\": \"\", \"images\": {\"ids\": []}, \"segments\": [], \"categories\": [], \"description\": \"\"}}, \"resourceSegment\": \"/example-page-1\", \"redirectExternal\": null, \"navigationContexts\": [], \"redirectTargetUuid\": null, \"shadowLocaleEnabled\": false}], \"parentUuid\": \"db367f2b-7e1d-42e0-8ea2-b39b3d7511bf\"}','translation','{\"locale\": \"de\"}','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','16060395-4bbf-4e1d-9c8e-fe5265890c99','2025-12-09 10:44:02','de',1),(3,'pages','3b18b1d6-d13a-4d51-8cea-45e2132ad5a5','{\"locales\": [{\"title\": \"Child Page 1 with external link\", \"author\": \"1\", \"locale\": \"de\", \"created\": \"2025-12-09T10:52:51+00:00\", \"creator\": 1, \"authored\": \"2025-12-09T10:52:51+00:00\", \"suluOrder\": 20, \"permissions\": [], \"lastModified\": null, \"redirectType\": 4, \"shadowLocale\": null, \"structureData\": {\"url\": \"/example-page-1-1-1/child-page-1-with-external-link\", \"title\": \"Child Page 1 with external link\", \"blocks\": [], \"article\": \"\", \"subtitle\": \"\", \"headerImage\": {\"id\": null}, \"relatedPages\": [], \"sidebarSnippet\": null}, \"structureType\": \"default\", \"extensionsData\": {\"seo\": {\"title\": \"\", \"noIndex\": false, \"keywords\": \"\", \"noFollow\": false, \"description\": \"\", \"canonicalUrl\": \"\", \"hideInSitemap\": false}, \"excerpt\": {\"icon\": {\"ids\": []}, \"more\": \"\", \"tags\": [], \"title\": \"\", \"images\": {\"ids\": []}, \"segments\": [], \"categories\": [], \"description\": \"\"}}, \"resourceSegment\": \"/example-page-1-1-1/child-page-1-with-external-link\", \"redirectExternal\": \"http://sulu.io\", \"navigationContexts\": [], \"redirectTargetUuid\": null, \"shadowLocaleEnabled\": false}], \"parentUuid\": \"c32200c7-1402-41ea-aff9-e19cf37f5f91\"}',NULL,'[]','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','3b18b1d6-d13a-4d51-8cea-45e2132ad5a5','2025-12-09 10:55:25','de',1),(4,'pages','1b328681-4fc7-42fe-8c0c-3c14c48a0aeb','{\"locales\": [{\"title\": \"Child page 2 with internal link\", \"author\": \"1\", \"locale\": \"de\", \"created\": \"2025-12-09T10:53:13+00:00\", \"creator\": 1, \"authored\": \"2025-12-09T10:53:13+00:00\", \"suluOrder\": 30, \"permissions\": [], \"lastModified\": null, \"redirectType\": 2, \"shadowLocale\": null, \"structureData\": {\"url\": \"/example-page-1-1-1/child-page-2-with-internal-link\", \"title\": \"Child page 2 with internal link\", \"blocks\": [], \"article\": \"\", \"subtitle\": \"\", \"headerImage\": {\"id\": null}, \"relatedPages\": [], \"sidebarSnippet\": null}, \"structureType\": \"default\", \"extensionsData\": {\"seo\": {\"title\": \"\", \"noIndex\": false, \"keywords\": \"\", \"noFollow\": false, \"description\": \"\", \"canonicalUrl\": \"\", \"hideInSitemap\": false}, \"excerpt\": {\"icon\": {\"ids\": []}, \"more\": \"\", \"tags\": [], \"title\": \"\", \"images\": {\"ids\": []}, \"segments\": [], \"categories\": [], \"description\": \"\"}}, \"resourceSegment\": \"/example-page-1-1-1/child-page-2-with-internal-link\", \"redirectExternal\": null, \"navigationContexts\": [], \"redirectTargetUuid\": \"c32200c7-1402-41ea-aff9-e19cf37f5f91\", \"shadowLocaleEnabled\": false}], \"parentUuid\": \"c32200c7-1402-41ea-aff9-e19cf37f5f91\"}',NULL,'[]','sulu.webspaces.website','Sulu\\Component\\Content\\Document\\Behavior\\SecurityBehavior','1b328681-4fc7-42fe-8c0c-3c14c48a0aeb','2025-12-09 10:55:28','de',1);
+/*!40000 ALTER TABLE `tr_trash_items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `we_analytics`
+--
+
+DROP TABLE IF EXISTS `we_analytics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `we_analytics` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `webspace_key` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `all_domains` tinyint(1) NOT NULL,
+  `content` json NOT NULL,
+  `type` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_4E50BB8D1640EFD3` (`all_domains`),
+  KEY `IDX_4E50BB8DAE248174` (`webspace_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `we_analytics`
+--
+
+LOCK TABLES `we_analytics` WRITE;
+/*!40000 ALTER TABLE `we_analytics` DISABLE KEYS */;
+/*!40000 ALTER TABLE `we_analytics` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `we_analytics_domains`
+--
+
+DROP TABLE IF EXISTS `we_analytics_domains`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `we_analytics_domains` (
+  `analytics` int NOT NULL,
+  `domain` int NOT NULL,
+  PRIMARY KEY (`analytics`,`domain`),
+  KEY `IDX_F9323B6EEAC2E688` (`analytics`),
+  KEY `IDX_F9323B6EA7A91E0B` (`domain`),
+  CONSTRAINT `FK_F9323B6EA7A91E0B` FOREIGN KEY (`domain`) REFERENCES `we_domains` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_F9323B6EEAC2E688` FOREIGN KEY (`analytics`) REFERENCES `we_analytics` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `we_analytics_domains`
+--
+
+LOCK TABLES `we_analytics_domains` WRITE;
+/*!40000 ALTER TABLE `we_analytics_domains` DISABLE KEYS */;
+/*!40000 ALTER TABLE `we_analytics_domains` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `we_domains`
+--
+
+DROP TABLE IF EXISTS `we_domains`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `we_domains` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `url` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `environment` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_7CFAB3F5F47645AE` (`url`),
+  KEY `IDX_7CFAB3F54626DE22` (`environment`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `we_domains`
+--
+
+LOCK TABLES `we_domains` WRITE;
+/*!40000 ALTER TABLE `we_domains` DISABLE KEYS */;
+/*!40000 ALTER TABLE `we_domains` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-12-11 11:49:34

@@ -18,6 +18,12 @@ use Rector\Set\ValueObject\SetList;
 return static function(RectorConfig $rectorConfig): void {
     $rectorConfig->paths([__DIR__ . '/PhpcrMigration', __DIR__ . '/Tests']);
 
+    $rectorConfig->skip([
+        __DIR__ . '/Tests/Application/sulu26',
+        __DIR__ . '/Tests/Application/sulu30',
+        __DIR__ . '/Tests/Application/Kernel.php',
+    ]);
+
     $rectorConfig->phpstanConfigs([
         __DIR__ . '/phpstan.neon',
     ]);

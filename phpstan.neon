@@ -2,4 +2,7 @@ parameters:
     paths:
         - PhpcrMigration
         - Tests
+    excludePaths:
+        - Tests/Application/sulu26
+        - Tests/Application/sulu30
     level: max

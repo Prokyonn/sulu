@@ -1,0 +1,24 @@
+[
+    {
+        "id": 1,
+        "username": "admin",
+        "password": "$2y$13$Nl41Z4rKp.Y3X5/kWZP6.eWJ9AyvT18pk3NSZ8w6VBfk7ZPmZrcli",
+        "locale": "en",
+        "salt": "gHpHuTaATubZoglSLPkz/NpsXB+0fGdrHZo6jVV7W1w=",
+        "locked": 0,
+        "enabled": 1,
+        "lastLogin": "2025-12-09 13:17:38",
+        "confirmationKey": "",
+        "passwordResetToken": "",
+        "passwordResetTokenExpiresAt": "",
+        "passwordResetTokenEmailsSent": "",
+        "privateKey": "",
+        "apiKey": "9cef63ce0eca59e51fb6b00e901be267",
+        "email": "admin@example.com",
+        "created": "2025-12-09 09:37:46",
+        "changed": "2025-12-09 13:17:38",
+        "idContacts": 1,
+        "idUsersCreator": "",
+        "idUsersChanger": 1
+    }
+]

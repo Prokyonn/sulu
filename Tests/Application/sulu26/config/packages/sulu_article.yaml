@@ -1,0 +1,13 @@
+sulu_article:
+    index_name: '%env(resolve:ELASTICSEARCH_INDEX)%'
+    hosts:
+        - '%env(resolve:ELASTICSEARCH_HOST)%'
+    default_main_webspace: website
+    default_additional_webspaces: []
+
+sulu_route:
+    mappings:
+        Sulu\Bundle\ArticleBundle\Document\ArticleDocument:
+            generator: schema
+            options:
+                route_schema: '/blog/{object.getTitle()}'

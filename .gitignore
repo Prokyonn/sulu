@@ -63,3 +63,7 @@ jackrabbit/*
 ###> qossmic/deptrac ###
 /.deptrac.cache
 ###< qossmic/deptrac ###
+
+# Keep fixtures but not local overrides
+!Tests/Resources/fixtures/
+Tests/Resources/fixtures/*.local.sqlite

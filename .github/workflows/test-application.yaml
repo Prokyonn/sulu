@@ -7,89 +7,124 @@ on:
             - '[0-9]+.x'
             - '[0-9]+.[0-9]+'
 
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
 jobs:
-    test:
-        name: 'PHP ${{ matrix.php-version }} (${{ matrix.dependency-versions }})'
-        runs-on: ubuntu-latest
-
-        env:
-            APP_ENV: test
-            DATABASE_URL: mysql://root:root@127.0.0.1:3306/su_content_test?serverVersion=5.7.32
-            DATABASE_CHARSET: utf8mb4
-            DATABASE_COLLATE: utf8mb4_unicode_ci
-
-        strategy:
-            fail-fast: false
-            matrix:
-                include:
-                    - php-version: '8.1'
-                      dependency-versions: 'lowest'
-                      env:
-                          SYMFONY_DEPRECATIONS_HELPER: weak
-
-                    - php-version: '8.2'
-                      dependency-versions: 'highest'
-                      env:
-                          SYMFONY_DEPRECATIONS_HELPER: weak
-
-                    - php-version: '8.3'
-                      dependency-versions: 'highest'
-                      env:
-                          SYMFONY_DEPRECATIONS_HELPER: weak
-
-                    - php-version: '8.4'
-                      dependency-versions: 'highest'
-                      composer-options: '--ignore-platform-reqs'
-                      env:
-                          SYMFONY_DEPRECATIONS_HELPER: weak
+    php:
+        name: "PHP ${{ matrix.php-version }} (${{ matrix.dependency-versions }})"
+        runs-on: ubuntu-22.04
+        timeout-minutes: 10
 
         services:
             mysql:
                 image: mysql:8.0
                 env:
                     MYSQL_ROOT_PASSWORD: root
+                    MYSQL_DATABASE: sulu_migration_test
                 ports:
                     - 3306:3306
-                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+                options: >-
+                    --health-cmd="mysqladmin ping"
+                    --health-interval=10s
+                    --health-timeout=5s
+                    --health-retries=3
+
+        env:
+            DATABASE_HOST: 127.0.0.1
+            DATABASE_PORT: 3306
+            DATABASE_USER: root
+            DATABASE_PASSWORD: root
+            DATABASE_NAME: sulu_migration_test
+
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - php-version: '8.2'
+                      dependency-versions: 'lowest'
+                      php-extensions: 'ctype, iconv, pdo_mysql'
+                      tools: 'composer:v2'
+
+                    - php-version: '8.2'
+                      dependency-versions: 'highest'
+                      php-extensions: 'ctype, iconv, pdo_mysql'
+                      tools: 'composer:v2'
+
+                    - php-version: '8.3'
+                      dependency-versions: 'highest'
+                      php-extensions: 'ctype, iconv, pdo_mysql'
+                      tools: 'composer:v2'
+
+                    - php-version: '8.4'
+                      dependency-versions: 'highest'
+                      php-extensions: 'ctype, iconv, pdo_mysql'
+                      tools: 'composer:v2'
 
         steps:
             - name: Checkout project
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: Install and configure PHP
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php-version }}
-                  extensions: ctype, iconv, mysql
-                  tools: 'composer:v2'
+                  extensions: ${{ matrix.php-extensions }}
+                  tools: ${{ matrix.tools }}
+                  coverage: none
 
             - name: Install composer dependencies
-              uses: ramsey/composer-install@v2
+              uses: ramsey/composer-install@v3
               with:
                   dependency-versions: ${{ matrix.dependency-versions }}
-                  composer-options: ${{ matrix.composer-options }}
+
+            - name: Output versions and installed dependencies
+              run: |
+                  echo 'PHP Version:'
+                  php --version
+                  echo ''
+                  echo 'PHP Modules:'
+                  php -m
+                  echo ''
+                  echo 'Composer Info:'
+                  composer info
 
             - name: Execute test cases
               run: composer test
 
-    lint:
+    php-lint:
         name: "PHP Lint"
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
+        timeout-minutes: 10
 
         steps:
             - name: Checkout project
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: Install and configure PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 8.3
-                  extensions: ctype, iconv, mysql
+                  php-version: '8.3'
+                  extensions: 'ctype, iconv, pdo_mysql'
+                  tools: 'composer:v2'
+                  coverage: none
 
             - name: Install composer dependencies
-              uses: ramsey/composer-install@v2
+              uses: ramsey/composer-install@v3
               with:
                   dependency-versions: highest
 
-            - name: Lint Code
+            - name: Output versions and installed dependencies
+              run: |
+                  echo 'PHP Version:'
+                  php --version
+                  echo ''
+                  echo 'PHP Modules:'
+                  php -m
+                  echo ''
+                  echo 'Composer Info:'
+                  composer info
+
+            - name: Lint code
               run: composer lint
