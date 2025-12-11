@@ -43,14 +43,14 @@
     },
     {
         "id": 7,
-        "context": "sulu.global.snippets",
+        "context": "sulu.snippet.snippets",
         "module": "",
         "permissions": 127,
         "idRoles": 1
     },
     {
         "id": 8,
-        "context": "sulu.modules.articles",
+        "context": "sulu.article.articles",
         "module": "",
         "permissions": 127,
         "idRoles": 1
@@ -106,14 +106,14 @@
     },
     {
         "id": 16,
-        "context": "sulu.modules.articles_blog",
+        "context": "sulu.article.articles_blog",
         "module": "",
         "permissions": 127,
         "idRoles": 1
     },
     {
         "id": 17,
-        "context": "sulu.modules.articles_article",
+        "context": "sulu.article.articles_article",
         "module": "",
         "permissions": 127,
         "idRoles": 1
@@ -145,5 +145,12 @@
         "module": "",
         "permissions": 127,
         "idRoles": 2
+    },
+    {
+        "id": 22,
+        "context": "sulu.snippet.snippet_areas",
+        "module": "",
+        "permissions": 16,
+        "idRoles": 1
     }
 ]

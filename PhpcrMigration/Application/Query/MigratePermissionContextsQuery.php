@@ -26,15 +26,8 @@ class MigratePermissionContextsQuery implements PostMigrationQueryInterface
 {
     private const ARCHIVE_PERMISSION = 16;
 
-    /**
-     * @var array<string, string>
-     */
-    private const ARTICLE_CONTEXT_MAPPING = [
-        'sulu.modules.articles' => 'sulu.article.articles',
-        'sulu.modules.articles_blog' => 'sulu.article.articles_blog',
-        'sulu.modules.articles_hubspot' => 'sulu.article.articles_hubspot',
-        'sulu.modules.articles_rblog' => 'sulu.article.articles_rblog',
-    ];
+    private const ARTICLE_OLD_PREFIX = 'sulu.modules.articles';
+    private const ARTICLE_NEW_PREFIX = 'sulu.article.articles';
 
     private const SNIPPET_OLD_CONTEXT = 'sulu.global.snippets';
     private const SNIPPET_NEW_CONTEXT = 'sulu.snippet.snippets';
@@ -48,8 +41,22 @@ class MigratePermissionContextsQuery implements PostMigrationQueryInterface
 
     private function migrateArticlePermissions(Connection $connection): void
     {
-        // Update all article context names from old to new format
-        foreach (self::ARTICLE_CONTEXT_MAPPING as $oldContext => $newContext) {
+        $oldContexts = $connection->fetchFirstColumn(
+            'SELECT DISTINCT context FROM se_permissions WHERE context LIKE :pattern',
+            ['pattern' => self::ARTICLE_OLD_PREFIX . '%']
+        );
+
+        foreach ($oldContexts as $oldContext) {
+            if (!\is_string($oldContext)) {
+                continue;
+            }
+
+            $newContext = \str_replace(
+                self::ARTICLE_OLD_PREFIX,
+                self::ARTICLE_NEW_PREFIX,
+                $oldContext
+            );
+
             $connection->executeStatement(
                 'UPDATE se_permissions SET context = :newContext WHERE context = :oldContext',
                 [
@@ -62,13 +69,11 @@ class MigratePermissionContextsQuery implements PostMigrationQueryInterface
 
     private function migrateSnippetPermissions(Connection $connection): void
     {
-        // Find all roles with permissions to old snippet context (before updating)
         $existingPermissions = $connection->fetchAllAssociative(
             'SELECT permissions, idRoles FROM se_permissions WHERE context = :oldContext',
             ['oldContext' => self::SNIPPET_OLD_CONTEXT]
         );
 
-        // Update old snippet context to new snippets context
         $connection->executeStatement(
             'UPDATE se_permissions SET context = :newContext WHERE context = :oldContext',
             [
@@ -77,7 +82,6 @@ class MigratePermissionContextsQuery implements PostMigrationQueryInterface
             ]
         );
 
-        // Create snippet_areas entries for each role that had snippet permissions
         foreach ($existingPermissions as $permission) {
             $exists = $connection->fetchOne(
                 'SELECT COUNT(*) FROM se_permissions WHERE context = :areaContext AND idRoles = :idRoles',
