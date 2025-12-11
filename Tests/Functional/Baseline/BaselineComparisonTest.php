@@ -23,9 +23,6 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
-/**
- * @group optional
- */
 class BaselineComparisonTest extends KernelTestCase
 {
     private const BASELINE_DIR = __DIR__ . '/../../Resources/baselines';
