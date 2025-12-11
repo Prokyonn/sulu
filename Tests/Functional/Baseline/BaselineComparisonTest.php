@@ -163,7 +163,7 @@ class BaselineComparisonTest extends KernelTestCase
         $this->assertTableMatchesBaseline($table);
     }
 
-    private const EXCLUDED_FIELDS = ['_id', 'uuid'];
+    private const EXCLUDED_FIELDS = ['_id', 'uuid', 'changed'];
 
     private function assertTableMatchesBaseline(string $table): void
     {

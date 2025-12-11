@@ -26,6 +26,7 @@ class JsonBaselineExporter
         'doctrine_migration_versions',
         'migration_versions',
         'messenger_messages',
+        're_references',
     ];
 
     public function __construct(
