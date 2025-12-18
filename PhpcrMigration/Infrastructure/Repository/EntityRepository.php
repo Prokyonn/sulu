@@ -67,6 +67,12 @@ class EntityRepository implements EntityRepositoryInterface, ResetInterface
         }
     }
 
+    public function insert(array $data, string $tableName, array $types): void
+    {
+        // Delegate to insertOrUpdate with no $where clause to skip existence check
+        $this->insertOrUpdate($data, $tableName, $types);
+    }
+
     public function findOneBy(string $tableName, array $where): ?array
     {
         [$conditions, $params] = $this->parseWhereParts($where);
@@ -109,10 +115,7 @@ class EntityRepository implements EntityRepositoryInterface, ResetInterface
     public function tableExists(string $tableName): bool
     {
         // Bypass Doctrine's schema_filter which excludes ro_routes_old
-        $databaseName = $this->connection->getDatabase();
-        $sql = 'SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?';
-
-        return false !== $this->connection->fetchOne($sql, [$databaseName, $tableName]);
+        return $this->connection->createSchemaManager()->tablesExist([$tableName]);
     }
 
     /**
