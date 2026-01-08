@@ -13,6 +13,99 @@ declare(strict_types=1);
 
 namespace Sulu\Content\Application\ContentResolver;
 
+/*
+ * CONTENT RESOLVER FLOW
+ * =====================
+ *
+ *  ┌─────────────────────────────────────────────────┐
+ *  │ resolve(DimensionContent, ?properties)          │
+ *  └────────────────────────┬────────────────────────┘
+ *                           ▼
+ *  ┌─────────────────────────────────────────────────┐
+ *  │ Enhance DimensionContent                        │  ◄── [+] DimensionContentEnhancer
+ *  └────────────────────────┬────────────────────────┘
+ *                           ▼
+ *  ┌─────────────────────────────────────────────────┐
+ *  │ Extract content views                           │  ◄── [+] Resolver
+ *  │ (filtered by properties if provided)            │      [+] PropertyResolver
+ *  └────────────────────────┬────────────────────────┘      [+] BlockVisitor
+ *                           ▼
+ *  ┌─────────────────────────────────────────────────┐
+ *  │ Collect resolvables into priority queue         │
+ *  └────────────────────────┬────────────────────────┘
+ *                           ▼
+ *                   ┌──────────────┐
+ *             ┌────►│ Queue empty? ├─────── Yes ───────────────────────────────────┐
+ *             │     └──────┬───────┘                                               │
+ *             │            │ No                                                    │
+ *             │            ▼                                                       │
+ *             │     ┌─────────────────────────────────┐                            │
+ *             │     │ Extract highest priority batch  │                            │
+ *             │     └───────────────┬─────────────────┘                            │
+ *             │                     ▼                                              │
+ *             │     ┌─────────────────────────────────┐                            │
+ *             │     │ Load resources                  │  ◄── [+] ResourceLoader    │
+ *             │     └───────────────┬─────────────────┘      [+] SmartResolver     │
+ *             │                     ▼                                              │
+ *             │            ┌────────────────┐                                      │
+ *             │            │ Resource type? │                                      │
+ *             │            └────────┬───────┘                                      │
+ *             │                     │                                              │
+ *             │     ┌───────────────┼───────────────┐                              │
+ *             │     ▼               ▼               ▼                              │
+ *             │ ┌────────────┐ ┌────────────┐ ┌────────────┐                       │
+ *             │ │ContentRich │ │ContentView │ │   Other    │                       │
+ *             │ │  Entity    │ │            │ │            │                       │
+ *             │ └─────┬──────┘ └─────┬──────┘ └─────┬──────┘                       │
+ *             │       │              │              │                              │
+ *             │       ▼              ▼              ▼                              │
+ *             │ ┌────────────┐ ┌────────────┐ ┌────────────┐                       │
+ *             │ │ Aggregate  │ │ Resolve &  │ │   Store    │                       │
+ *             │ │ Dimension  │ │ queue      │ │  directly  │                       │
+ *             │ │ Content &  │ │ children   │ │            │                       │
+ *             │ │ resolve    │ │            │ │            │                       │
+ *             │ │ recursively│ │            │ │            │                       │
+ *             │ │ (w/ nested │ │            │ │            │                       │
+ *             │ │ properties)│ │            │ │            │                       │
+ *             │ └─────┬──────┘ └─────┬──────┘ └─────┬──────┘                       │
+ *             │       │              │              │                              │
+ *             └───────┴──────────────┴──────────────┘                              │
+ *                                                                                  │
+ *                           ┌──────────────────────────────────────────────────────┘
+ *                           │
+ *                           ▼
+ *  ┌─────────────────────────────────────────────────┐
+ *  │ Replace resolvables with loaded values          │
+ *  └────────────────────────┬────────────────────────┘
+ *                           ▼
+ *  ┌─────────────────────────────────────────────────┐
+ *  │ Normalize & map properties to output            │
+ *  └─────────────────────────────────────────────────┘
+ *
+ * EXTENSION POINTS:
+ * [+] DimensionContentEnhancer - Tag: sulu_content.dimension_content_enhancer
+ *                                Modify DimensionContent before resolution
+ * [+] Resolver                 - Tag: sulu_content.content_resolver (type=...)
+ *                                Add custom content view extractors (template, seo, settings, excerpt)
+ * [+] PropertyResolver         - Tag: sulu_content.property_resolver
+ *                                Handle custom property types (media, links, smart_content, etc.)
+ * [+] BlockVisitor             - Tag: sulu_content.block_visitor
+ *                                Filter/modify blocks (e.g. hidden, scheduled)
+ * [+] ResourceLoader           - Tag: sulu_content.resource_loader (key=...)
+ *                                Load custom resource types in batches
+ * [+] SmartResolver            - Tag: sulu_content.smart_resolver (type=...)
+ *                                Resolve SmartContent queries
+ *
+ * KEY CONCEPTS:
+ * - Properties: Optional filter to resolve only specific parts of an entity
+ * - Priority queue: Resources sorted by priority, highest resolved first
+ * - Depth tracking: Prevents infinite recursion (max depth configurable)
+ * - Batch loading: Resources grouped by type for efficient DB queries
+ * - ContentRichEntity: Aggregated to DimensionContent and resolved recursively
+ * - ContentView: Wrapper with view metadata - resolved and queued
+ * - Other: Stored directly without additional processing
+ */
+
 use Sulu\Content\Application\ContentAggregator\ContentAggregatorInterface;
 use Sulu\Content\Application\ContentEnhancer\ContentEnhancerInterface;
 use Sulu\Content\Application\ContentResolver\ContentViewResolver\ContentViewResolverInterface;
