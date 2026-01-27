@@ -75,7 +75,7 @@ class SnippetPersister extends AbstractPersister
         return 'snippet';
     }
 
-    protected function getEntityTableName(): string
+    public function getEntityTableName(): string
     {
         return 'sn_snippets';
     }

@@ -234,7 +234,7 @@ class PagePersister extends AbstractPersister
         return 'page';
     }
 
-    protected function getEntityTableName(): string
+    public function getEntityTableName(): string
     {
         return 'pa_pages';
     }

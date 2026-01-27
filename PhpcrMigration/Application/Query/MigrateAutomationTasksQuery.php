@@ -15,6 +15,8 @@ namespace Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Query;
 
 use Doctrine\DBAL\Connection;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Exception\EntityNotFoundException;
+use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Persister\ArticlePersister;
+use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Persister\PagePersister;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Repository\EntityRepositoryInterface;
 
 /**
@@ -24,12 +26,8 @@ use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Repository\Entit
  */
 class MigrateAutomationTasksQuery implements PostMigrationQueryInterface
 {
-    private const PAGE_TABLE = 'pa_pages';
-    private const ARTICLE_TABLE = 'ar_articles';
-    private const ENTITY_TYPE_PAGE = 'page';
-    private const ENTITY_TYPE_ARTICLE = 'article';
-    private const ARTICLE_ENTITY_CLASS = 'Sulu\Article\Domain\Model\Article';
-    private const PAGE_ENTITY_CLASS = 'Sulu\Page\Domain\Model\Page';
+    private const ARTICLE_INTERFACE_CLASS = 'Sulu\Article\Domain\Model\ArticleInterface';
+    private const PAGE_INTERFACE_CLASS = 'Sulu\Page\Domain\Model\PageInterface';
     private const HANDLER_CLASS_BASE = 'Sulu\Bundle\AutomationBundle\TaskHandler';
     private const DOCUMENT_PUBLISH_HANDLER = 'Sulu\Bundle\AutomationBundle\Handler\DocumentPublishHandler';
     private const ARTICLE_UNPUBLISH_HANDLER = self::HANDLER_CLASS_BASE . '\ArticleUnpublishTaskHandler';
@@ -39,6 +37,8 @@ class MigrateAutomationTasksQuery implements PostMigrationQueryInterface
 
     public function __construct(
         private readonly EntityRepositoryInterface $entityRepository,
+        private readonly PagePersister $pagePersister,
+        private readonly ArticlePersister $articlePersister,
     ) {
     }
 
@@ -61,35 +61,42 @@ class MigrateAutomationTasksQuery implements PostMigrationQueryInterface
         $typeMapping = [];
 
         foreach ($oldContexts as $oldContext) {
-            $isPage = $this->entityRepository->exists(self::PAGE_TABLE, ['uuid' => $oldContext['entityId']]);
+            $isPage = $this->entityRepository->exists($this->pagePersister->getEntityTableName(), ['uuid' => $oldContext['entityId']]);
             $isArticle = false;
 
             if (!$isPage) {
-                $isArticle = $this->entityRepository->exists(self::ARTICLE_TABLE, ['uuid' => $oldContext['entityId']]);
+                $isArticle = $this->entityRepository->exists($this->articlePersister->getEntityTableName(), ['uuid' => $oldContext['entityId']]);
             }
 
             if (!$isPage && !$isArticle) {
-                throw new EntityNotFoundException($oldContext['entityId']);
+                throw new EntityNotFoundException($oldContext['entityClass'], ['uuid' => $oldContext['entityId']]);
             }
 
             if ($isPage) {
-                $entityClass = self::PAGE_ENTITY_CLASS;
+                $entityClass = self::PAGE_INTERFACE_CLASS;
                 $handlerClass = self::DOCUMENT_PUBLISH_HANDLER === $oldContext['handlerClass'] ? self::PAGE_PUBLISH_HANDLER : self::PAGE_UNPUBLISH_HANDLER;
             } else {
-                $entityClass = self::ARTICLE_ENTITY_CLASS;
+                $entityClass = self::ARTICLE_INTERFACE_CLASS;
                 $handlerClass = self::DOCUMENT_PUBLISH_HANDLER === $oldContext['handlerClass'] ? self::ARTICLE_PUBLISH_HANDLER : self::ARTICLE_UNPUBLISH_HANDLER;
             }
 
-            $connection->executeStatement(
-                'UPDATE au_task SET entityClass = :newEntityClass, handlerClass = :newHandlerClass WHERE task_id = :taskId',
-                [
-                    'newEntityClass' => $entityClass,
-                    'newHandlerClass' => $handlerClass,
-                    'taskId' => $oldContext['task_id'],
+            $this->entityRepository->insertOrUpdate(
+                data: [
+                    'entityClass' => $entityClass,
+                    'handlerClass' => $handlerClass,
+                ],
+                tableName: 'au_task',
+                types: [
+                    'entityClass' => 'string',
+                    'handlerClass' => 'string',
+                ],
+                where: [
+                    'task_id' => $oldContext['task_id'],
                 ],
             );
+
             $typeMapping[$oldContext['task_id']] = [
-                'entityType' => $isPage ? self::ENTITY_TYPE_PAGE : self::ENTITY_TYPE_ARTICLE,
+                'entityType' => $isPage ? $this->pagePersister->getType() : $this->articlePersister->getType(),
             ];
         }
 
@@ -111,22 +118,28 @@ class MigrateAutomationTasksQuery implements PostMigrationQueryInterface
             /** @var mixed[] $workload */
             $workload = @\unserialize($taskExecution['workload']);
 
-            if (self::ENTITY_TYPE_PAGE === $type) {
+            if ($this->pagePersister->getType() === $type) {
                 $handlerClass = self::DOCUMENT_PUBLISH_HANDLER === $taskExecution['handler_class'] ? self::PAGE_PUBLISH_HANDLER : self::PAGE_UNPUBLISH_HANDLER;
-                $entityClass = self::PAGE_ENTITY_CLASS;
+                $entityClass = self::PAGE_INTERFACE_CLASS;
             } else {
                 $handlerClass = self::DOCUMENT_PUBLISH_HANDLER === $taskExecution['handler_class'] ? self::ARTICLE_PUBLISH_HANDLER : self::ARTICLE_UNPUBLISH_HANDLER;
-                $entityClass = self::ARTICLE_ENTITY_CLASS;
+                $entityClass = self::ARTICLE_INTERFACE_CLASS;
             }
 
             $workload['class'] = $entityClass;
 
-            $connection->executeStatement(
-                'UPDATE ta_task_executions SET handler_class = :newHandlerClass, workload = :newWorkload WHERE task_id = :taskId',
-                [
-                    'newHandlerClass' => $handlerClass,
-                    'newWorkload' => @\serialize($workload),
-                    'taskId' => $taskExecution['task_id'],
+            $this->entityRepository->insertOrUpdate(
+                data: [
+                    'handler_class' => $handlerClass,
+                    'workload' => @\serialize($workload),
+                ],
+                tableName: 'ta_task_executions',
+                types: [
+                    'handler_class' => 'string',
+                    'workload' => 'string',
+                ],
+                where: [
+                    'task_id' => $taskExecution['task_id'],
                 ],
             );
         }
@@ -147,21 +160,27 @@ class MigrateAutomationTasksQuery implements PostMigrationQueryInterface
             /** @var mixed[] $workload */
             $workload = @\unserialize($task['workload']);
 
-            if (self::ENTITY_TYPE_PAGE === $type) {
+            if ($this->pagePersister->getType() === $type) {
                 $handlerClass = self::DOCUMENT_PUBLISH_HANDLER === $task['handler_class'] ? self::PAGE_PUBLISH_HANDLER : self::PAGE_UNPUBLISH_HANDLER;
-                $entityClass = self::PAGE_ENTITY_CLASS;
+                $entityClass = self::PAGE_INTERFACE_CLASS;
             } else {
                 $handlerClass = self::DOCUMENT_PUBLISH_HANDLER === $task['handler_class'] ? self::ARTICLE_PUBLISH_HANDLER : self::ARTICLE_UNPUBLISH_HANDLER;
-                $entityClass = self::ARTICLE_ENTITY_CLASS;
+                $entityClass = self::ARTICLE_INTERFACE_CLASS;
             }
 
             $workload['class'] = $entityClass;
 
-            $connection->executeStatement(
-                'UPDATE ta_tasks SET handler_class = :newHandlerClass, workload = :newWorkload WHERE uuid = :uuid',
-                [
-                    'newHandlerClass' => $handlerClass,
-                    'newWorkload' => @\serialize($workload),
+            $this->entityRepository->insertOrUpdate(
+                data: [
+                    'handler_class' => $handlerClass,
+                    'workload' => @\serialize($workload),
+                ],
+                tableName: 'ta_tasks',
+                types: [
+                    'handler_class' => 'string',
+                    'workload' => 'string',
+                ],
+                where: [
                     'uuid' => $task['uuid'],
                 ],
             );

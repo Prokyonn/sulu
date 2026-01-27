@@ -13,8 +13,17 @@ namespace Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Exception;
 
 class EntityNotFoundException extends \RuntimeException
 {
-    public function __construct(string $uuid)
+    /**
+     * @param array<string, string> $filters The filters used to search for the entity
+     */
+    public function __construct(string $entityType, array $filters = [])
     {
-        parent::__construct(\sprintf('Entity (Page/Article) with the uuid "%s" could not be found.', $uuid));
+        $filtersString = \implode(', ', \array_map(static fn ($key, $value) => \sprintf('%s: %s', $key, $value), \array_keys($filters), $filters));
+
+        parent::__construct(\sprintf(
+            'Entity class "%s" could not be found with filters [%s].',
+            $entityType,
+            $filtersString,
+        ));
     }
 }

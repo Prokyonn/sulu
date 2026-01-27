@@ -92,6 +92,8 @@ class SuluPhpcrMigrationBundle extends AbstractBundle
                 ->class(MigrateAutomationTasksQuery::class)
                 ->args([
                     new Reference('sulu_phpcr_migration.entity_repository'),
+                    new Reference('sulu_phpcr_migration.page_persister'),
+                    new Reference('sulu_phpcr_migration.article_persister'),
                 ])
                 ->tag('sulu_phpcr_migration.post_migration_query');
         }
