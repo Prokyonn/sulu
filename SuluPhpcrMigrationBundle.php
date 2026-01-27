@@ -11,12 +11,14 @@
 
 namespace Sulu\Bundle\PhpcrMigrationBundle;
 
+use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Query\MigrateAutomationTasksQuery;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
 class SuluPhpcrMigrationBundle extends AbstractBundle
@@ -81,6 +83,19 @@ class SuluPhpcrMigrationBundle extends AbstractBundle
             ];
 
             $builder->prependExtensionConfig('doctrine', $doctrineConfig);
+        }
+
+        if ($builder->hasExtension('sulu_automation')) {
+            $services = $container->services();
+
+            $services->set('sulu_phpcr_migration.migrate_automation_tasks_query')
+                ->class(MigrateAutomationTasksQuery::class)
+                ->args([
+                    new Reference('sulu_phpcr_migration.entity_repository'),
+                    new Reference('sulu_phpcr_migration.page_persister'),
+                    new Reference('sulu_phpcr_migration.article_persister'),
+                ])
+                ->tag('sulu_phpcr_migration.post_migration_query');
         }
     }
 

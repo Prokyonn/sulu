@@ -96,7 +96,7 @@ class ArticlePersister extends AbstractPersister
         return 'article';
     }
 
-    protected function getEntityTableName(): string
+    public function getEntityTableName(): string
     {
         return 'ar_articles';
     }

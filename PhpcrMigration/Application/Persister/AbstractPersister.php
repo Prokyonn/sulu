@@ -714,7 +714,7 @@ abstract class AbstractPersister implements PersisterInterface
 
     abstract public static function getType(): string;
 
-    abstract protected function getEntityTableName(): string;
+    abstract public function getEntityTableName(): string;
 
     /**
      * @return array<string, string>
