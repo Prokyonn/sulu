@@ -69,7 +69,9 @@ class MigrateAutomationTasksQuery implements PostMigrationQueryInterface
             }
 
             if (!$isPage && !$isArticle) {
-                throw new EntityNotFoundException($oldContext['entityClass'], ['uuid' => $oldContext['entityId']]);
+                $this->entityRepository->removeBy(tableName: 'au_task', where: ['task_id' => $oldContext['task_id']]);
+
+                continue;
             }
 
             if ($isPage) {
@@ -114,6 +116,12 @@ class MigrateAutomationTasksQuery implements PostMigrationQueryInterface
         );
 
         foreach ($taskExecutions as $taskExecution) {
+            if (!isset($typeMapping[$taskExecution['task_id']])) {
+                $this->entityRepository->removeBy(tableName: 'ta_task_executions', where: ['task_id' => $taskExecution['task_id']]);
+
+                continue;
+            }
+
             $type = $typeMapping[$taskExecution['task_id']]['entityType'];
             /** @var mixed[] $workload */
             $workload = @\unserialize($taskExecution['workload']);
@@ -156,6 +164,12 @@ class MigrateAutomationTasksQuery implements PostMigrationQueryInterface
         );
 
         foreach ($tasks as $task) {
+            if (!isset($typeMapping[$task['uuid']])) {
+                $this->entityRepository->removeBy(tableName: 'ta_tasks', where: ['uuid' => $task['uuid']]);
+
+                continue;
+            }
+
             $type = $typeMapping[$task['uuid']]['entityType'];
             /** @var mixed[] $workload */
             $workload = @\unserialize($task['workload']);
