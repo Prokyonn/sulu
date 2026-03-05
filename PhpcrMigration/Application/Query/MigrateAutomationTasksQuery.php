@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Query;
 
 use Doctrine\DBAL\Connection;
-use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Exception\EntityNotFoundException;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Persister\ArticlePersister;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Persister\PagePersister;
 use Sulu\Bundle\PhpcrMigrationBundle\PhpcrMigration\Application\Repository\EntityRepositoryInterface;
@@ -69,6 +68,7 @@ class MigrateAutomationTasksQuery implements PostMigrationQueryInterface
             }
 
             if (!$isPage && !$isArticle) {
+                // Remove task if entity does not exist anymore, happens when pages/articles were deleted.
                 $this->entityRepository->removeBy(tableName: 'au_task', where: ['task_id' => $oldContext['task_id']]);
 
                 continue;
@@ -117,6 +117,7 @@ class MigrateAutomationTasksQuery implements PostMigrationQueryInterface
 
         foreach ($taskExecutions as $taskExecution) {
             if (!isset($typeMapping[$taskExecution['task_id']])) {
+                // Remove task execution if the related page/article was deleted.
                 $this->entityRepository->removeBy(tableName: 'ta_task_executions', where: ['task_id' => $taskExecution['task_id']]);
 
                 continue;
@@ -165,6 +166,7 @@ class MigrateAutomationTasksQuery implements PostMigrationQueryInterface
 
         foreach ($tasks as $task) {
             if (!isset($typeMapping[$task['uuid']])) {
+                // Remove task if the related page/article was deleted.
                 $this->entityRepository->removeBy(tableName: 'ta_tasks', where: ['uuid' => $task['uuid']]);
 
                 continue;
