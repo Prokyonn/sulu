@@ -153,7 +153,7 @@ class SuluPhpcrMigrationBundle extends AbstractBundle
             return $result;
         }
 
-        $result['connection']['url'] = \implode('', \array_filter([
+        $result['connection']['url'] = 'http://' . \implode('', \array_filter([
             $parts['host'] ?? '',
             isset($parts['port']) ? ':' . $parts['port'] : null,
             $parts['path'] ?? null,
