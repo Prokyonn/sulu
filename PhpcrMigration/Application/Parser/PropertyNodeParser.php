@@ -283,11 +283,13 @@ class PropertyNodeParser implements NodeParserInterface
                     }
                 }
 
-                // trim hotspots to maxLength
+                // sort by index and trim blocks to maxLength
+                \ksort($hotspots, \SORT_NUMERIC);
                 $hotspots = \array_slice($hotspots, 0, $maxLength);
                 $blocks['hotspots'] = $hotspots;
             } else {
-                // trim blocks to maxLength
+                // sort by index and trim blocks to maxLength
+                \ksort($blocks, \SORT_NUMERIC);
                 $blocks = \array_slice($blocks, 0, $maxLength);
             }
         }
