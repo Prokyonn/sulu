@@ -90,6 +90,9 @@ final class MetadataLoader
                 $this->addIndex($metadata, 'resource_template_lookup', [
                     $resourceForeignKeyColumn, 'stage', 'version', 'locale', 'templateKey',
                 ]);
+                $this->addIndex($metadata, 'count_lookup', [
+                    'stage', 'version', 'locale', 'templateKey', $resourceForeignKeyColumn,
+                ]);
             }
         }
 

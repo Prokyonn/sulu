@@ -11,6 +11,8 @@
 
 namespace Sulu\Component\Rest\Tests\Unit\ListBuilder\Doctrine;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Result;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
@@ -37,6 +39,7 @@ use Sulu\Component\Rest\ListBuilder\Event\ListBuilderCreateEvent;
 use Sulu\Component\Rest\ListBuilder\Event\ListBuilderEvents;
 use Sulu\Component\Rest\ListBuilder\Expression\Doctrine\DoctrineIsNotNullExpression;
 use Sulu\Component\Rest\ListBuilder\Expression\Doctrine\DoctrineIsNullExpression;
+use Sulu\Component\Rest\ListBuilder\Expression\Doctrine\DoctrineWhereExpression;
 use Sulu\Component\Rest\ListBuilder\FieldDescriptor;
 use Sulu\Component\Rest\ListBuilder\Filter\FilterTypeInterface;
 use Sulu\Component\Rest\ListBuilder\Filter\FilterTypeRegistry;
@@ -86,6 +89,16 @@ class DoctrineListBuilderTest extends TestCase
     private $query;
 
     /**
+     * @var ObjectProphecy<Connection>
+     */
+    private $connection;
+
+    /**
+     * @var ObjectProphecy<Result>
+     */
+    private $dbalResult;
+
+    /**
      * @var ObjectProphecy<SystemStoreInterface>
      */
     private $systemStore;
@@ -131,8 +144,37 @@ class DoctrineListBuilderTest extends TestCase
         $this->classMetadata = $this->prophesize(ClassMetadata::class); // @phpstan-ignore-line assign.propertyType
 
         $this->entityManager->createQueryBuilder()->willReturn($this->queryBuilder->reveal());
+
+        $this->classMetadata->getTableName()->willReturn(null);
+        $this->classMetadata->getTypeOfField(Argument::any())->willReturn('string');
+        $this->classMetadata->hasAssociation(Argument::any())->willReturn(false);
+
+        $this->classMetadata->hasAssociation('translations')->willReturn(true);
+        $this->classMetadata->getAssociationMapping('translations')->willReturn([
+            'targetEntity' => self::$translationEntityName,
+            'mappedBy' => 'example',
+        ]);
+
+        $this->classMetadata->hasAssociation('dimensionContents')->willReturn(true);
+        $this->classMetadata->getAssociationMapping('dimensionContents')->willReturn([
+            'targetEntity' => 'dimensionContent',
+            'mappedBy' => 'article',
+        ]);
+
+        $this->classMetadata->getAssociationMapping('example')->willReturn([
+            'joinColumns' => [['name' => 'example_id', 'referencedColumnName' => 'id']],
+        ]);
+
+        $this->classMetadata->getAssociationMapping('article')->willReturn([
+            'joinColumns' => [['name' => 'article_id', 'referencedColumnName' => 'id']],
+        ]);
+
         $this->entityManager->getClassMetadata(Argument::any())
             ->willReturn($this->classMetadata->reveal());
+
+        $this->connection = $this->prophesize(Connection::class);
+        $this->dbalResult = $this->prophesize(Result::class);
+        $this->entityManager->getConnection()->willReturn($this->connection->reveal());
 
         $this->queryBuilder->from(self::$entityName, self::$entityNameAlias)->willReturn($this->queryBuilder->reveal());
         $this->queryBuilder->select(Argument::any())->willReturn($this->queryBuilder->reveal());
@@ -2007,6 +2049,284 @@ class DoctrineListBuilderTest extends TestCase
             return \is_string($arg) && \str_contains($arg, 'COUNT(') && !\str_contains($arg, 'DISTINCT');
         }))->shouldBeCalled()->willReturn($this->queryBuilder->reveal());
 
+        $this->queryBuilder->addOrderBy(Argument::cetera())->shouldNotBeCalled();
+
+        $this->doctrineListBuilder->count();
+    }
+
+    public function testCountConvertsSingleLeftJoinToExists(): void
+    {
+        $fieldDescriptor = new DoctrineFieldDescriptor(
+            'name',
+            'name',
+            self::$translationEntityName,
+            'translation',
+            [
+                self::$translationEntityName => new DoctrineJoinDescriptor(
+                    self::$translationEntityName,
+                    self::$entityName . '.translations',
+                    self::$translationEntityNameAlias . '.locale = :locale',
+                    DoctrineJoinDescriptor::JOIN_METHOD_LEFT
+                ),
+            ]
+        );
+
+        $this->doctrineListBuilder->in($fieldDescriptor, ['default']);
+
+        $this->dbalResult->fetchOne()->willReturn(42);
+        $this->connection->fetchOne(
+            Argument::that(function ($sql) {
+                return \is_string($sql)
+                    && \str_contains($sql, 'EXISTS')
+                    && \str_contains($sql, 'COUNT(')
+                    && !\str_contains($sql, 'LEFT JOIN');
+            }),
+            Argument::type('array'),
+            Argument::type('array')
+        )->shouldBeCalled()->willReturn(42);
+
+        $this->queryBuilder->leftJoin(Argument::cetera())->shouldNotBeCalled();
+        $this->queryBuilder->addOrderBy(Argument::cetera())->shouldNotBeCalled();
+
+        $result = $this->doctrineListBuilder->count();
+        $this->assertSame(42, $result);
+    }
+
+    public function testCountConvertsIsNullOnLeftJoinToNotExists(): void
+    {
+        $fieldDescriptor = new DoctrineFieldDescriptor(
+            'name',
+            'name',
+            self::$translationEntityName,
+            'translation',
+            [
+                self::$translationEntityName => new DoctrineJoinDescriptor(
+                    self::$translationEntityName,
+                    self::$entityName . '.translations',
+                    self::$translationEntityNameAlias . '.locale = :locale',
+                    DoctrineJoinDescriptor::JOIN_METHOD_LEFT
+                ),
+            ]
+        );
+
+        $this->doctrineListBuilder->setFieldDescriptors(['name' => $fieldDescriptor]);
+        $this->doctrineListBuilder->addExpression(
+            $this->doctrineListBuilder->createIsNullExpression($fieldDescriptor)
+        );
+
+        $this->connection->fetchOne(
+            Argument::that(function ($sql) {
+                return \is_string($sql)
+                    && \str_contains($sql, 'NOT EXISTS')
+                    && \str_contains($sql, 'COUNT(');
+            }),
+            Argument::type('array'),
+            Argument::type('array')
+        )->shouldBeCalled()->willReturn(5);
+
+        $this->queryBuilder->leftJoin(Argument::cetera())->shouldNotBeCalled();
+        $this->queryBuilder->addOrderBy(Argument::cetera())->shouldNotBeCalled();
+
+        $result = $this->doctrineListBuilder->count();
+        $this->assertSame(5, $result);
+    }
+
+    public function testCountConvertsDimensionContentPatternToExists(): void
+    {
+        $dimensionContentField = new DoctrineFieldDescriptor(
+            'templateKey',
+            'templateKey',
+            'dimensionContent',
+            '',
+            [
+                'dimensionContent' => new DoctrineJoinDescriptor(
+                    'dimensionContent',
+                    self::$entityName . '.dimensionContents',
+                    'dimensionContent.locale = :locale',
+                    DoctrineJoinDescriptor::JOIN_METHOD_LEFT
+                ),
+            ]
+        );
+
+        $unlocalizedField = new DoctrineFieldDescriptor(
+            'templateKey',
+            'unlocalizedTemplateKey',
+            'unlocalizedDimensionContent',
+            '',
+            [
+                'unlocalizedDimensionContent' => new DoctrineJoinDescriptor(
+                    'unlocalizedDimensionContent',
+                    self::$entityName . '.dimensionContents',
+                    'unlocalizedDimensionContent.locale IS NULL',
+                    DoctrineJoinDescriptor::JOIN_METHOD_LEFT
+                ),
+            ]
+        );
+
+        $ghostField = new DoctrineFieldDescriptor(
+            'templateKey',
+            'ghostTemplateKey',
+            'ghostDimensionContent',
+            '',
+            [
+                'unlocalizedDimensionContent' => new DoctrineJoinDescriptor(
+                    'unlocalizedDimensionContent',
+                    self::$entityName . '.dimensionContents',
+                    'unlocalizedDimensionContent.locale IS NULL',
+                    DoctrineJoinDescriptor::JOIN_METHOD_LEFT
+                ),
+                'ghostDimensionContent' => new DoctrineJoinDescriptor(
+                    'ghostDimensionContent',
+                    'unlocalizedDimensionContent.ghostLocale',
+                    null,
+                    DoctrineJoinDescriptor::JOIN_METHOD_LEFT
+                ),
+            ]
+        );
+
+        $this->doctrineListBuilder->setFieldDescriptors([
+            'templateKey' => $dimensionContentField,
+            'unlocalizedTemplateKey' => $unlocalizedField,
+            'ghostTemplateKey' => $ghostField,
+        ]);
+
+        $this->doctrineListBuilder->addExpression(
+            $this->doctrineListBuilder->createOrExpression([
+                $this->doctrineListBuilder->createAndExpression([
+                    $this->doctrineListBuilder->createIsNotNullExpression($dimensionContentField),
+                    $this->doctrineListBuilder->createInExpression($dimensionContentField, ['default']),
+                ]),
+                $this->doctrineListBuilder->createAndExpression([
+                    $this->doctrineListBuilder->createIsNullExpression($dimensionContentField),
+                    $this->doctrineListBuilder->createInExpression($ghostField, ['default']),
+                ]),
+            ])
+        );
+
+        $this->connection->fetchOne(
+            Argument::that(function ($sql) {
+                return \is_string($sql)
+                    && \str_contains($sql, 'EXISTS')
+                    && \str_contains($sql, 'COUNT(')
+                    && !\str_contains($sql, 'LEFT JOIN')
+                    && !\str_contains($sql, 'DISTINCT');
+            }),
+            Argument::type('array'),
+            Argument::type('array')
+        )->shouldBeCalled()->willReturn(1500);
+
+        $this->queryBuilder->leftJoin(Argument::cetera())->shouldNotBeCalled();
+        $this->queryBuilder->addOrderBy(Argument::cetera())->shouldNotBeCalled();
+
+        $result = $this->doctrineListBuilder->count();
+        $this->assertSame(1500, $result);
+    }
+
+    public function testCountWithInnerJoinFallsBackToOriginal(): void
+    {
+        $fieldDescriptor = new DoctrineFieldDescriptor(
+            'name',
+            'name',
+            self::$translationEntityName,
+            'translation',
+            [
+                self::$translationEntityName => new DoctrineJoinDescriptor(
+                    self::$translationEntityName,
+                    self::$entityName . '.translations',
+                    self::$translationEntityNameAlias . '.locale = :locale',
+                    DoctrineJoinDescriptor::JOIN_METHOD_INNER
+                ),
+            ]
+        );
+
+        $this->doctrineListBuilder->in($fieldDescriptor, ['default']);
+
+        $this->connection->fetchOne(Argument::cetera())->shouldNotBeCalled();
+
+        $this->queryBuilder->select(Argument::containingString('COUNT(DISTINCT'))->shouldBeCalled()->willReturn($this->queryBuilder->reveal());
+        $this->queryBuilder->innerJoin(
+            self::$entityNameAlias . '.translations',
+            self::$translationEntityNameAlias,
+            DoctrineJoinDescriptor::JOIN_CONDITION_METHOD_WITH,
+            self::$translationEntityNameAlias . '.locale = :locale'
+        )->willReturn($this->queryBuilder->reveal())->shouldBeCalled();
+        $this->queryBuilder->andWhere(Argument::cetera())->willReturn($this->queryBuilder->reveal())->shouldBeCalled();
+        $this->queryBuilder->setParameter(Argument::cetera())->willReturn($this->queryBuilder->reveal())->shouldBeCalled();
+        $this->queryBuilder->addOrderBy(Argument::cetera())->shouldNotBeCalled();
+
+        $this->doctrineListBuilder->count();
+    }
+
+    public function testCountWithSearchAndLeftJoinFallsBackToOriginal(): void
+    {
+        $fieldDescriptor = new DoctrineFieldDescriptor(
+            'name',
+            'name',
+            self::$translationEntityName,
+            'translation',
+            [
+                self::$translationEntityName => new DoctrineJoinDescriptor(
+                    self::$translationEntityName,
+                    self::$entityName . '.translations',
+                    self::$translationEntityNameAlias . '.locale = :locale',
+                    DoctrineJoinDescriptor::JOIN_METHOD_LEFT
+                ),
+            ]
+        );
+
+        $this->doctrineListBuilder->addSearchField($fieldDescriptor);
+        $this->doctrineListBuilder->search('test query');
+        $this->doctrineListBuilder->in($fieldDescriptor, ['default']);
+
+        $this->connection->fetchOne(Argument::cetera())->shouldNotBeCalled();
+
+        $this->queryBuilder->select(Argument::containingString('COUNT(DISTINCT'))->shouldBeCalled()->willReturn($this->queryBuilder->reveal());
+        $this->queryBuilder->leftJoin(
+            self::$entityNameAlias . '.translations',
+            self::$translationEntityNameAlias,
+            DoctrineJoinDescriptor::JOIN_CONDITION_METHOD_WITH,
+            self::$translationEntityNameAlias . '.locale = :locale'
+        )->willReturn($this->queryBuilder->reveal())->shouldBeCalled();
+        $this->queryBuilder->andWhere(Argument::cetera())->willReturn($this->queryBuilder->reveal())->shouldBeCalled();
+        $this->queryBuilder->setParameter(Argument::cetera())->willReturn($this->queryBuilder->reveal())->shouldBeCalled();
+        $this->queryBuilder->addOrderBy(Argument::cetera())->shouldNotBeCalled();
+
+        $this->doctrineListBuilder->count();
+    }
+
+    public function testCountWithWhereExpressionOnLeftJoinFallsBackToOriginal(): void
+    {
+        $fieldDescriptor = new DoctrineFieldDescriptor(
+            'name',
+            'name',
+            self::$translationEntityName,
+            'translation',
+            [
+                self::$translationEntityName => new DoctrineJoinDescriptor(
+                    self::$translationEntityName,
+                    self::$entityName . '.translations',
+                    self::$translationEntityNameAlias . '.locale = :locale',
+                    DoctrineJoinDescriptor::JOIN_METHOD_LEFT
+                ),
+            ]
+        );
+
+        $this->doctrineListBuilder->setFieldDescriptors(['name' => $fieldDescriptor]);
+        $this->doctrineListBuilder->addExpression(
+            $this->doctrineListBuilder->createWhereExpression($fieldDescriptor, 'value', '=')
+        );
+
+        $this->connection->fetchOne(Argument::cetera())->shouldNotBeCalled();
+
+        $this->queryBuilder->select(Argument::containingString('COUNT(DISTINCT'))->shouldBeCalled()->willReturn($this->queryBuilder->reveal());
+        $this->queryBuilder->leftJoin(
+            self::$entityNameAlias . '.translations',
+            self::$translationEntityNameAlias,
+            DoctrineJoinDescriptor::JOIN_CONDITION_METHOD_WITH,
+            self::$translationEntityNameAlias . '.locale = :locale'
+        )->willReturn($this->queryBuilder->reveal())->shouldBeCalled();
+        $this->queryBuilder->andWhere(Argument::cetera())->willReturn($this->queryBuilder->reveal())->shouldBeCalled();
+        $this->queryBuilder->setParameter(Argument::cetera())->willReturn($this->queryBuilder->reveal())->shouldBeCalled();
         $this->queryBuilder->addOrderBy(Argument::cetera())->shouldNotBeCalled();
 
         $this->doctrineListBuilder->count();
