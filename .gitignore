@@ -95,3 +95,6 @@ jackrabbit/*
 ###> symfony/web-server-bundle ###
 /.web-server-pid
 ###< symfony/web-server-bundle ###
+
+# Local git worktrees
+/.worktrees/
