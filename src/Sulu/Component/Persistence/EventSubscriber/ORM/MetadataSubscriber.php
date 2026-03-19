@@ -13,6 +13,7 @@ namespace Sulu\Component\Persistence\EventSubscriber\ORM;
 
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
+use Doctrine\ORM\Mapping\AssociationMapping;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\ReflectionService;
 use Webmozart\Assert\Assert;
@@ -106,15 +107,48 @@ class MetadataSubscriber
 
                 // @phpstan-ignore-next-line argument.type
                 if ($this->hasRelation($value['type'])) {
-                    $value['sourceEntity'] = $metadata->getName();
-                    // @phpstan-ignore-next-line
-                    if (\is_array($value) || $value instanceof \Doctrine\ORM\Mapping\AssociationMapping) {
-                        // @phpstan-ignore-next-line
-                        $metadata->associationMappings[$key] = $value;
-                    }
+                    $this->addInheritedAssociationMapping($metadata, $key, $value, $parentMetadata);
                 }
             }
         }
+    }
+
+    /**
+     * @param array<string, mixed>|AssociationMapping $associationMapping
+     * @param string|int $key
+     * @param ClassMetadata<object> $parentMetadata
+     */
+    private function addInheritedAssociationMapping(
+        ClassMetadata $metadata,
+        $key,
+        $associationMapping,
+        ClassMetadata $parentMetadata
+    ): void {
+        if (\is_array($associationMapping)) {
+            if (!isset($associationMapping['declared'])) {
+                $associationMapping['declared'] = $parentMetadata->getName();
+            }
+
+            if (!isset($associationMapping['inherited'])) {
+                $associationMapping['sourceEntity'] = $metadata->getName();
+            }
+
+            $metadata->associationMappings[$key] = $associationMapping;
+
+            return;
+        }
+
+        $associationMapping = clone $associationMapping;
+
+        if (!isset($associationMapping->declared)) {
+            $associationMapping->declared = $parentMetadata->getName();
+        }
+
+        if (!isset($associationMapping->inherited)) {
+            $associationMapping->sourceEntity = $metadata->getName();
+        }
+
+        $metadata->addInheritedAssociationMapping($associationMapping);
     }
 
     /**

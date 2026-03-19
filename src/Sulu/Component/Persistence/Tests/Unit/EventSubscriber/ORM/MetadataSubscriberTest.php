@@ -11,19 +11,24 @@
 
 namespace Sulu\Component\Persistence\Tests\Unit\EventSubscriber\ORM;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Persistence\Mapping\ReflectionService;
+use Doctrine\Persistence\Mapping\RuntimeReflectionService;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\ContactBundle\Entity\ContactRepository;
 use Sulu\Component\Persistence\EventSubscriber\ORM\MetadataSubscriber;
+use Sulu\Component\Persistence\Tests\Unit\EventSubscriber\ORM\Fixture\TreeChildEntity;
+use Sulu\Component\Persistence\Tests\Unit\EventSubscriber\ORM\Fixture\TreeMappedSuperclass;
 
 class MetadataSubscriberTest extends TestCase
 {
@@ -170,5 +175,39 @@ class MetadataSubscriberTest extends TestCase
         )->shouldNotBeCalled();
 
         $this->subscriber->loadClassMetadata($this->loadClassMetadataEvent->reveal());
+    }
+
+    public function testLoadClassMetadataCopiesInheritedAssociationsWithDoctrineInheritanceMetadata(): void
+    {
+        require_once __DIR__ . '/Fixture/TreeMappedSuperclass.php';
+        require_once __DIR__ . '/Fixture/TreeChildEntity.php';
+
+        $configuration = new Configuration();
+        $configuration->setMetadataDriverImpl(new AttributeDriver([
+            \dirname(__DIR__) . '/ORM/Fixture',
+        ]));
+
+        $reflectionService = new RuntimeReflectionService();
+        $metadata = new ClassMetadata(TreeChildEntity::class, $configuration->getNamingStrategy());
+        $metadata->initializeReflection($reflectionService);
+        $configuration->getMetadataDriverImpl()->loadMetadataForClass(TreeChildEntity::class, $metadata);
+
+        $entityManager = $this->prophesize(EntityManager::class);
+        $classMetadataFactory = $this->prophesize(ClassMetadataFactory::class);
+        $classMetadataFactory->getReflectionService()->willReturn($reflectionService);
+        $entityManager->getConfiguration()->willReturn($configuration);
+        $entityManager->getMetadataFactory()->willReturn($classMetadataFactory->reveal());
+
+        $subscriber = new MetadataSubscriber([]);
+        $subscriber->loadClassMetadata(new LoadClassMetadataEventArgs($metadata, $entityManager->reveal()));
+
+        $metadata->wakeupReflection($reflectionService);
+
+        /** @var array<string, mixed>|\Doctrine\ORM\Mapping\AssociationMapping $associationMapping */
+        $associationMapping = $metadata->getAssociationMapping('children');
+
+        $this->assertSame(TreeMappedSuperclass::class, $associationMapping['declared']);
+        $this->assertSame(TreeChildEntity::class, $associationMapping['sourceEntity']);
+        $this->assertInstanceOf(Collection::class, $metadata->getFieldValue(new TreeChildEntity(), 'children'));
     }
 }
