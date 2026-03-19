@@ -485,7 +485,7 @@ abstract class AbstractPersister implements PersisterInterface
                 'resource_key' => $resourceKey,
                 'resource_id' => $resourceId,
                 'locale' => $locale,
-                'slug' => $this->getSlug($document, $locale),
+                'slug' => $slug,
                 'webspace' => $webspace,
                 'parent_id' => $parentRouteId,
             ];
