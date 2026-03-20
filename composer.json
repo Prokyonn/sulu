@@ -33,7 +33,7 @@
             "/Tests/"
         ]
     },
-    "require-dev": {
+"require-dev": {
         "jangregor/phpstan-prophecy": "^1.0",
         "php-cs-fixer/shim": "^3.62",
         "phpspec/prophecy-phpunit": "^2.1",

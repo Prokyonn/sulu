@@ -122,6 +122,19 @@ abstract class AbstractPersister implements PersisterInterface
     }
 
     /**
+     * @return array<string, null>
+     */
+    protected function getSeoDataDefaults(): array
+    {
+        return [
+            'title' => null,
+            'description' => null,
+            'keywords' => null,
+            'canonicalUrl' => null,
+        ];
+    }
+
+    /**
      * Build the seoData JSON structure from localized data.
      *
      * @param array<string, mixed> $localizedData
@@ -130,17 +143,40 @@ abstract class AbstractPersister implements PersisterInterface
      */
     protected function buildSeoData(array $localizedData): array
     {
+        $defaults = $this->getSeoDataDefaults();
         $seo = $localizedData['seo'] ?? [];
-        if (!\is_array($seo) || [] === $seo) {
-            return [];
+        if (!\is_array($seo)) {
+            return $defaults;
         }
 
-        return \array_filter([
-            'title' => $seo['title'] ?? null,
-            'description' => $seo['description'] ?? null,
-            'keywords' => $seo['keywords'] ?? null,
-            'canonicalUrl' => $seo['canonicalUrl'] ?? null,
-        ], static fn ($value) => null !== $value);
+        $result = \array_merge($defaults, \array_intersect_key($seo, $defaults));
+
+        $excludedKeys = ['noIndex', 'noFollow', 'hideInSitemap', ...\array_keys($defaults)];
+        foreach ($seo as $key => $value) {
+            if (!\in_array($key, $excludedKeys, true)) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Override to add custom excerpt fields. Note: standard fields (image, icon, more)
+     * require special handling in buildExcerptData(), so adding them here alone won't
+     * auto-populate from PHPCR data. Simple string/scalar custom fields work automatically.
+     *
+     * @return array<string, null>
+     */
+    protected function getExcerptDataDefaults(): array
+    {
+        return [
+            'title' => null,
+            'description' => null,
+            'more' => null,
+            'image' => null,
+            'icon' => null,
+        ];
     }
 
     /**
@@ -152,15 +188,15 @@ abstract class AbstractPersister implements PersisterInterface
      */
     protected function buildExcerptData(array $localizedData): array
     {
+        $defaults = $this->getExcerptDataDefaults();
         $excerpt = $localizedData['excerpt'] ?? [];
-        if (!\is_array($excerpt) || [] === $excerpt) {
-            return [];
+        if (!\is_array($excerpt)) {
+            return $defaults;
         }
 
         $imageId = $this->extractMediaId($excerpt['images'] ?? null);
         $iconId = $this->extractMediaId($excerpt['icon'] ?? null);
 
-        // Validate media IDs exist
         if (null !== $imageId && !$this->entityRepository->exists('me_media', ['id' => $imageId])) {
             $imageId = null;
         }
@@ -169,18 +205,28 @@ abstract class AbstractPersister implements PersisterInterface
         }
 
         $more = $excerpt['more'] ?? null;
-        // Validate excerptMore length (max 63 chars)
         if (\is_string($more) && \strlen($more) >= 63) {
             $more = null;
         }
 
-        return \array_filter([
+        $result = \array_merge($defaults, [
             'title' => $excerpt['title'] ?? null,
             'description' => $excerpt['description'] ?? null,
             'more' => $more,
             'image' => null !== $imageId ? ['id' => $imageId] : null,
             'icon' => null !== $iconId ? ['id' => $iconId] : null,
-        ], static fn ($value) => null !== $value);
+        ]);
+
+        // 'images' is the raw PHPCR key that gets transformed to 'image' above
+        // 'icon' is both a PHPCR source key and a default key (handled via media validation above)
+        $excludedKeys = ['images', 'icon', 'categories', 'tags', 'audience_targeting_groups', 'segments', ...\array_keys($defaults)];
+        foreach ($excerpt as $key => $value) {
+            if (!\in_array($key, $excludedKeys, true)) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
     }
 
     /**

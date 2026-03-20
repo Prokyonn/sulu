@@ -118,11 +118,17 @@ PhpcrMigration/
 - **JSON Column**: `seoData` stores title, description, keywords, canonicalUrl
 - **Separate Columns**: `seoNoIndex`, `seoNoFollow`, `seoHideInSitemap` (booleans)
 - **Format**: `{"title": "...", "description": "...", "keywords": "...", "canonicalUrl": "..."}`
+- **Defaults**: All 4 standard fields are always present with `null` defaults (never `[]`)
+- **Custom fields**: Any additional `seo-*` PHPCR properties are auto-discovered and included
+- **Extension point**: Override `getSeoDataDefaults()` on a persister subclass to add custom default fields
 - **Note**: Snippets do not have SEO data
 
 **Excerpt Tab Migration** (Sulu 3.0):
 - **JSON Column**: `excerptData` stores title, description, more, image, icon
 - **Format**: `{"title": "...", "description": "...", "more": "...", "image": {"id": 123}, "icon": {"id": 456}}`
+- **Defaults**: All 5 standard fields are always present with `null` defaults (never `[]`)
+- **Custom fields**: Any additional `excerpt-*` PHPCR properties are auto-discovered and included
+- **Extension point**: Override `getExcerptDataDefaults()` on a persister subclass to add custom default fields (simple scalar fields work automatically; fields needing special handling like media validation also require overriding `buildExcerptData()`)
 - **Separate Column**: `excerptSegment` (VARCHAR)
 - **Categories & Tags**: Migrated as many-to-many relations via junction tables (unchanged)
 - **Audience Targeting Groups**: Migrated as many-to-many relations (unchanged)
