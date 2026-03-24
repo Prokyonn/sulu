@@ -17,7 +17,6 @@ use Sulu\Content\Domain\Model\DimensionContentCollection;
 use Sulu\Page\Application\Message\RemovePageMessage;
 use Sulu\Page\Domain\Event\PageRemovedEvent;
 use Sulu\Page\Domain\Exception\RemovePageDependantResourcesFoundException;
-use Sulu\Page\Domain\Model\PageDimensionContent;
 use Sulu\Page\Domain\Model\PageDimensionContentInterface;
 use Sulu\Page\Domain\Model\PageInterface;
 use Sulu\Page\Domain\Repository\PageRepositoryInterface;
@@ -28,9 +27,13 @@ use Sulu\Page\Domain\Repository\PageRepositoryInterface;
  */
 final class RemovePageMessageHandler
 {
+    /**
+     * @param class-string<PageDimensionContentInterface> $pageContentClass
+     */
     public function __construct(
         private PageRepositoryInterface $pageRepository,
         private DomainEventCollectorInterface $domainEventCollector,
+        private string $pageContentClass,
         private ?TrashManagerInterface $trashManager = null,
     ) {
     }
@@ -49,7 +52,7 @@ final class RemovePageMessageHandler
         $resourceKey = $page::RESOURCE_KEY;
         $this->trashManager?->store($resourceKey, $page);
 
-        $dimensionContentCollection = new DimensionContentCollection($page->getDimensionContents(), [], PageDimensionContent::class);
+        $dimensionContentCollection = new DimensionContentCollection($page->getDimensionContents(), [], $this->pageContentClass);
         /** @var PageDimensionContentInterface|null $localizedDimensionContent */
         $localizedDimensionContent = $dimensionContentCollection->getDimensionContent(['locale' => $message->getLocale()]);
         $unlocalizedDimensionContent = $dimensionContentCollection->getDimensionContent(['locale' => null, 'stage' => 'draft']);

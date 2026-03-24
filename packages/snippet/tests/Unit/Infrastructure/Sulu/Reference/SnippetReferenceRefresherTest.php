@@ -24,6 +24,7 @@ use Sulu\Content\Application\ContentMerger\ContentMergerInterface;
 use Sulu\Content\Application\ContentResolver\ContentViewResolver\ContentViewResolverInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Snippet\Domain\Model\Snippet;
+use Sulu\Snippet\Domain\Model\SnippetDimensionContent;
 use Sulu\Snippet\Domain\Model\SnippetDimensionContentInterface;
 use Sulu\Snippet\Infrastructure\Sulu\Reference\SnippetReferenceRefresher;
 
@@ -59,14 +60,15 @@ class SnippetReferenceRefresherTest extends TestCase
         $prophecy = $this->prophesize(EntityRepository::class);
         $this->snippetDimensionContentRepository = $prophecy;
 
-        $this->entityManager->getRepository(SnippetDimensionContentInterface::class)
+        $this->entityManager->getRepository(SnippetDimensionContent::class)
             ->willReturn($this->snippetDimensionContentRepository->reveal());
 
         $this->refresher = new SnippetReferenceRefresher(
             $this->entityManager->reveal(),
             $this->referenceRepository->reveal(),
             $this->contentViewResolver->reveal(),
-            $this->contentMerger->reveal()
+            $this->contentMerger->reveal(),
+            SnippetDimensionContent::class,
         );
     }
 

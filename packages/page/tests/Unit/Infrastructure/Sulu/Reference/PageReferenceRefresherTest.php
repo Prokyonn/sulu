@@ -24,6 +24,7 @@ use Sulu\Content\Application\ContentMerger\ContentMergerInterface;
 use Sulu\Content\Application\ContentResolver\ContentViewResolver\ContentViewResolverInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Page\Domain\Model\Page;
+use Sulu\Page\Domain\Model\PageDimensionContent;
 use Sulu\Page\Domain\Model\PageDimensionContentInterface;
 use Sulu\Page\Infrastructure\Sulu\Reference\PageReferenceRefresher;
 
@@ -59,14 +60,15 @@ class PageReferenceRefresherTest extends TestCase
         $prophecy = $this->prophesize(EntityRepository::class);
         $this->pageDimensionContentRepository = $prophecy;
 
-        $this->entityManager->getRepository(PageDimensionContentInterface::class)
+        $this->entityManager->getRepository(PageDimensionContent::class)
             ->willReturn($this->pageDimensionContentRepository->reveal());
 
         $this->refresher = new PageReferenceRefresher(
             $this->entityManager->reveal(),
             $this->referenceRepository->reveal(),
             $this->contentViewResolver->reveal(),
-            $this->contentMerger->reveal()
+            $this->contentMerger->reveal(),
+            PageDimensionContent::class,
         );
     }
 

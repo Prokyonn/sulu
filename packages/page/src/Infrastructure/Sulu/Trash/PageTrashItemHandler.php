@@ -28,7 +28,6 @@ use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Page\Application\Mapper\PageMapperInterface;
 use Sulu\Page\Domain\Event\PageRestoredEvent;
 use Sulu\Page\Domain\Event\PageTranslationRestoredEvent;
-use Sulu\Page\Domain\Model\PageDimensionContent;
 use Sulu\Page\Domain\Model\PageDimensionContentInterface;
 use Sulu\Page\Domain\Model\PageInterface;
 use Sulu\Page\Domain\Repository\PageRepositoryInterface;
@@ -45,6 +44,7 @@ final class PageTrashItemHandler implements
 {
     /**
      * @param iterable<PageMapperInterface> $pageMappers
+     * @param class-string<PageDimensionContentInterface> $pageContentClass
      */
     public function __construct(
         private TrashItemRepositoryInterface $trashItemRepository,
@@ -53,6 +53,7 @@ final class PageTrashItemHandler implements
         private ContentMergerInterface $contentMerger,
         private iterable $pageMappers,
         private DomainEventCollectorInterface $domainEventCollector,
+        private string $pageContentClass,
     ) {
     }
 
@@ -122,7 +123,7 @@ final class PageTrashItemHandler implements
                         'stage' => DimensionContentInterface::STAGE_DRAFT,
                         'version' => DimensionContentInterface::CURRENT_VERSION,
                     ],
-                    PageDimensionContent::class,
+                    $this->pageContentClass,
                 ),
             );
 

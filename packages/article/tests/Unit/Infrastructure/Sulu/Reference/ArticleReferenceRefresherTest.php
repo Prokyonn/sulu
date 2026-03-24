@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Article\Domain\Model\Article;
+use Sulu\Article\Domain\Model\ArticleDimensionContent;
 use Sulu\Article\Domain\Model\ArticleDimensionContentInterface;
 use Sulu\Article\Infrastructure\Sulu\Reference\ArticleReferenceRefresher;
 use Sulu\Bundle\ReferenceBundle\Domain\Repository\ReferenceRepositoryInterface;
@@ -59,14 +60,15 @@ class ArticleReferenceRefresherTest extends TestCase
         $prophecy = $this->prophesize(EntityRepository::class);
         $this->articleDimensionContentRepository = $prophecy;
 
-        $this->entityManager->getRepository(ArticleDimensionContentInterface::class)
+        $this->entityManager->getRepository(ArticleDimensionContent::class)
             ->willReturn($this->articleDimensionContentRepository->reveal());
 
         $this->refresher = new ArticleReferenceRefresher(
             $this->entityManager->reveal(),
             $this->referenceRepository->reveal(),
             $this->contentViewResolver->reveal(),
-            $this->contentMerger->reveal()
+            $this->contentMerger->reveal(),
+            ArticleDimensionContent::class,
         );
     }
 

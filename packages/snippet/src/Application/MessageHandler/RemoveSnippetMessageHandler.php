@@ -16,7 +16,6 @@ use Sulu\Bundle\TrashBundle\Application\TrashManager\TrashManagerInterface;
 use Sulu\Content\Domain\Model\DimensionContentCollection;
 use Sulu\Snippet\Application\Message\RemoveSnippetMessage;
 use Sulu\Snippet\Domain\Event\SnippetRemovedEvent;
-use Sulu\Snippet\Domain\Model\SnippetDimensionContent;
 use Sulu\Snippet\Domain\Model\SnippetDimensionContentInterface;
 use Sulu\Snippet\Domain\Repository\SnippetRepositoryInterface;
 
@@ -26,9 +25,13 @@ use Sulu\Snippet\Domain\Repository\SnippetRepositoryInterface;
  */
 final class RemoveSnippetMessageHandler
 {
+    /**
+     * @param class-string<SnippetDimensionContentInterface> $snippetContentClass
+     */
     public function __construct(
         private SnippetRepositoryInterface $snippetRepository,
         private DomainEventCollectorInterface $domainEventCollector,
+        private string $snippetContentClass,
         private ?TrashManagerInterface $trashManager = null,
     ) {
     }
@@ -43,7 +46,7 @@ final class RemoveSnippetMessageHandler
         $resourceKey = $snippet::RESOURCE_KEY;
         $this->trashManager?->store($resourceKey, $snippet);
 
-        $dimensionContentCollection = new DimensionContentCollection($snippet->getDimensionContents(), [], SnippetDimensionContent::class);
+        $dimensionContentCollection = new DimensionContentCollection($snippet->getDimensionContents(), [], $this->snippetContentClass);
         /** @var SnippetDimensionContentInterface|null $localizedDimensionContent */
         $localizedDimensionContent = $dimensionContentCollection->getDimensionContent(['locale' => $message->getLocale()]);
         $unlocalizedDimensionContent = $dimensionContentCollection->getDimensionContent(['locale' => null, 'stage' => 'draft']);

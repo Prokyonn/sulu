@@ -16,7 +16,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Sulu\Article\Domain\Model\Article;
-use Sulu\Article\Domain\Model\ArticleDimensionContent;
 use Sulu\Article\Domain\Model\ArticleDimensionContentInterface;
 use Sulu\Article\Domain\Model\ArticleInterface;
 use Sulu\Bundle\ReferenceBundle\Application\Collector\ReferenceCollector;
@@ -40,14 +39,18 @@ class ArticleReferenceRefresher implements ReferenceRefresherInterface
      */
     private EntityRepository $articleDimensionContentRepository;
 
+    /**
+     * @param class-string<ArticleDimensionContentInterface> $articleContentClass
+     */
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ReferenceRepositoryInterface $referenceRepository,
         private ContentViewResolverInterface $contentViewResolver,
         private ContentMergerInterface $contentMerger,
+        private string $articleContentClass,
     ) {
         /** @var EntityRepository<ArticleDimensionContentInterface> $repository */
-        $repository = $this->entityManager->getRepository(ArticleDimensionContentInterface::class);
+        $repository = $this->entityManager->getRepository($this->articleContentClass);
         $this->articleDimensionContentRepository = $repository;
     }
 
@@ -194,7 +197,7 @@ class ArticleReferenceRefresher implements ReferenceRefresherInterface
                         new DimensionContentCollection(
                             new ArrayCollection($unlocalizedDimensionContent ? [$articleDimensionContent, $unlocalizedDimensionContent] : [$articleDimensionContent]),
                             $articleDimensionContent::getEffectiveDimensionAttributes(['locale' => $locale, 'stage' => $stage]),
-                            ArticleDimensionContent::class
+                            $this->articleContentClass
                         )
                     );
                 }

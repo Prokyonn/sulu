@@ -188,6 +188,7 @@ final class SuluArticleBundle extends AbstractBundle
             ->args([
                 new Reference('sulu_article.article_repository'),
                 new Reference('sulu_activity.domain_event_collector'),
+                '%sulu.model.article_content.class%',
                 new Reference('sulu_trash.trash_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE),
             ])
             ->tag('messenger.message_handler');
@@ -388,6 +389,7 @@ final class SuluArticleBundle extends AbstractBundle
                 new Reference('sulu_reference.reference_repository'),
                 new Reference('sulu_content.content_view_resolver'),
                 new Reference('sulu_content.content_merger'),
+                '%sulu.model.article_content.class%',
             ])
             ->tag('sulu_reference.refresher');
 
@@ -428,6 +430,7 @@ final class SuluArticleBundle extends AbstractBundle
                     new Reference('sulu_content.content_merger'),
                     tagged_iterator('sulu_article.article_mapper'),
                     new Reference('sulu_activity.domain_event_collector'),
+                    '%sulu.model.article_content.class%',
                 ])
                 ->tag('sulu_trash.store_trash_item_handler')
                 ->tag('sulu_trash.restore_trash_item_handler')

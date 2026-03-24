@@ -23,7 +23,6 @@ use Sulu\Content\Application\ContentResolver\ContentViewResolver\ContentViewReso
 use Sulu\Content\Domain\Model\DimensionContentCollection;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Snippet\Domain\Model\Snippet;
-use Sulu\Snippet\Domain\Model\SnippetDimensionContent;
 use Sulu\Snippet\Domain\Model\SnippetDimensionContentInterface;
 use Sulu\Snippet\Domain\Model\SnippetInterface;
 
@@ -40,14 +39,18 @@ class SnippetReferenceRefresher implements ReferenceRefresherInterface
      */
     private EntityRepository $snippetDimensionContentRepository;
 
+    /**
+     * @param class-string<SnippetDimensionContentInterface> $snippetContentClass
+     */
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ReferenceRepositoryInterface $referenceRepository,
         private ContentViewResolverInterface $contentViewResolver,
         private ContentMergerInterface $contentMerger,
+        private string $snippetContentClass,
     ) {
         /** @var EntityRepository<SnippetDimensionContentInterface> $repository */
-        $repository = $this->entityManager->getRepository(SnippetDimensionContentInterface::class);
+        $repository = $this->entityManager->getRepository($this->snippetContentClass);
         $this->snippetDimensionContentRepository = $repository;
     }
 
@@ -194,7 +197,7 @@ class SnippetReferenceRefresher implements ReferenceRefresherInterface
                         new DimensionContentCollection(
                             new ArrayCollection($unlocalizedDimensionContent ? [$snippetDimensionContent, $unlocalizedDimensionContent] : [$snippetDimensionContent]),
                             $snippetDimensionContent::getEffectiveDimensionAttributes(['locale' => $locale, 'stage' => $stage]),
-                            SnippetDimensionContent::class
+                            $this->snippetContentClass
                         )
                     );
                 }

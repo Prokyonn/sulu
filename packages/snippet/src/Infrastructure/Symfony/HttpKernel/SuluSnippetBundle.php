@@ -156,6 +156,7 @@ final class SuluSnippetBundle extends AbstractBundle
             ->args([
                 new Reference('sulu_snippet.snippet_repository'),
                 new Reference('sulu_activity.domain_event_collector'),
+                '%sulu.model.snippet_content.class%',
                 new Reference('sulu_trash.trash_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE),
             ])
             ->tag('messenger.message_handler');
@@ -375,6 +376,7 @@ final class SuluSnippetBundle extends AbstractBundle
                 new Reference('sulu_reference.reference_repository'),
                 new Reference('sulu_content.content_view_resolver'),
                 new Reference('sulu_content.content_merger'),
+                '%sulu.model.snippet_content.class%',
             ])
             ->tag('sulu_reference.refresher');
 
@@ -409,6 +411,7 @@ final class SuluSnippetBundle extends AbstractBundle
                     new Reference('sulu_content.content_merger'),
                     tagged_iterator('sulu_snippet.snippet_mapper'),
                     new Reference('sulu_activity.domain_event_collector'),
+                    '%sulu.model.snippet_content.class%',
                 ])
                 ->tag('sulu_trash.store_trash_item_handler')
                 ->tag('sulu_trash.restore_trash_item_handler')

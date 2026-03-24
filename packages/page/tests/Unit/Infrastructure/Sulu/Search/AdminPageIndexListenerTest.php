@@ -26,6 +26,7 @@ use Sulu\Page\Domain\Event\PageRestoredEvent;
 use Sulu\Page\Domain\Event\PageTranslationAddedEvent;
 use Sulu\Page\Domain\Event\PageTranslationRemovedEvent;
 use Sulu\Page\Domain\Model\Page;
+use Sulu\Page\Domain\Model\PageDimensionContent;
 use Sulu\Page\Domain\Model\PageInterface;
 use Sulu\Page\Infrastructure\Sulu\Search\AdminPageIndexListener;
 use Symfony\Component\Messenger\Envelope;
@@ -46,7 +47,7 @@ class AdminPageIndexListenerTest extends TestCase
     protected function setUp(): void
     {
         $this->messageBus = $this->prophesize(MessageBusInterface::class);
-        $this->listener = new AdminPageIndexListener($this->messageBus->reveal());
+        $this->listener = new AdminPageIndexListener($this->messageBus->reveal(), PageDimensionContent::class);
     }
 
     public function testOnPageChangedWithPageCreatedEvent(): void

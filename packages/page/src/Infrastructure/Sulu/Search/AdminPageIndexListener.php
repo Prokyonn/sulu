@@ -22,7 +22,7 @@ use Sulu\Page\Domain\Event\PageRestoredEvent;
 use Sulu\Page\Domain\Event\PageTranslationAddedEvent;
 use Sulu\Page\Domain\Event\PageTranslationRemovedEvent;
 use Sulu\Page\Domain\Event\PageTranslationRestoredEvent;
-use Sulu\Page\Domain\Model\PageDimensionContent;
+use Sulu\Page\Domain\Model\PageDimensionContentInterface;
 use Sulu\Page\Domain\Model\PageInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -32,8 +32,12 @@ use Symfony\Component\Messenger\MessageBusInterface;
  */
 final class AdminPageIndexListener
 {
+    /**
+     * @param class-string<PageDimensionContentInterface> $pageContentClass
+     */
     public function __construct(
         private readonly MessageBusInterface $messageBus,
+        private readonly string $pageContentClass,
     ) {
     }
 
@@ -68,7 +72,7 @@ final class AdminPageIndexListener
 
         if ($event instanceof PageRestoredEvent) {
             $page = $event->getPage();
-            $dimensionContentCollection = new DimensionContentCollection($page->getDimensionContents(), [], PageDimensionContent::class);
+            $dimensionContentCollection = new DimensionContentCollection($page->getDimensionContents(), [], $this->pageContentClass);
             $unlocalizedDimensionContent = $dimensionContentCollection->getDimensionContent(['locale' => null, 'stage' => 'draft']);
 
             return $unlocalizedDimensionContent ? ($unlocalizedDimensionContent->getAvailableLocales() ?? []) : [];

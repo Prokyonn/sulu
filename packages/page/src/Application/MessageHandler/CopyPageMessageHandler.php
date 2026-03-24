@@ -19,7 +19,7 @@ use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Infrastructure\Doctrine\DimensionContentQueryEnhancer;
 use Sulu\Page\Application\Message\CopyPageMessage;
 use Sulu\Page\Domain\Event\PageCopiedEvent;
-use Sulu\Page\Domain\Model\PageDimensionContent;
+use Sulu\Page\Domain\Model\PageDimensionContentInterface;
 use Sulu\Page\Domain\Model\PageInterface;
 use Sulu\Page\Domain\Repository\PageRepositoryInterface;
 
@@ -29,11 +29,15 @@ use Sulu\Page\Domain\Repository\PageRepositoryInterface;
  */
 final class CopyPageMessageHandler
 {
+    /**
+     * @param class-string<PageDimensionContentInterface> $pageContentClass
+     */
     public function __construct(
         private PageRepositoryInterface $pageRepository,
         private ContentCopierInterface $contentCopier,
         private LocalizationManagerInterface $localizationManager,
         private DomainEventCollectorInterface $domainEventCollector,
+        private string $pageContentClass,
     ) {
     }
 
@@ -77,7 +81,7 @@ final class CopyPageMessageHandler
         $dimensionContentCollection = new DimensionContentCollection(
             $sourcePage->getDimensionContents(),
             [],
-            PageDimensionContent::class
+            $this->pageContentClass
         );
 
         foreach ($allLocales as $locale) {
@@ -110,7 +114,7 @@ final class CopyPageMessageHandler
             );
         }
 
-        /** @var PageDimensionContent $localizedDimensionContent */
+        /** @var PageDimensionContentInterface $localizedDimensionContent */
         $localizedDimensionContent = $dimensionContentCollection->getDimensionContent([
             'locale' => $message->getLocale(),
             'stage' => DimensionContentInterface::STAGE_DRAFT,

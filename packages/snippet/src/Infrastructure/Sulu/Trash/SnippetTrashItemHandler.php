@@ -28,7 +28,6 @@ use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Snippet\Application\Mapper\SnippetMapperInterface;
 use Sulu\Snippet\Domain\Event\SnippetRestoredEvent;
 use Sulu\Snippet\Domain\Event\SnippetTranslationRestoredEvent;
-use Sulu\Snippet\Domain\Model\SnippetDimensionContent;
 use Sulu\Snippet\Domain\Model\SnippetDimensionContentInterface;
 use Sulu\Snippet\Domain\Model\SnippetInterface;
 use Sulu\Snippet\Domain\Repository\SnippetRepositoryInterface;
@@ -45,6 +44,7 @@ final class SnippetTrashItemHandler implements
 {
     /**
      * @param iterable<SnippetMapperInterface> $snippetMappers
+     * @param class-string<SnippetDimensionContentInterface> $snippetContentClass
      */
     public function __construct(
         private TrashItemRepositoryInterface $trashItemRepository,
@@ -53,6 +53,7 @@ final class SnippetTrashItemHandler implements
         private ContentMergerInterface $contentMerger,
         private iterable $snippetMappers,
         private DomainEventCollectorInterface $domainEventCollector,
+        private string $snippetContentClass,
     ) {
     }
 
@@ -123,7 +124,7 @@ final class SnippetTrashItemHandler implements
                         'stage' => DimensionContentInterface::STAGE_DRAFT,
                         'version' => DimensionContentInterface::CURRENT_VERSION,
                     ],
-                    SnippetDimensionContent::class
+                    $this->snippetContentClass
                 )
             );
 

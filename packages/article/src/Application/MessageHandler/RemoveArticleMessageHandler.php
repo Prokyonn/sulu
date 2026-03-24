@@ -13,7 +13,6 @@ namespace Sulu\Article\Application\MessageHandler;
 
 use Sulu\Article\Application\Message\RemoveArticleMessage;
 use Sulu\Article\Domain\Event\ArticleRemovedEvent;
-use Sulu\Article\Domain\Model\ArticleDimensionContent;
 use Sulu\Article\Domain\Model\ArticleDimensionContentInterface;
 use Sulu\Article\Domain\Repository\ArticleRepositoryInterface;
 use Sulu\Bundle\ActivityBundle\Application\Collector\DomainEventCollectorInterface;
@@ -26,9 +25,13 @@ use Sulu\Content\Domain\Model\DimensionContentCollection;
  */
 final class RemoveArticleMessageHandler
 {
+    /**
+     * @param class-string<ArticleDimensionContentInterface> $articleContentClass
+     */
     public function __construct(
         private ArticleRepositoryInterface $articleRepository,
         private DomainEventCollectorInterface $domainEventCollector,
+        private string $articleContentClass,
         private ?TrashManagerInterface $trashManager = null,
     ) {
     }
@@ -43,7 +46,7 @@ final class RemoveArticleMessageHandler
         $resourceKey = $article::RESOURCE_KEY;
         $this->trashManager?->store($resourceKey, $article);
 
-        $dimensionContentCollection = new DimensionContentCollection($article->getDimensionContents(), [], ArticleDimensionContent::class);
+        $dimensionContentCollection = new DimensionContentCollection($article->getDimensionContents(), [], $this->articleContentClass);
         /** @var ArticleDimensionContentInterface|null $localizedDimensionContent */
         $localizedDimensionContent = $dimensionContentCollection->getDimensionContent(['locale' => $message->getLocale()]);
         $unlocalizedDimensionContent = $dimensionContentCollection->getDimensionContent(['locale' => null, 'stage' => 'draft']);

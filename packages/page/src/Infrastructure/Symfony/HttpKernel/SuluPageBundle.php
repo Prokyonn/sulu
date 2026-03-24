@@ -183,6 +183,7 @@ final class SuluPageBundle extends AbstractBundle
             ->args([
                 new Reference('sulu_page.page_repository'),
                 new Reference('sulu_activity.domain_event_collector'),
+                '%sulu.model.page_content.class%',
                 new Reference('sulu_trash.trash_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE),
             ])
             ->tag('messenger.message_handler');
@@ -227,6 +228,7 @@ final class SuluPageBundle extends AbstractBundle
             ->args([
                 new Reference('sulu_page.page_repository'),
                 new Reference('sulu_activity.domain_event_collector'),
+                '%sulu.model.page_content.class%',
             ])
             ->tag('messenger.message_handler');
 
@@ -237,6 +239,7 @@ final class SuluPageBundle extends AbstractBundle
                 new Reference('sulu_content.content_copier'),
                 new Reference('sulu.core.localization_manager'),
                 new Reference('sulu_activity.domain_event_collector'),
+                '%sulu.model.page_content.class%',
             ])
             ->tag('messenger.message_handler');
 
@@ -547,6 +550,7 @@ final class SuluPageBundle extends AbstractBundle
                 new Reference('sulu_reference.reference_repository'),
                 new Reference('sulu_content.content_view_resolver'),
                 new Reference('sulu_content.content_merger'),
+                '%sulu.model.page_content.class%',
             ])
             ->tag('sulu_reference.refresher'); // TODO add resource key?
 
@@ -588,6 +592,7 @@ final class SuluPageBundle extends AbstractBundle
                     new Reference('sulu_content.content_merger'),
                     tagged_iterator('sulu_page.page_mapper'),
                     new Reference('sulu_activity.domain_event_collector'),
+                    '%sulu.model.page_content.class%',
                 ])
                 ->tag('sulu_trash.store_trash_item_handler')
                 ->tag('sulu_trash.restore_trash_item_handler')
@@ -598,6 +603,7 @@ final class SuluPageBundle extends AbstractBundle
             ->class(AdminPageIndexListener::class)
             ->args([
                 new Reference('sulu_message_bus'),
+                '%sulu.model.page_content.class%',
             ])
             ->tag('kernel.event_listener', ['event' => PageCreatedEvent::class, 'method' => 'onPageChanged'])
             ->tag('kernel.event_listener', ['event' => PageModifiedEvent::class, 'method' => 'onPageChanged'])

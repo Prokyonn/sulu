@@ -15,7 +15,7 @@ use Sulu\Bundle\ActivityBundle\Application\Collector\DomainEventCollectorInterfa
 use Sulu\Content\Domain\Model\DimensionContentCollection;
 use Sulu\Page\Application\Message\MovePageMessage;
 use Sulu\Page\Domain\Event\PageMovedEvent;
-use Sulu\Page\Domain\Model\PageDimensionContent;
+use Sulu\Page\Domain\Model\PageDimensionContentInterface;
 use Sulu\Page\Domain\Model\PageInterface;
 use Sulu\Page\Domain\Repository\PageRepositoryInterface;
 
@@ -25,9 +25,13 @@ use Sulu\Page\Domain\Repository\PageRepositoryInterface;
  */
 class MovePageMessageHandler
 {
+    /**
+     * @param class-string<PageDimensionContentInterface> $pageContentClass
+     */
     public function __construct(
         private PageRepositoryInterface $pageRepository,
         private DomainEventCollectorInterface $domainEventCollector,
+        private string $pageContentClass,
     ) {
     }
 
@@ -50,8 +54,8 @@ class MovePageMessageHandler
             return $page;
         }
 
-        $previousParentDimensionContentCollection = new DimensionContentCollection($previousParent->getDimensionContents(), [], PageDimensionContent::class);
-        /** @var PageDimensionContent $previousParentLocalizedDimensionContent */
+        $previousParentDimensionContentCollection = new DimensionContentCollection($previousParent->getDimensionContents(), [], $this->pageContentClass);
+        /** @var PageDimensionContentInterface $previousParentLocalizedDimensionContent */
         $previousParentLocalizedDimensionContent = $previousParentDimensionContentCollection->getDimensionContent(['locale' => $message->getLocale()]);
 
         $this->domainEventCollector->collect(new PageMovedEvent(

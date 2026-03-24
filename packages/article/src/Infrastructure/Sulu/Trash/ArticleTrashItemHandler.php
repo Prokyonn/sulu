@@ -17,7 +17,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Sulu\Article\Application\Mapper\ArticleMapperInterface;
 use Sulu\Article\Domain\Event\ArticleRestoredEvent;
 use Sulu\Article\Domain\Event\ArticleTranslationRestoredEvent;
-use Sulu\Article\Domain\Model\ArticleDimensionContent;
 use Sulu\Article\Domain\Model\ArticleDimensionContentInterface;
 use Sulu\Article\Domain\Model\ArticleInterface;
 use Sulu\Article\Domain\Repository\ArticleRepositoryInterface;
@@ -45,6 +44,7 @@ final class ArticleTrashItemHandler implements
 {
     /**
      * @param iterable<ArticleMapperInterface> $articleMappers
+     * @param class-string<ArticleDimensionContentInterface> $articleContentClass
      */
     public function __construct(
         private TrashItemRepositoryInterface $trashItemRepository,
@@ -53,6 +53,7 @@ final class ArticleTrashItemHandler implements
         private ContentMergerInterface $contentMerger,
         private iterable $articleMappers,
         private DomainEventCollectorInterface $domainEventCollector,
+        private string $articleContentClass,
     ) {
     }
 
@@ -123,7 +124,7 @@ final class ArticleTrashItemHandler implements
                         'stage' => DimensionContentInterface::STAGE_DRAFT,
                         'version' => DimensionContentInterface::CURRENT_VERSION,
                     ],
-                    ArticleDimensionContent::class,
+                    $this->articleContentClass,
                 ),
             );
 

@@ -23,7 +23,6 @@ use Sulu\Content\Application\ContentResolver\ContentViewResolver\ContentViewReso
 use Sulu\Content\Domain\Model\DimensionContentCollection;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Page\Domain\Model\Page;
-use Sulu\Page\Domain\Model\PageDimensionContent;
 use Sulu\Page\Domain\Model\PageDimensionContentInterface;
 use Sulu\Page\Domain\Model\PageInterface;
 
@@ -40,14 +39,18 @@ class PageReferenceRefresher implements ReferenceRefresherInterface
      */
     private EntityRepository $pageDimensionContentRepository;
 
+    /**
+     * @param class-string<PageDimensionContentInterface> $pageContentClass
+     */
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ReferenceRepositoryInterface $referenceRepository,
         private ContentViewResolverInterface $contentViewResolver,
         private ContentMergerInterface $contentMerger,
+        private string $pageContentClass,
     ) {
         /** @var EntityRepository<PageDimensionContentInterface> $repository */
-        $repository = $this->entityManager->getRepository(PageDimensionContentInterface::class);
+        $repository = $this->entityManager->getRepository($this->pageContentClass);
         $this->pageDimensionContentRepository = $repository;
     }
 
@@ -195,7 +198,7 @@ class PageReferenceRefresher implements ReferenceRefresherInterface
                         new DimensionContentCollection(
                             new ArrayCollection($unlocalizedDimensionContent ? [$pageDimensionContent, $unlocalizedDimensionContent] : [$pageDimensionContent]),
                             $pageDimensionContent::getEffectiveDimensionAttributes(['locale' => $locale, 'stage' => $stage]),
-                            PageDimensionContent::class
+                            $this->pageContentClass
                         )
                     );
                 }
