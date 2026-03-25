@@ -1,8 +1,11 @@
 [
     {
         "id": 1,
-        "locale": "[\"de\",\"en\"]",
+        "idRoles": 1,
         "idUsers": 1,
-        "idRoles": 1
+        "locale": [
+            "de",
+            "en"
+        ]
     }
 ]
