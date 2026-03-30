@@ -525,6 +525,10 @@ abstract class AbstractPersister implements PersisterInterface
             if (null === $slug) {
                 continue;
             }
+            if (\mb_strlen($slug) > 144) {
+                \error_log(\sprintf("\nWARNING: Slug trimmed from %d to 144 chars for resource \"%s\": %s", \mb_strlen($slug), $resourceId, $slug));
+                $slug = \mb_substr($slug, 0, 144);
+            }
 
             // main route
             $data = [
@@ -576,6 +580,10 @@ abstract class AbstractPersister implements PersisterInterface
 
             $historyResourceId = $resourceKey . '::' . $resourceId;
             foreach ($historyUrls as $url) {
+                if (\mb_strlen($url) > 144) {
+                    \error_log(\sprintf("\nWARNING: History URL trimmed from %d to 144 chars for resource \"%s\": %s", \mb_strlen($url), $resourceId, $url));
+                    $url = \mb_substr($url, 0, 144);
+                }
                 $data = [
                     'resource_key' => AbstractPersister::ROUTE_RESOURCE_KEY,
                     'resource_id' => $historyResourceId,
