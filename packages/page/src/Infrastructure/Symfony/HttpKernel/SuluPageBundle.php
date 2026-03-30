@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Page\Infrastructure\Symfony\HttpKernel;
 
-use Gedmo\Tree\Hydrator\ORM\TreeObjectHydrator;
+use Sulu\Page\Infrastructure\Doctrine\Hydrator\TreeObjectHydrator;
 use Sulu\Bundle\PersistenceBundle\DependencyInjection\PersistenceExtensionTrait;
 use Sulu\Bundle\PersistenceBundle\PersistenceBundleTrait;
 use Sulu\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;

@@ -28,20 +28,20 @@ class Page implements PageInterface
 
     protected string $uuid;
 
-    private string $webspaceKey;
+    protected string $webspaceKey;
 
-    private int $lft;
+    protected int $lft;
 
-    private int $rgt;
+    protected int $rgt;
 
-    private int $depth;
+    protected int $depth;
 
-    private ?PageInterface $parent = null;
+    protected ?PageInterface $parent = null;
 
     /**
      * @var Collection<int, PageInterface>
      */
-    private Collection $children;
+    protected Collection $children;
 
     public function __construct(
         ?string $uuid = null

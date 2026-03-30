@@ -110,6 +110,7 @@ final class ArticleLinkProvider implements LinkProviderInterface
         $queryBuilder = $this->entityManager->createQueryBuilder()
             ->select('article.uuid', 'dimensionContent.title', 'route.slug', 'dimensionContent.mainWebspace')
             ->from($this->articleContentClass, 'dimensionContent')
+            ->from($this->articleContentClass, 'dimensionContent')
             ->join('dimensionContent.article', 'article')
             ->leftJoin('dimensionContent.route', 'route')
             ->where('article.uuid IN (:uuids)')
