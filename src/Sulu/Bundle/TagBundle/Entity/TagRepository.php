@@ -50,4 +50,12 @@ class TagRepository extends EntityRepository implements TagRepositoryInterface
             return null;
         }
     }
+
+    /**
+     * @return TagInterface[]
+     */
+    public function findTagsByIds(array $ids): array
+    {
+        return $this->findBy(['id' => $ids]);
+    }
 }
