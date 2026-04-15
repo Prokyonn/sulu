@@ -397,7 +397,7 @@ readonly class PageSmartContentProvider implements SmartContentProviderInterface
     protected function applyParams(array $filters, array $params): array
     {
         if (empty($filters['types'])) {
-            $templateParam = $params['template'] ?? $params['templateKey'] ?? null;
+            $templateParam = $params['templateKeys'] ?? $params['template'] ?? $params['templateKey'] ?? null;
 
             if (\is_string($templateParam)) {
                 $filters['types'] = \array_filter(\array_map('trim', \explode(',', $templateParam)));

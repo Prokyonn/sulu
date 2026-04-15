@@ -40,7 +40,7 @@
             </meta>
             <params>
                 <param name="provider" value="examples"/>
-                <param name="template" value="default"/>
+                <param name="templateKeys" value="default"/>
             </params>
         </property>
     </properties>

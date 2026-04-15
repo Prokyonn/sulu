@@ -236,7 +236,7 @@ readonly class ArticleSmartContentProvider implements SmartContentProviderInterf
         }
 
         // Template — direct template keys
-        $templateParam = $params['template'] ?? $params['templateKey'] ?? null;
+        $templateParam = $params['templateKeys'] ?? $params['template'] ?? $params['templateKey'] ?? null;
 
         if (\is_string($templateParam)) {
             $filters['templateKeys'] = \array_filter(\array_map('trim', \explode(',', $templateParam)));
@@ -294,7 +294,11 @@ readonly class ArticleSmartContentProvider implements SmartContentProviderInterf
                 }
             }
 
-            $filters['templateKeys'] = \array_values(\array_unique(\array_merge($filters['templateKeys'] ?? [], $templates)));
+            if (!empty($filters['templateKeys'])) {
+                $filters['templateKeys'] = \array_values(\array_intersect($filters['templateKeys'], $templates));
+            } else {
+                $filters['templateKeys'] = \array_values(\array_unique($templates));
+            }
             unset($filters['types']);
         }
 
