@@ -221,6 +221,22 @@ class RoutableDataMapper implements DataMapperInterface
             ]);
         }
 
-        return null;
+        // For `type="route"`, derive the parent by stripping the last slug
+        // segment. Without this, every page save with `type="route"` clears
+        // `ro_routes.parent_id` to NULL, breaking `RouteChangedUpdater`'s
+        // descendant-rename cascade (which joins on `child.parent_id = parent.id`).
+        if (!\is_string($routeData)) {
+            return null;
+        }
+
+        $lastSlash = \strrpos($routeData, '/');
+        if (false === $lastSlash || 0 === $lastSlash) {
+            return null;
+        }
+
+        return $this->routeRepository->findOneBy([
+            'locale' => $locale,
+            'slug' => \substr($routeData, 0, $lastSlash),
+        ]);
     }
 }

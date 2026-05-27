@@ -227,6 +227,74 @@ class RoutableDataMapperTest extends TestCase
         $this->assertSame([], $localizedDimensionContent->getTemplateData());
     }
 
+    public function testMapRoutePropertyDerivesParentFromSlug(): void
+    {
+        // For a `type="route"` property, the parent route should be derived by
+        // stripping the last slug segment and looking up the resulting parent
+        // slug. Without this, `ro_routes.parent_id` is cleared on every save
+        // and `RouteChangedUpdater::postFlush`'s descendant-rename cascade
+        // (which joins on `child.parent_id = parent.id`) silently no-ops.
+        $data = [
+            'url' => '/parent/child',
+        ];
+
+        $example = new Example();
+        static::setPrivateProperty($example, 'id', 1);
+        $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $unlocalizedDimensionContent->setStage('draft');
+        $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setTemplateKey('default');
+        $localizedDimensionContent->setStage('draft');
+        $localizedDimensionContent->setLocale('en');
+
+        $parentRoute = new Route('pages', Uuid::v4()->toRfc4122(), 'en', '/parent', null, null);
+        $this->routeRepository->findOneBy([
+            'locale' => 'en',
+            'slug' => '/parent',
+        ])
+            ->willReturn($parentRoute)
+            ->shouldBeCalled();
+        $this->routeRepository->add(Argument::any())->shouldBeCalled();
+
+        $mapper = $this->createRouteDataMapperInstance($this->createTypedFormMetadataWithRoute());
+        $mapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
+
+        $route = $localizedDimensionContent->getRoute();
+        $this->assertNotNull($route);
+        $this->assertSame('/parent/child', $route->getSlug());
+        $this->assertSame($parentRoute, $route->getParentRoute());
+    }
+
+    public function testMapRoutePropertyRootLevelHasNoParent(): void
+    {
+        // For root-level slugs like `/foo` there is no parent route; the
+        // mapper must not call `findOneBy` and the resulting route must have
+        // `parentRoute === null`.
+        $data = [
+            'url' => '/foo',
+        ];
+
+        $example = new Example();
+        static::setPrivateProperty($example, 'id', 1);
+        $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $unlocalizedDimensionContent->setStage('draft');
+        $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setTemplateKey('default');
+        $localizedDimensionContent->setStage('draft');
+        $localizedDimensionContent->setLocale('en');
+
+        $this->routeRepository->findOneBy(Argument::any())->shouldNotBeCalled();
+        $this->routeRepository->add(Argument::any())->shouldBeCalled();
+
+        $mapper = $this->createRouteDataMapperInstance($this->createTypedFormMetadataWithRoute());
+        $mapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
+
+        $route = $localizedDimensionContent->getRoute();
+        $this->assertNotNull($route);
+        $this->assertSame('/foo', $route->getSlug());
+        $this->assertNull($route->getParentRoute());
+    }
+
     public function testMapPageTreeRouteProperty(): void
     {
         $uuid = Uuid::v4()->toRfc4122();
