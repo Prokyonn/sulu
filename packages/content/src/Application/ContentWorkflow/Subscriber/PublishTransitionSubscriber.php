@@ -125,11 +125,8 @@ class PublishTransitionSubscriber implements EventSubscriberInterface
         $sourceDimensionAttributes['locale'] = $shadowLocale;
         $sourceDimensionAttributes['stage'] = DimensionContentInterface::STAGE_LIVE;
 
-        // A published shadow mirrors the published content of its source locale. Resolve that
-        // content up front so we can fail with a translatable error - instead of crashing later in
-        // the copy - when the source has not been published yet. That is the case when it has no
-        // live content at all (ContentNotFoundException) or only unlocalized live content without a
-        // template (e.g. another locale of the same page has been published).
+        // Resolve the source content up front to fail with a translatable error when its locale is
+        // not published yet, instead of crashing later in the copy.
         try {
             $sourceDimensionContent = $this->contentAggregator->aggregate($contentRichEntity, $sourceDimensionAttributes);
         } catch (ContentNotFoundException $exception) {

@@ -240,10 +240,6 @@ class PageAdmin extends Admin
             // Excerpt tab for content AND external pages
             $excerptTabCondition = "(linkOn == false || (linkData.provider != 'page')) && shadowOn == false";
 
-            // Every tab but the content tab is only shown once the locale has its own draft (and
-            // therefore a templateKey), mirroring the "create page" flow where only the content tab
-            // is available until the first save. This prevents enabling a shadow (or saving other
-            // settings) on a locale that has no template yet.
             $localePersistedCondition = 'availableLocales && locale in availableLocales';
             /** @var PreviewFormViewBuilder $viewBuilder */
             foreach ($viewBuilders as $viewBuilder) {

@@ -42,12 +42,9 @@ final class ApplyWorkflowTransitionPageMessageHandler
 
         $page = $this->loadPage($message, [$locale]);
 
-        // The workflow also touches the published locale's shadow source and the locales shadowing
-        // it; those are only known once this locale is loaded.
         $relatedLocales = $this->resolveRelatedLocales($page, $locale);
         if ([] !== $relatedLocales) {
-            // reset the single-locale collection (a preceding ModifyPageMessage initialized it) so
-            // the wider query re-hydrates it instead of reusing the identity-map one
+            // refresh so the wider query re-hydrates the collection instead of reusing the cached one
             $this->entityManager->refresh($page);
 
             $page = $this->loadPage($message, [$locale, ...$relatedLocales]);

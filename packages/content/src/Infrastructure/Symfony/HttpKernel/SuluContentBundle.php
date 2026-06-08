@@ -102,30 +102,6 @@ final class SuluContentBundle extends AbstractBundle
                 ]
             );
         }
-
-        if ($builder->hasExtension('doctrine_migrations')) {
-            $builder->prependExtensionConfig(
-                'doctrine_migrations',
-                [
-                    'migrations_paths' => [
-                        'Sulu\\Content\\Migrations' => \dirname(__DIR__, 4) . '/src/Migrations',
-                    ],
-                ],
-            );
-        }
-
-        if ($builder->hasExtension('fos_rest')) {
-            $builder->prependExtensionConfig(
-                'fos_rest',
-                [
-                    'exception' => [
-                        'codes' => [
-                            ShadowSourceNotPublishedException::class => 400,
-                        ],
-                    ],
-                ],
-            );
-        }
     }
 
     /**

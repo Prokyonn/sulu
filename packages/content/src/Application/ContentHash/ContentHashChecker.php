@@ -52,7 +52,7 @@ class ContentHashChecker
         ))->getDimensionContent($dimensionAttributes);
 
         if (!$dimensionContent instanceof DimensionContentInterface) {
-            // The targeted locale has no persisted content yet, so there is nothing to lock against.
+            // No persisted content for this locale yet, so there is nothing to lock against.
             return;
         }
 

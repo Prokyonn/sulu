@@ -15,11 +15,6 @@ namespace Sulu\Content\Domain\Exception;
 
 use Sulu\Component\Rest\Exception\TranslationErrorMessageExceptionInterface;
 
-/**
- * Thrown when a shadow locale is published while the locale it shadows (its source) has no
- * published content yet. A published shadow mirrors the published content of its source, so
- * the source has to be published first.
- */
 class ShadowSourceNotPublishedException extends \Exception implements TranslationErrorMessageExceptionInterface
 {
     public const EXCEPTION_CODE_SHADOW_SOURCE_NOT_PUBLISHED = 1107;
