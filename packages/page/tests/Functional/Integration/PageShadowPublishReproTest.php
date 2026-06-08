@@ -121,6 +121,51 @@ class PageShadowPublishReproTest extends SuluTestCase
     }
 
     /**
+     * Publishing a shadow locale whose source is not published yet must fail with a translatable
+     * error message (shown in the admin UI) instead of the generic "content not found".
+     */
+    public function testPublishShadowWithoutPublishedSourceShowsTranslatedError(): void
+    {
+        self::purgeDatabase();
+        $homepage = $this->createHomepage('0199ee04-c220-784e-a6fa-ac985870f2d5', 'sulu-io');
+
+        // 1. Create EN as a DRAFT only - it is never published.
+        $this->client->request(
+            'POST',
+            \sprintf('/admin/api/pages?locale=en&parentId=%s&webspace=sulu-io', $homepage->getId()),
+            [], [], [],
+            \json_encode(['template' => 'default', 'title' => 'Source EN', 'url' => '/source-en']) ?: null,
+        );
+        self::assertSame(201, $this->client->getResponse()->getStatusCode(), (string) $this->client->getResponse()->getContent());
+        /** @var array{id: string} $content */
+        $content = \json_decode((string) $this->client->getResponse()->getContent(), true);
+        $id = $content['id'];
+
+        // 2. Save DE as a shadow of the (unpublished) EN.
+        $shadowData = ['template' => 'default', 'title' => 'Source EN', 'url' => '/source-en', 'shadowOn' => true, 'shadowLocale' => 'en'];
+        $this->client->request('PUT', '/admin/api/pages/' . $id . '?locale=de&webspace=sulu-io', [], [], [], \json_encode($shadowData) ?: null);
+        self::assertSame(200, $this->client->getResponse()->getStatusCode(), (string) $this->client->getResponse()->getContent());
+
+        // 3. Publishing the DE shadow must fail because EN has no published content to mirror.
+        $this->client->request('PUT', '/admin/api/pages/' . $id . '?locale=de&action=publish&webspace=sulu-io', [], [], [], \json_encode($shadowData) ?: null);
+
+        $response = $this->client->getResponse();
+        self::assertSame(400, $response->getStatusCode(), (string) $response->getContent());
+
+        /** @var array{code?: int, detail?: string} $error */
+        $error = \json_decode((string) $response->getContent(), true);
+        self::assertSame(1107, $error['code'] ?? null, 'Expected the ShadowSourceNotPublishedException code.');
+
+        $detail = $error['detail'] ?? null;
+        self::assertIsString($detail, 'Expected a translated "detail" message for the admin UI.');
+        self::assertStringNotContainsString('{shadowLocale}', $detail, 'Translation parameters must be replaced.');
+        self::assertStringContainsString('en', $detail);
+
+        // The shadow must not have been published.
+        self::assertNull($this->getLiveDimensionContent($id, 'de'), 'The shadow must not be published when its source is not.');
+    }
+
+    /**
      * Republishing a source locale must update (not duplicate) the live content of locales shadowing it.
      */
     public function testRepublishingSourceUpdatesLiveShadowDependent(): void

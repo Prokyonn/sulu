@@ -16,6 +16,7 @@ namespace Sulu\Content\Infrastructure\Symfony\HttpKernel;
 use Sulu\Content\Application\PropertyResolver\Resolver\PropertyResolverInterface;
 use Sulu\Content\Application\PropertyResolver\Resolver\PropertyResolverMetadataAwareInterface;
 use Sulu\Content\Application\ResourceLoader\Loader\ResourceLoaderInterface;
+use Sulu\Content\Domain\Exception\ShadowSourceNotPublishedException;
 use Sulu\Content\Infrastructure\Doctrine\EventListener\RouteCleanupListener;
 use Sulu\Content\Infrastructure\Symfony\HttpKernel\Compiler\ExcerptFormPass;
 use Sulu\Content\Infrastructure\Symfony\HttpKernel\Compiler\ResourceLoaderCacheCompilerPass;
@@ -99,6 +100,30 @@ final class SuluContentBundle extends AbstractBundle
                         ],
                     ],
                 ]
+            );
+        }
+
+        if ($builder->hasExtension('doctrine_migrations')) {
+            $builder->prependExtensionConfig(
+                'doctrine_migrations',
+                [
+                    'migrations_paths' => [
+                        'Sulu\\Content\\Migrations' => \dirname(__DIR__, 4) . '/src/Migrations',
+                    ],
+                ],
+            );
+        }
+
+        if ($builder->hasExtension('fos_rest')) {
+            $builder->prependExtensionConfig(
+                'fos_rest',
+                [
+                    'exception' => [
+                        'codes' => [
+                            ShadowSourceNotPublishedException::class => 400,
+                        ],
+                    ],
+                ],
             );
         }
     }
