@@ -239,6 +239,12 @@ class PageAdmin extends Admin
 
             // Excerpt tab for content AND external pages
             $excerptTabCondition = "(linkOn == false || (linkData.provider != 'page')) && shadowOn == false";
+
+            // Every tab but the content tab is only shown once the locale has its own draft (and
+            // therefore a templateKey), mirroring the "create page" flow where only the content tab
+            // is available until the first save. This prevents enabling a shadow (or saving other
+            // settings) on a locale that has no template yet.
+            $localePersistedCondition = 'availableLocales && locale in availableLocales';
             /** @var PreviewFormViewBuilder $viewBuilder */
             foreach ($viewBuilders as $viewBuilder) {
                 if (PageAdmin::ADD_FORM_VIEW . '.content' === $viewBuilder->getName()) {
@@ -261,7 +267,7 @@ class PageAdmin extends Admin
                     $viewBuilder
                         ->disablePreviewWebspaceChooser()
                         ->addRouterAttributesToFormRequest($routerAttributesToFormRequest)
-                        ->setTabCondition($contentTabCondition)
+                        ->setTabCondition($contentTabCondition . ' && ' . $localePersistedCondition)
                         ->setPreviewCondition($previewCondition);
                 }
 
@@ -271,14 +277,19 @@ class PageAdmin extends Admin
                         ->addRouterAttributesToFormRequest($routerAttributesToFormRequest)
                         ->addRouterAttributesToFormMetadata($routerAttributesToFormMetadata)
                         ->setPreviewCondition($previewCondition)
-                        ->setTabCondition($excerptTabCondition);
+                        ->setTabCondition($excerptTabCondition . ' && ' . $localePersistedCondition);
                 }
 
                 if (PageAdmin::EDIT_FORM_VIEW . '.settings' === $viewBuilder->getName()) {
                     $viewBuilder
                         ->disablePreviewWebspaceChooser()
                         ->addRouterAttributesToFormRequest($routerAttributesToFormRequest)
+                        ->setTabCondition($localePersistedCondition)
                         ->setPreviewCondition($previewCondition);
+                }
+
+                if (PageAdmin::EDIT_FORM_VIEW . '.insights' === $viewBuilder->getName()) {
+                    $viewBuilder->setTabCondition($localePersistedCondition);
                 }
 
                 $viewCollection->add($viewBuilder);
@@ -304,7 +315,7 @@ class PageAdmin extends Admin
                     ->setPreviewResourceKey(PageInterface::RESOURCE_KEY)
                     ->setFormKey('permission_details')
                     ->addRequestParameters(['resourceKey' => PageInterface::RESOURCE_KEY])
-                    ->setTabCondition('_permissions.security')
+                    ->setTabCondition('_permissions.security && ' . $localePersistedCondition)
                     ->setTabTitle('sulu_security.permissions')
                     ->addToolbarActions([
                         new SaveWithFormDialogToolbarAction(
