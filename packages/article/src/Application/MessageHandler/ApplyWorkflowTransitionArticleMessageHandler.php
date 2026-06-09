@@ -11,6 +11,7 @@
 
 namespace Sulu\Article\Application\MessageHandler;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Article\Application\Message\ApplyWorkflowTransitionArticleMessage;
 use Sulu\Article\Domain\Event\ArticleWorkflowTransitionAppliedEvent;
 use Sulu\Article\Domain\Model\ArticleInterface;
@@ -29,33 +30,81 @@ final class ApplyWorkflowTransitionArticleMessageHandler
     public function __construct(
         private ArticleRepositoryInterface $articleRepository,
         private ContentWorkflowInterface $contentWorkflow,
-        private DomainEventCollectorInterface $domainEventCollector
+        private EntityManagerInterface $entityManager,
+        private DomainEventCollectorInterface $domainEventCollector,
     ) {
     }
 
     public function __invoke(ApplyWorkflowTransitionArticleMessage $message): ArticleInterface
     {
-        $article = $this->articleRepository->getOneBy(
-            $message->getIdentifier(),
-            [
-                ArticleRepositoryInterface::SELECT_ARTICLE_CONTENT => [
-                    'selects' => [DimensionContentQueryEnhancer::GROUP_SELECT_CONTENT_ADMIN => true],
-                    'dimensionAttributes' => [
-                        'locale' => $message->getLocale(),
-                        'stage' => [DimensionContentInterface::STAGE_DRAFT, DimensionContentInterface::STAGE_LIVE],
-                    ],
-                ],
-            ]
-        );
+        $locale = $message->getLocale();
+
+        $article = $this->loadArticle($message, [$locale]);
+
+        $relatedLocales = $this->resolveRelatedLocales($article, $locale);
+        if ([] !== $relatedLocales) {
+            // refresh so the wider query re-hydrates the collection instead of reusing the cached one
+            $this->entityManager->refresh($article);
+
+            $article = $this->loadArticle($message, [$locale, ...$relatedLocales]);
+        }
 
         $this->contentWorkflow->apply(
             $article,
-            ['locale' => $message->getLocale()],
+            ['locale' => $locale],
             $message->getTransitionName()
         );
 
         $this->domainEventCollector->collect(new ArticleWorkflowTransitionAppliedEvent($article, $message->getTransitionName(), $message->getLocale()));
 
         return $article;
+    }
+
+    /**
+     * @param string[] $locales
+     */
+    private function loadArticle(ApplyWorkflowTransitionArticleMessage $message, array $locales): ArticleInterface
+    {
+        return $this->articleRepository->getOneBy(
+            $message->getIdentifier(),
+            [
+                ArticleRepositoryInterface::SELECT_ARTICLE_CONTENT => [
+                    'selects' => [DimensionContentQueryEnhancer::GROUP_SELECT_CONTENT_ADMIN => true],
+                    'dimensionAttributes' => [
+                        'locale' => $locales,
+                        'stage' => [DimensionContentInterface::STAGE_DRAFT, DimensionContentInterface::STAGE_LIVE],
+                    ],
+                ],
+            ]
+        );
+    }
+
+    /**
+     * A shadow locale mirrors the live content of its source locale on publish. The workflow
+     * subscriber therefore has to aggregate that source locale, which only works when its dimension
+     * contents are hydrated. Resolve the source (and dependent) locales so the caller can re-load
+     * the article with them included.
+     *
+     * @return string[]
+     */
+    private function resolveRelatedLocales(ArticleInterface $article, string $locale): array
+    {
+        foreach ($article->getDimensionContents() as $dimensionContent) {
+            if (DimensionContentInterface::STAGE_DRAFT !== $dimensionContent->getStage()
+                || null !== $dimensionContent->getLocale()
+            ) {
+                continue;
+            }
+
+            $relatedLocales = $dimensionContent->getShadowLocalesForLocale($locale);
+            $sourceLocale = ($dimensionContent->getShadowLocales() ?? [])[$locale] ?? null;
+            if (null !== $sourceLocale) {
+                $relatedLocales[] = $sourceLocale;
+            }
+
+            return \array_values(\array_unique($relatedLocales));
+        }
+
+        return [];
     }
 }
