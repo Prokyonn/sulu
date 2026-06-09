@@ -117,7 +117,9 @@ class PageShadowPublishReproTest extends SuluTestCase
         self::assertSame('en', $liveDe['shadowLocale']);
         self::assertSame('default', $liveDe['templateKey']);
         self::assertNotNull($liveDe['workflowPublished']);
-        self::assertSame('Source EN', $liveDe['templateData']['title'] ?? null);
+        $templateData = $liveDe['templateData'];
+        self::assertIsArray($templateData);
+        self::assertSame('Source EN', $templateData['title'] ?? null);
     }
 
     /**
@@ -192,7 +194,11 @@ class PageShadowPublishReproTest extends SuluTestCase
         $this->client->request('PUT', '/admin/api/pages/' . $id . '?locale=de&action=publish&webspace=sulu-io', [], [], [], \json_encode($shadowData) ?: null);
         self::assertSame(200, $this->client->getResponse()->getStatusCode(), (string) $this->client->getResponse()->getContent());
 
-        self::assertSame('Source EN', $this->getLiveDimensionContent($id, 'de')['templateData']['title'] ?? null);
+        $liveDe = $this->getLiveDimensionContent($id, 'de');
+        self::assertNotNull($liveDe);
+        $templateData = $liveDe['templateData'];
+        self::assertIsArray($templateData);
+        self::assertSame('Source EN', $templateData['title'] ?? null);
 
         // Republish EN with new content; the DE shadow dependent's live content must update too.
         $this->client->request(
@@ -206,7 +212,9 @@ class PageShadowPublishReproTest extends SuluTestCase
         $liveDe = $this->getLiveDimensionContent($id, 'de');
         self::assertNotNull($liveDe);
         self::assertSame('en', $liveDe['shadowLocale']);
-        self::assertSame('Source EN Updated', $liveDe['templateData']['title'] ?? null);
+        $templateData = $liveDe['templateData'];
+        self::assertIsArray($templateData);
+        self::assertSame('Source EN Updated', $templateData['title'] ?? null);
     }
 
     /**

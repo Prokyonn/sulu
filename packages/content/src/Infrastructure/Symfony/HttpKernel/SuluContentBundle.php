@@ -102,6 +102,19 @@ final class SuluContentBundle extends AbstractBundle
                 ]
             );
         }
+
+        if ($builder->hasExtension('fos_rest')) {
+            $builder->prependExtensionConfig(
+                'fos_rest',
+                [
+                    'exception' => [
+                        'codes' => [
+                            ShadowSourceNotPublishedException::class => 400,
+                        ],
+                    ],
+                ]
+            );
+        }
     }
 
     /**

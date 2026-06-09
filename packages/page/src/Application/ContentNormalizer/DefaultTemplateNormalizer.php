@@ -39,9 +39,6 @@ final class DefaultTemplateNormalizer implements NormalizerInterface
         }
 
         $page = $object->getResource();
-        if (!$page instanceof PageInterface) {
-            return $normalizedData;
-        }
 
         $webspace = $this->webspaceManager->findWebspaceByKey($page->getWebspaceKey());
         $defaultTemplate = $webspace?->getDefaultTemplate(PageInterface::TEMPLATE_TYPE);
