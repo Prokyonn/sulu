@@ -732,6 +732,35 @@ class ArticleControllerTest extends SuluTestCase
         $this->assertSame(0, $content['total']);
     }
 
+    public function testGetListWithTemplateFilteringShowsGhostLocale(): void
+    {
+        self::purgeDatabase();
+
+        // Create an article that only exists in "de"
+        $this->client->request('POST', '/admin/api/articles?locale=de&action=publish', [], [], [], \json_encode([
+            'template' => 'article',
+            'title' => 'German Ghost Article',
+            'url' => '/german-ghost-article',
+            'mainWebspace' => 'sulu-io',
+        ]) ?: null);
+        $this->assertHttpStatusCode(201, $this->client->getResponse());
+
+        // List in "en" with the template filter that the admin list view always sends.
+        // The article has no "en" content, so it must appear as a ghost marked with "de".
+        $this->client->request('GET', '/admin/api/articles?locale=en&templates=article');
+        $response = $this->client->getResponse();
+        $this->assertHttpStatusCode(200, $response);
+
+        /** @var array{total: int, _embedded: array{articles: array<int, array{title: string, locale: string|null, ghostLocale: string|null}>}} $content */
+        $content = \json_decode((string) $response->getContent(), true);
+
+        $this->assertSame(1, $content['total']);
+        $this->assertCount(1, $content['_embedded']['articles']);
+        $this->assertSame('German Ghost Article', $content['_embedded']['articles'][0]['title']);
+        $this->assertNull($content['_embedded']['articles'][0]['locale']);
+        $this->assertSame('de', $content['_embedded']['articles'][0]['ghostLocale']);
+    }
+
     public function testGetListWithGroupFiltering(): void
     {
         self::purgeDatabase();

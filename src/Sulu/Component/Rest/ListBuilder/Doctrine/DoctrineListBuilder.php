@@ -812,17 +812,29 @@ class DoctrineListBuilder extends AbstractListBuilder
     private function getStrictJoinEntityNamesForExpression(AbstractDoctrineExpression $expression): array
     {
         if ($expression instanceof DoctrineAndExpression) {
-            $entityNames = [];
+            $strictJoinEntityNames = [];
+            $nullAllowedJoinEntityNames = [];
 
             foreach ($expression->getExpressions() as $subExpression) {
                 if (!$subExpression instanceof AbstractDoctrineExpression) {
                     continue;
                 }
 
-                $entityNames = \array_merge($entityNames, $this->getStrictJoinEntityNamesForExpression($subExpression));
+                $strictJoinEntityNames = \array_merge($strictJoinEntityNames, $this->getStrictJoinEntityNamesForExpression($subExpression));
+
+                // A sibling condition like `dimensionContent.x IS NULL` forces its join to be
+                // nullable within this AND branch. Such a join must stay a LEFT JOIN even when
+                // another sibling references the same join (e.g. a ghost fallback that selects
+                // through the still-present-but-NULL parent join), otherwise the row is dropped.
+                if ($subExpression instanceof BasicExpressionInterface && $this->allowsNullJoinResult($subExpression)) {
+                    $nullAllowedJoinEntityNames = \array_merge(
+                        $nullAllowedJoinEntityNames,
+                        $this->getJoinEntityNamesForField($subExpression->getFieldName()),
+                    );
+                }
             }
 
-            return \array_values(\array_unique($entityNames));
+            return \array_values(\array_diff(\array_unique($strictJoinEntityNames), $nullAllowedJoinEntityNames));
         }
 
         if ($expression instanceof DoctrineOrExpression) {

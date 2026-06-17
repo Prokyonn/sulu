@@ -132,6 +132,8 @@
         <property name="ghostLocale" translation="sulu_admin.ghost_locale" visibility="never">
             <field-name>locale</field-name>
             <entity-name>ghostDimensionContent</entity-name>
+
+            <joins ref="ghostDimensionContent"/>
         </property>
 
         <property name="published" translation="sulu_admin.published" type="date" visibility="never">
