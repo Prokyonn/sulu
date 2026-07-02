@@ -59,11 +59,11 @@ trait RequestParametersTrait
     protected function getBooleanRequestParameter($request, $name, $force = false, $default = null)
     {
         $value = $this->getRequestParameter($request, $name, $force, $default);
-        if ('true' === $value || true === $value) {
+        if ('true' === $value) {
             $value = true;
-        } elseif ('false' === $value || false === $value) {
+        } elseif ('false' === $value) {
             $value = false;
-        } elseif ($force && true !== $value && false !== $value) {
+        } elseif ($force) {
             throw new ParameterDataTypeException(\get_class($this), $name);
         } else {
             $value = $default;

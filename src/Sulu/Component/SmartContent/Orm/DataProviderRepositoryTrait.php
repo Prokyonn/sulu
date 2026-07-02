@@ -233,7 +233,7 @@ trait DataProviderRepositoryTrait
             $query->setParameter($name, $value);
         }
 
-        if (null !== $page && $pageSize > 0) {
+        if ($pageSize > 0) {
             $pageOffset = ($page - 1) * $pageSize;
             $restLimit = $limit - $pageOffset;
 

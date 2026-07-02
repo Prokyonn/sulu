@@ -102,6 +102,7 @@ trait RelationTrait
      * function compares entities with data of array and makes callback.
      *
      * @param \Traversable $entities
+     * @param callable(mixed $entity, array<array-key, mixed> $requestEntities, mixed &$matchedEntry, (int|string|null) &$matchedKey): void $compare
      *
      * @return bool
      */
@@ -121,7 +122,9 @@ trait RelationTrait
                 $matchedKey = null;
 
                 // find match callback
-                $compare($entity, $requestEntities, $matchedEntry, $matchedKey);
+                if (null !== $compare) {
+                    $compare($entity, $requestEntities, $matchedEntry, $matchedKey);
+                }
 
                 if (null == $matchedEntry && null != $delete) {
                     // delete entity if it is not listed anymore
@@ -135,7 +138,7 @@ trait RelationTrait
                 }
 
                 // Remove done element from array
-                if (null !== $matchedKey) {
+                if (\is_int($matchedKey) || \is_string($matchedKey)) {
                     unset($requestEntities[$matchedKey]);
                 }
             }
