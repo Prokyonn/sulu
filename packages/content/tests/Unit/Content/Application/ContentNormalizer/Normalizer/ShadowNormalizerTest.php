@@ -70,6 +70,8 @@ class ShadowNormalizerTest extends TestCase
         $object->willImplement(ShadowInterface::class);
         $object->getAvailableLocales()->willReturn(['en', 'de']);
         $object->getShadowLocale()->willReturn('en');
+        $object->getLocale()->willReturn(null);
+        $object->getShadowLocales()->willReturn([]);
 
         $data = [
             'availableLocales' => ['en', 'de'],
@@ -89,5 +91,37 @@ class ShadowNormalizerTest extends TestCase
             $expectedResult,
             $normalizer->enhance($object->reveal(), $data)
         );
+    }
+
+    public function testEnhanceFiltersCycleCreatingLocales(): void
+    {
+        $normalizer = $this->createShadowNormalizerInstance();
+        $object = $this->prophesize(DimensionContentInterface::class);
+        $object->willImplement(ShadowInterface::class);
+        $object->getAvailableLocales()->willReturn(['en', 'de', 'fr']);
+        $object->getShadowLocale()->willReturn(null);
+        $object->getLocale()->willReturn('en');
+        $object->getShadowLocales()->willReturn(['de' => 'en', 'fr' => 'de']);
+
+        $result = $normalizer->enhance($object->reveal(), ['shadowLocales' => ['de' => 'en', 'fr' => 'de']]);
+
+        // en excluded (self), de excluded (de->en), fr excluded (fr->de->en)
+        $this->assertSame([], $result['contentLocales']);
+    }
+
+    public function testEnhanceKeepsOtherBranchLocales(): void
+    {
+        $normalizer = $this->createShadowNormalizerInstance();
+        $object = $this->prophesize(DimensionContentInterface::class);
+        $object->willImplement(ShadowInterface::class);
+        $object->getAvailableLocales()->willReturn(['en', 'de', 'fr']);
+        $object->getShadowLocale()->willReturn('de');
+        $object->getLocale()->willReturn('fr');
+        $object->getShadowLocales()->willReturn(['de' => 'en', 'fr' => 'de']);
+
+        $result = $normalizer->enhance($object->reveal(), ['shadowLocales' => ['de' => 'en', 'fr' => 'de']]);
+
+        // editing fr: en and de do NOT depend on fr, so both stay selectable; fr itself excluded
+        $this->assertEqualsCanonicalizing(['en', 'de'], $result['contentLocales']);
     }
 }

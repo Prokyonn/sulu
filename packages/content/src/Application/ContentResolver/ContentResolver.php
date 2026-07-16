@@ -151,10 +151,10 @@ readonly class ContentResolver implements ContentResolverInterface
         $locale = $dimensionContent->getLocale();
         Assert::string($locale, 'Locale must be a string');
 
-        // Pass shadow base locale as context for resource loader fallback.
+        // Pass the shadow root locale as context for resource-loader fallback.
         $context = [];
         if ($dimensionContent instanceof ShadowInterface && null !== $dimensionContent->getShadowLocale()) {
-            $context['_shadowLocale'] = $dimensionContent->getShadowLocale();
+            $context['_shadowLocale'] = $this->resolveShadowRootLocale($dimensionContent, $locale);
         }
 
         // Initial resolution to gather ResolvableResources
@@ -193,7 +193,7 @@ readonly class ContentResolver implements ContentResolverInterface
                                 'stage' => DimensionContentInterface::STAGE_LIVE,
                             ]);
 
-                            // Retry with shadow base locale if child has no content in page locale.
+                            // Retry with the shadow root locale if the child has no content in the page locale.
                             $shadowLocale = $context['_shadowLocale'] ?? null;
                             if ($childContent instanceof TemplateInterface
                                 && (null === $childContent->getTemplateKey() || '' === $childContent->getTemplateKey())
@@ -389,6 +389,25 @@ readonly class ContentResolver implements ContentResolverInterface
         );
 
         return $resolvedContent;
+    }
+
+    /**
+     * The root locale of a shadow chain (e.g. 'en' for fr->de->en), walked from the page locale
+     * over the merged object's shadow map. Every chain member shares the root's flattened content,
+     * so a single fallback to the root covers the whole chain. Visited-set guarded.
+     */
+    private function resolveShadowRootLocale(ShadowInterface $dimensionContent, string $locale): ?string
+    {
+        $shadowLocales = $dimensionContent->getShadowLocales() ?? [];
+        $visited = [$locale => true];
+        $current = $dimensionContent->getShadowLocale();
+
+        while (\is_string($current) && isset($shadowLocales[$current]) && !isset($visited[$current])) {
+            $visited[$current] = true;
+            $current = $shadowLocales[$current];
+        }
+
+        return $current;
     }
 
     /**

@@ -2,6 +2,7 @@
 import React from 'react';
 import {isArrayLike, toJS} from 'mobx';
 import {SingleSelect} from 'sulu-admin-bundle/components';
+import {translate} from 'sulu-admin-bundle/utils';
 import type {FieldTypeProps} from 'sulu-admin-bundle/types';
 
 export default class PageSettingsShadowLocaleSelect extends React.Component<FieldTypeProps<string>> {
@@ -15,6 +16,7 @@ export default class PageSettingsShadowLocaleSelect extends React.Component<Fiel
     render() {
         const {disabled, formInspector, value} = this.props;
         const contentLocales = toJS(formInspector.getValueByPath('/contentLocales'));
+        const shadowLocales = toJS(formInspector.getValueByPath('/shadowLocales')) || {};
         const locale = formInspector.locale;
 
         if (!isArrayLike(contentLocales)) {
@@ -32,12 +34,17 @@ export default class PageSettingsShadowLocaleSelect extends React.Component<Fiel
                         throw new Error('All entries in the "contentLocales" array must be strings!');
                     }
 
+                    const shadowBaseLocale = shadowLocales[contentLocale];
+                    const label = shadowBaseLocale
+                        ? contentLocale + ' (' + translate('sulu_content.shadow_of', {locale: shadowBaseLocale}) + ')'
+                        : contentLocale;
+
                     return (
                         <SingleSelect.Option
                             key={contentLocale}
                             value={contentLocale}
                         >
-                            {contentLocale}
+                            {label}
                         </SingleSelect.Option>
                     );
                 })}

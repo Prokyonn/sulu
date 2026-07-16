@@ -96,7 +96,24 @@ final class ApplyWorkflowTransitionArticleMessageHandler
                 continue;
             }
 
-            $relatedLocales = $dimensionContent->getShadowLocalesForLocale($locale);
+            $relatedLocales = [];
+
+            // transitive dependents: every locale that (directly or via a chain) shadows $locale
+            $visited = [$locale => true];
+            $queue = [$locale];
+            while ([] !== $queue) {
+                $current = \array_shift($queue);
+                foreach ($dimensionContent->getShadowLocalesForLocale($current) as $dependentLocale) {
+                    if (isset($visited[$dependentLocale])) {
+                        continue;
+                    }
+                    $visited[$dependentLocale] = true;
+                    $queue[] = $dependentLocale;
+                    $relatedLocales[] = $dependentLocale;
+                }
+            }
+
+            // immediate source locale (the copy reads exactly one level up)
             $sourceLocale = ($dimensionContent->getShadowLocales() ?? [])[$locale] ?? null;
             if (null !== $sourceLocale) {
                 $relatedLocales[] = $sourceLocale;

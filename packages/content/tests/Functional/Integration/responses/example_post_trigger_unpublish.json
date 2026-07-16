@@ -11,9 +11,7 @@
     ],
     "linkOn": false,
     "linkData": null,
-    "contentLocales": [
-        "en"
-    ],
+    "contentLocales": [],
     "excerpt": {
         "title": "Excerpt Title",
         "description": "Excerpt Description",

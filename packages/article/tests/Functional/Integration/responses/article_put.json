@@ -9,7 +9,6 @@
     "changed": "@datetime@",
     "changer": "@integer@",
     "contentLocales": [
-        "en",
         "de"
     ],
     "created": "@datetime@",

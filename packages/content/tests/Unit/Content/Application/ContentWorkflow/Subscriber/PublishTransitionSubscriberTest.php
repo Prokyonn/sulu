@@ -457,6 +457,7 @@ class PublishTransitionSubscriberTest extends TestCase
         $resolvedCopiedContent = $this->prophesize(DimensionContentInterface::class);
         $resolvedCopiedContent->willImplement(ShadowInterface::class);
         $resolvedCopiedContent->getShadowLocalesForLocale('en')->willReturn(['de'])->shouldBeCalled();
+        $resolvedCopiedContent->getShadowLocalesForLocale('de')->willReturn([])->shouldBeCalled();
         $contentCopier->copyFromDimensionContentCollection(
             $dimensionContentCollection->reveal(),
             $contentRichEntity->reveal(),
@@ -482,6 +483,228 @@ class PublishTransitionSubscriberTest extends TestCase
             ->shouldBeCalled();
 
         $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
+
+        $contentPublishSubscriber->onPublish($event);
+    }
+
+    public function testOnPublishCascadesShadowChain(): void
+    {
+        // Chain fr -> de -> en. Publishing the root "en" must copy into BOTH "de" and "fr",
+        // not just the direct shadow "de" (the one-hop bug).
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(WorkflowInterface::class);
+        $dimensionContent->willImplement(ShadowInterface::class);
+        $dimensionContent->willImplement(TemplateInterface::class);
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $dimensionAttributes = ['locale' => 'en', 'stage' => 'draft'];
+
+        $dimensionContent->getLocale()->willReturn('en');
+        $dimensionContent->getShadowLocale()->willReturn(null);
+        $dimensionContent->getWorkflowPublished()->willReturn(null);
+        $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldBeCalled();
+
+        $event = new TransitionEvent($dimensionContent->reveal(), new Marking());
+        $event->setContext([
+            ContentWorkflowInterface::DIMENSION_CONTENT_COLLECTION_CONTEXT_KEY => $dimensionContentCollection->reveal(),
+            ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY => $dimensionAttributes,
+            ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY => $contentRichEntity->reveal(),
+        ]);
+
+        $contentCopier = $this->prophesize(ContentCopierInterface::class);
+        $targetDimensionAttributes = $dimensionAttributes;
+        $targetDimensionAttributes['stage'] = 'live';
+
+        $versionDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $contentCopier->copyFromDimensionContentCollection(
+            $dimensionContentCollection->reveal(),
+            $contentRichEntity->reveal(),
+            Argument::that(static fn (array $attrs) => isset($attrs['version']) && $attrs['version'] > 0),
+            Argument::any()
+        )
+            ->willReturn($versionDimensionContent->reveal());
+
+        // The published "en" content exposes the whole reverse chain via its shadow map.
+        $resolvedCopiedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedCopiedContent->willImplement(ShadowInterface::class);
+        $resolvedCopiedContent->getShadowLocalesForLocale('en')->willReturn(['de'])->shouldBeCalled();
+        $resolvedCopiedContent->getShadowLocalesForLocale('de')->willReturn(['fr'])->shouldBeCalled();
+        $resolvedCopiedContent->getShadowLocalesForLocale('fr')->willReturn([])->shouldBeCalled();
+        $contentCopier->copyFromDimensionContentCollection(
+            $dimensionContentCollection->reveal(),
+            $contentRichEntity->reveal(),
+            $targetDimensionAttributes
+        )
+            ->willReturn($resolvedCopiedContent->reveal())
+            ->shouldBeCalled();
+
+        $deDimensionAttributes = $targetDimensionAttributes;
+        $deDimensionAttributes['locale'] = 'de';
+        $contentCopier->copyFromDimensionContentCollection(
+            $dimensionContentCollection->reveal(),
+            $contentRichEntity->reveal(),
+            $deDimensionAttributes,
+            ['ignoredAttributes' => ['shadowOn', 'shadowLocale', 'url']]
+        )
+            ->willReturn($resolvedCopiedContent->reveal())
+            ->shouldBeCalled();
+
+        // The transitive hop the old one-hop code missed.
+        $frDimensionAttributes = $targetDimensionAttributes;
+        $frDimensionAttributes['locale'] = 'fr';
+        $contentCopier->copyFromDimensionContentCollection(
+            $dimensionContentCollection->reveal(),
+            $contentRichEntity->reveal(),
+            $frDimensionAttributes,
+            ['ignoredAttributes' => ['shadowOn', 'shadowLocale', 'url']]
+        )
+            ->willReturn($resolvedCopiedContent->reveal())
+            ->shouldBeCalled();
+
+        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
+
+        $contentPublishSubscriber->onPublish($event);
+    }
+
+    public function testOnPublishCascadeTerminatesOnCyclicMap(): void
+    {
+        // Corrupt back-edge en <-> de: the BFS must visit "de" exactly once and terminate.
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(WorkflowInterface::class);
+        $dimensionContent->willImplement(ShadowInterface::class);
+        $dimensionContent->willImplement(TemplateInterface::class);
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $dimensionAttributes = ['locale' => 'en', 'stage' => 'draft'];
+
+        $dimensionContent->getLocale()->willReturn('en');
+        $dimensionContent->getShadowLocale()->willReturn(null);
+        $dimensionContent->getWorkflowPublished()->willReturn(null);
+        $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldBeCalled();
+
+        $event = new TransitionEvent($dimensionContent->reveal(), new Marking());
+        $event->setContext([
+            ContentWorkflowInterface::DIMENSION_CONTENT_COLLECTION_CONTEXT_KEY => $dimensionContentCollection->reveal(),
+            ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY => $dimensionAttributes,
+            ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY => $contentRichEntity->reveal(),
+        ]);
+
+        $contentCopier = $this->prophesize(ContentCopierInterface::class);
+        $targetDimensionAttributes = $dimensionAttributes;
+        $targetDimensionAttributes['stage'] = 'live';
+
+        $versionDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $contentCopier->copyFromDimensionContentCollection(
+            $dimensionContentCollection->reveal(),
+            $contentRichEntity->reveal(),
+            Argument::that(static fn (array $attrs) => isset($attrs['version']) && $attrs['version'] > 0),
+            Argument::any()
+        )
+            ->willReturn($versionDimensionContent->reveal());
+
+        $resolvedCopiedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedCopiedContent->willImplement(ShadowInterface::class);
+        $resolvedCopiedContent->getShadowLocalesForLocale('en')->willReturn(['de']);
+        $resolvedCopiedContent->getShadowLocalesForLocale('de')->willReturn(['en']); // corrupt back-edge
+        $contentCopier->copyFromDimensionContentCollection(
+            $dimensionContentCollection->reveal(),
+            $contentRichEntity->reveal(),
+            $targetDimensionAttributes
+        )
+            ->willReturn($resolvedCopiedContent->reveal());
+
+        $deDimensionAttributes = $targetDimensionAttributes;
+        $deDimensionAttributes['locale'] = 'de';
+        $contentCopier->copyFromDimensionContentCollection(
+            $dimensionContentCollection->reveal(),
+            $contentRichEntity->reveal(),
+            $deDimensionAttributes,
+            ['ignoredAttributes' => ['shadowOn', 'shadowLocale', 'url']]
+        )
+            ->willReturn($resolvedCopiedContent->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
+
+        $contentPublishSubscriber->onPublish($event);
+    }
+
+    public function testOnPublishShadowBranchCascadesDependents(): void
+    {
+        // Publishing shadow "de" (shadow of "en") must also refresh "fr" (shadow of "de").
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(WorkflowInterface::class);
+        $dimensionContent->willImplement(ShadowInterface::class);
+        $dimensionContent->willImplement(TemplateInterface::class);
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
+
+        $dimensionContent->getLocale()->willReturn('de');
+        $dimensionContent->getShadowLocale()->willReturn('en');
+        $dimensionContent->getWorkflowPublished()->willReturn(null);
+        $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldBeCalled();
+
+        $event = new TransitionEvent($dimensionContent->reveal(), new Marking());
+        $event->setContext([
+            ContentWorkflowInterface::DIMENSION_CONTENT_COLLECTION_CONTEXT_KEY => $dimensionContentCollection->reveal(),
+            ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY => $dimensionAttributes,
+            ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY => $contentRichEntity->reveal(),
+        ]);
+
+        $sourceDimensionAttributes = $dimensionAttributes;
+        $sourceDimensionAttributes['locale'] = 'en';
+        $sourceDimensionAttributes['stage'] = 'live';
+
+        // Aggregated source ("en") carries the reverse shadow map for the cascade.
+        $sourceDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $sourceDimensionContent->willImplement(TemplateInterface::class);
+        $sourceDimensionContent->willImplement(ShadowInterface::class);
+        $sourceDimensionContent->getTemplateKey()->willReturn('default');
+        $sourceDimensionContent->getShadowLocalesForLocale('de')->willReturn(['fr'])->shouldBeCalled();
+        $sourceDimensionContent->getShadowLocalesForLocale('fr')->willReturn([])->shouldBeCalled();
+
+        $contentAggregator = $this->prophesize(ContentAggregatorInterface::class);
+        $contentAggregator->aggregate($contentRichEntity->reveal(), $sourceDimensionAttributes)
+            ->willReturn($sourceDimensionContent->reveal());
+
+        $contentCopier = $this->prophesize(ContentCopierInterface::class);
+        $targetDimensionAttributes = $dimensionAttributes;
+        $targetDimensionAttributes['stage'] = 'live';
+
+        // Main copy en -> de.
+        $contentCopier->copyFromDimensionContent(
+            $sourceDimensionContent->reveal(),
+            $contentRichEntity->reveal(),
+            $targetDimensionAttributes,
+            ['data' => ['shadowOn' => true, 'shadowLocale' => 'en']]
+        )
+            ->shouldBeCalled();
+
+        // Cascade copy en -> fr (the transitive dependent the old shadow branch never refreshed).
+        $frDimensionAttributes = $targetDimensionAttributes;
+        $frDimensionAttributes['locale'] = 'fr';
+        $contentCopier->copyFromDimensionContent(
+            $sourceDimensionContent->reveal(),
+            $contentRichEntity->reveal(),
+            $frDimensionAttributes,
+            ['ignoredAttributes' => ['shadowOn', 'shadowLocale', 'url']]
+        )
+            ->shouldBeCalled();
+
+        $versionDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $contentCopier->copyFromDimensionContentCollection(
+            $dimensionContentCollection->reveal(),
+            $contentRichEntity->reveal(),
+            Argument::that(static fn (array $attrs) => isset($attrs['version']) && $attrs['version'] > 0),
+            Argument::any()
+        )
+            ->willReturn($versionDimensionContent->reveal());
+
+        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance(
+            $contentCopier->reveal(),
+            $contentAggregator->reveal()
+        );
 
         $contentPublishSubscriber->onPublish($event);
     }

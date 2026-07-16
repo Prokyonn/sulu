@@ -1,5 +1,6 @@
 {
     "sulu_content.shadow_source_not_published": "This page cannot be published as a shadow of \"{shadowLocale}\" because \"{shadowLocale}\" has not been published yet. Please publish \"{shadowLocale}\" first.",
+    "sulu_content.shadow_locale_cycle": "The locale \"{locale}\" cannot use \"{shadowLocale}\" as its shadow because it would create a shadow locale cycle. Choose a different shadow locale.",
     "sulu_content.seo": "SEO",
     "sulu_content.excerpt": "Excerpt & Taxonomies",
     "sulu_content.taxonomies": "Taxonomies",
@@ -30,6 +31,7 @@
     "sulu_content.enable_shadow_page": "Enable Shadow page",
     "sulu_content.enable_shadow_page_info_text": "This function is disabled if the current locale is already used as shadow locale.",
     "sulu_content.shadow_locale": "Shadow locale",
+    "sulu_content.shadow_of": "shadow of {locale}",
     "sulu_content.link": "Link",
     "sulu_content.enable_link": "Enable Link",
     "sulu_content.enable_link_info_text": "Link internal content or external URLs for building navigations, content overviews, and organising the site structure.",

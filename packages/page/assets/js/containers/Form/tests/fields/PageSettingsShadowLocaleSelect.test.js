@@ -26,7 +26,9 @@ jest.mock('sulu-admin-bundle/stores', () => ({
 }));
 
 jest.mock('sulu-admin-bundle/utils/Translator', () => ({
-    translate: jest.fn((key) => key),
+    translate: jest.fn(
+        (key, parameters) => (parameters && undefined !== parameters.locale ? key + ' ' + parameters.locale : key)
+    ),
 }));
 
 test('Pass correct props to SingleSelect', () => {
@@ -57,6 +59,40 @@ test('Pass correct props to SingleSelect', () => {
     expect(pageSettingsShadowSelect.find('Option').at(0).prop('value')).toEqual('de');
     expect(pageSettingsShadowSelect.find('Option').at(1).prop('children')).toEqual('nl');
     expect(pageSettingsShadowSelect.find('Option').at(1).prop('value')).toEqual('nl');
+});
+
+test('Mark existing shadow locales in the options', () => {
+    const formInspector = new FormInspector(
+        new ResourceFormStore(
+            new ResourceStore('test', undefined, {locale: observable.box('nl')}),
+            'test'
+        )
+    );
+    formInspector.getValueByPath.mockImplementation((path) => {
+        if (path === '/contentLocales') {
+            return ['en', 'de', 'fr'];
+        }
+
+        if (path === '/shadowLocales') {
+            return {de: 'en', fr: 'de'};
+        }
+    });
+
+    const pageSettingsShadowSelect = shallow(
+        <PageSettingsShadowLocaleSelect
+            {...fieldTypeDefaultProps}
+            formInspector={formInspector}
+            value="de"
+        />
+    );
+
+    // en is concrete, so it stays a plain code; de and fr are shadows, so they are marked with their base locale
+    expect(pageSettingsShadowSelect.find('Option').at(0).prop('value')).toEqual('en');
+    expect(pageSettingsShadowSelect.find('Option').at(0).prop('children')).toEqual('en');
+    expect(pageSettingsShadowSelect.find('Option').at(1).prop('value')).toEqual('de');
+    expect(pageSettingsShadowSelect.find('Option').at(1).prop('children')).toEqual('de (sulu_content.shadow_of en)');
+    expect(pageSettingsShadowSelect.find('Option').at(2).prop('value')).toEqual('fr');
+    expect(pageSettingsShadowSelect.find('Option').at(2).prop('children')).toEqual('fr (sulu_content.shadow_of de)');
 });
 
 test('Pass correct props to SingleSelect when no shadow-locale exists', () => {

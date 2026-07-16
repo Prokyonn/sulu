@@ -16,6 +16,7 @@ namespace Sulu\Content\Infrastructure\Symfony\HttpKernel;
 use Sulu\Content\Application\PropertyResolver\Resolver\PropertyResolverInterface;
 use Sulu\Content\Application\PropertyResolver\Resolver\PropertyResolverMetadataAwareInterface;
 use Sulu\Content\Application\ResourceLoader\Loader\ResourceLoaderInterface;
+use Sulu\Content\Domain\Exception\ShadowLocaleCycleException;
 use Sulu\Content\Domain\Exception\ShadowSourceNotPublishedException;
 use Sulu\Content\Infrastructure\Doctrine\EventListener\RouteCleanupListener;
 use Sulu\Content\Infrastructure\Symfony\HttpKernel\Compiler\ExcerptFormPass;
@@ -110,6 +111,7 @@ final class SuluContentBundle extends AbstractBundle
                     'exception' => [
                         'codes' => [
                             ShadowSourceNotPublishedException::class => 400,
+                            ShadowLocaleCycleException::class => 400,
                         ],
                     ],
                 ]

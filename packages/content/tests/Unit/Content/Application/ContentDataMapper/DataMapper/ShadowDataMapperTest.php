@@ -16,6 +16,7 @@ namespace Sulu\Content\Tests\Unit\Content\Application\ContentDataMapper\DataMapp
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Content\Application\ContentDataMapper\DataMapper\ShadowDataMapper;
+use Sulu\Content\Domain\Exception\ShadowLocaleCycleException;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Content\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
@@ -136,5 +137,57 @@ class ShadowDataMapperTest extends TestCase
 
         $this->assertNull($localizedDimensionContent->getShadowLocale());
         $this->assertNull($unlocalizedDimensionContent->getShadowLocales());
+    }
+
+    public function testMapRejectsSelfShadow(): void
+    {
+        $this->expectException(ShadowLocaleCycleException::class);
+
+        $example = new Example();
+        $unlocalized = new ExampleDimensionContent($example);
+        $localized = new ExampleDimensionContent($example);
+        $localized->setLocale('de');
+
+        $this->createShadowDataMapperInstance()->map($unlocalized, $localized, [
+            'shadowOn' => true,
+            'shadowLocale' => 'de', // de shadows de
+        ]);
+    }
+
+    public function testMapRejectsTransitiveCycle(): void
+    {
+        $this->expectException(ShadowLocaleCycleException::class);
+
+        $example = new Example();
+        $unlocalized = new ExampleDimensionContent($example);
+        $unlocalized->addShadowLocale('en', 'de'); // en shadows de
+        $unlocalized->addShadowLocale('de', 'fr'); // de shadows fr
+
+        $localized = new ExampleDimensionContent($example);
+        $localized->setLocale('fr');
+
+        // fr shadows en -> fr->en->de->fr cycle
+        $this->createShadowDataMapperInstance()->map($unlocalized, $localized, [
+            'shadowOn' => true,
+            'shadowLocale' => 'en',
+        ]);
+    }
+
+    public function testMapAcceptsValidChain(): void
+    {
+        $example = new Example();
+        $unlocalized = new ExampleDimensionContent($example);
+        $unlocalized->addShadowLocale('de', 'en'); // de shadows en
+
+        $localized = new ExampleDimensionContent($example);
+        $localized->setLocale('fr');
+
+        // fr shadows de (valid chain fr->de->en)
+        $this->createShadowDataMapperInstance()->map($unlocalized, $localized, [
+            'shadowOn' => true,
+            'shadowLocale' => 'de',
+        ]);
+
+        $this->assertSame(['de' => 'en', 'fr' => 'de'], $unlocalized->getShadowLocales());
     }
 }

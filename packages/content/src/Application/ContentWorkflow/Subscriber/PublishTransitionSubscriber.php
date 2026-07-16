@@ -98,24 +98,26 @@ class PublishTransitionSubscriber implements EventSubscriberInterface
                 return;
             }
 
-            $shadowLocales = $publishedDimensionContent->getShadowLocalesForLocale($locale);
+            $this->cascadeToShadows(
+                $publishedDimensionContent,
+                $locale,
+                function(string $dependentLocale) use ($dimensionContentCollection, $contentRichEntity, $targetDimensionAttributes): void {
+                    $targetDimensionAttributes['locale'] = $dependentLocale;
 
-            foreach ($shadowLocales as $shadowLocale) {
-                $targetDimensionAttributes['locale'] = $shadowLocale;
-
-                $this->contentCopier->copyFromDimensionContentCollection(
-                    $dimensionContentCollection,
-                    $contentRichEntity,
-                    $targetDimensionAttributes,
-                    [
-                        'ignoredAttributes' => [
-                            'shadowOn',
-                            'shadowLocale',
-                            'url',
-                        ],
-                    ]
-                );
-            }
+                    $this->contentCopier->copyFromDimensionContentCollection(
+                        $dimensionContentCollection,
+                        $contentRichEntity,
+                        $targetDimensionAttributes,
+                        [
+                            'ignoredAttributes' => [
+                                'shadowOn',
+                                'shadowLocale',
+                                'url',
+                            ],
+                        ]
+                    );
+                }
+            );
 
             $this->createVersion($dimensionContentCollection, $contentRichEntity, $dimensionAttributes, $locale);
 
@@ -159,7 +161,56 @@ class PublishTransitionSubscriber implements EventSubscriberInterface
             ['data' => $data]
         );
 
+        if ($sourceDimensionContent instanceof ShadowInterface) {
+            $this->cascadeToShadows(
+                $sourceDimensionContent,
+                $locale,
+                function(string $dependentLocale) use ($sourceDimensionContent, $contentRichEntity, $targetDimensionAttributes): void {
+                    $targetDimensionAttributes['locale'] = $dependentLocale;
+
+                    $this->contentCopier->copyFromDimensionContent(
+                        $sourceDimensionContent,
+                        $contentRichEntity,
+                        $targetDimensionAttributes,
+                        [
+                            'ignoredAttributes' => [
+                                'shadowOn',
+                                'shadowLocale',
+                                'url',
+                            ],
+                        ]
+                    );
+                }
+            );
+        }
+
         $this->createVersion($dimensionContentCollection, $contentRichEntity, $dimensionAttributes, $locale);
+    }
+
+    /**
+     * Breadth-first walk over the reverse shadow map: invoke $copyToLocale for every locale that
+     * transitively shadows $fromLocale. Visited-set guarded so corrupt cyclic data terminates.
+     *
+     * @param callable(string): void $copyToLocale
+     */
+    private function cascadeToShadows(ShadowInterface $mapSource, string $fromLocale, callable $copyToLocale): void
+    {
+        $visited = [$fromLocale => true];
+        $queue = [$fromLocale];
+
+        while ([] !== $queue) {
+            $current = \array_shift($queue);
+
+            foreach ($mapSource->getShadowLocalesForLocale($current) as $dependentLocale) {
+                if (isset($visited[$dependentLocale])) {
+                    continue;
+                }
+
+                $visited[$dependentLocale] = true;
+                $queue[] = $dependentLocale;
+                $copyToLocale($dependentLocale);
+            }
+        }
     }
 
     /**

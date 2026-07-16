@@ -20,9 +20,7 @@
     "changed": "@datetime@",
     "changer": null,
 
-    "contentLocales": [
-        "en"
-    ],
+    "contentLocales": [],
     "created": "@datetime@",
     "creator": null,
     "description": null,

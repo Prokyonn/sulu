@@ -156,10 +156,11 @@ class ContentObjectProvider implements PreviewDefaultsProviderInterface
 
     /**
      * @param T $contentRichEntity
+     * @param array<string, true> $visitedLocales
      *
      * @return B|null
      */
-    protected function resolveContent(ContentRichEntityInterface $contentRichEntity, string $locale): ?DimensionContentInterface
+    protected function resolveContent(ContentRichEntityInterface $contentRichEntity, string $locale, array $visitedLocales = []): ?DimensionContentInterface
     {
         try {
             $resolvedDimensionContent = $this->contentAggregator->aggregate(
@@ -172,7 +173,14 @@ class ContentObjectProvider implements PreviewDefaultsProviderInterface
 
             // unfortunately we can only check if it is a shadow after the dimensionContent was loaded
             if ($resolvedDimensionContent instanceof ShadowInterface && $resolvedDimensionContent->getShadowLocale()) {
-                return $this->resolveContent($contentRichEntity, $resolvedDimensionContent->getShadowLocale());
+                $shadowLocale = $resolvedDimensionContent->getShadowLocale();
+                if (isset($visitedLocales[$shadowLocale])) {
+                    // corrupt cyclic shadow data — stop instead of recursing forever
+                    return null;
+                }
+                $visitedLocales[$locale] = true;
+
+                return $this->resolveContent($contentRichEntity, $shadowLocale, $visitedLocales);
             }
 
             if (!$resolvedDimensionContent->getLocale()) {

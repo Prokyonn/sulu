@@ -239,6 +239,81 @@ class ContentObjectProviderTest extends TestCase
         ], $result);
     }
 
+    public function testGetDefaultsWithCyclicShadow(int $id = 1, string $locale = 'de'): void
+    {
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+
+        $this->entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal())->shouldBeCalledTimes(1);
+
+        $queryBuilder->select(Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $queryBuilder->from(Argument::type('string'), Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $queryBuilder->leftJoin(Argument::cetera())
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $queryBuilder->addSelect(Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $queryBuilder->where(Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $queryBuilder->setParameter(Argument::type('string'), Argument::any())
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(4);
+
+        $query = $this->prophesize(Query::class);
+
+        $queryBuilder->getQuery()->willReturn($query->reveal())->shouldBeCalledTimes(1);
+
+        $entity = $this->prophesize(ContentRichEntityInterface::class);
+
+        $query->getSingleResult()->willReturn($entity->reveal())->shouldBeCalledTimes(1);
+
+        $example = new Example();
+        self::setPrivateProperty($example, 'id', $id);
+
+        $deDimensionContent = new ExampleDimensionContent($example);
+        $deDimensionContent->setLocale('de');
+        $deDimensionContent->setStage(DimensionContentInterface::STAGE_DRAFT);
+        $deDimensionContent->setTemplateKey('default');
+        $deDimensionContent->setShadowLocale('en');
+
+        $this->contentAggregator->aggregate(
+            $entity->reveal(),
+            [
+                'locale' => 'de',
+                'stage' => DimensionContentInterface::STAGE_DRAFT,
+            ]
+        )->willReturn($deDimensionContent)->shouldBeCalledTimes(1);
+
+        $enDimensionContent = new ExampleDimensionContent($example);
+        $enDimensionContent->setLocale('en');
+        $enDimensionContent->setStage(DimensionContentInterface::STAGE_DRAFT);
+        $enDimensionContent->setTemplateKey('default');
+        $enDimensionContent->setShadowLocale('de'); // corrupt cycle: de -> en -> de
+
+        $this->contentAggregator->aggregate(
+            $entity->reveal(),
+            [
+                'locale' => 'en',
+                'stage' => DimensionContentInterface::STAGE_DRAFT,
+            ]
+        )->willReturn($enDimensionContent)->shouldBeCalledTimes(1);
+
+        $previewContext = new PreviewContext($id, $locale);
+        $result = $this->contentObjectProvider->getDefaults($previewContext);
+
+        $this->assertSame([], $result);
+    }
+
     public function testGetDefaultsNonExisting(int $id = 1, string $locale = 'de'): void
     {
         $this->entityManager->createQueryBuilder()->willThrow(NoResultException::class)->shouldBeCalledTimes(1);

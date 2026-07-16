@@ -14,7 +14,7 @@
             </meta>
 
             <properties>
-                <property name="shadowOn" type="checkbox" disabledCondition="shadowLocales and __locale in shadowLocales|values">
+                <property name="shadowOn" type="checkbox">
                     <meta>
                         <info_text>sulu_content.enable_shadow_page_info_text</info_text>
                     </meta>

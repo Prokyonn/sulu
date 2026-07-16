@@ -10,6 +10,18 @@ We refactored the Migrations the abstract class is now under the Infrastructure 
 
  - `Sulu\Content\Migrations\AbstractTagNameToIdMigration` -> `Sulu\Content\Infrastructure\Doctrine\Migrations\AbstractTagNameToIdMigration`
 
+### Shadow locale chains
+
+Shadow locales can now chain: a shadow locale whose base locale is itself a shadow (for example `fr` shadows `de` while
+`de` shadows `en`). Publishing a locale now cascades its content to every shadow locale that transitively depends on it,
+so republishing the chain root keeps the whole chain in sync. Two behavior changes to be aware of:
+
+- `contentLocales` in the shadow settings API response is now filtered. The edited locale and any candidate locale that
+  would create a shadow-locale cycle are excluded from the selectable options.
+- The `shadowOn` `disabledCondition` was removed from `content_settings_shadow.xml`, so a locale that is already used as a
+  shadow source can itself become a shadow. Payloads that would create a cycle (via the admin UI or a direct API call) are
+  rejected with HTTP 400 and the `sulu_content.shadow_locale_cycle` error message.
+
 ## 3.0.7
 
 ### Smart content tag and category resolving is opt-in

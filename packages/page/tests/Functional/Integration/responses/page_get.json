@@ -19,9 +19,7 @@
     "linkData": null,
     "changed": "@datetime@",
     "changer": "@integer@",
-    "contentLocales": [
-        "en"
-    ],
+    "contentLocales": [],
     "created": "@datetime@",
     "creator": "@integer@",
     "description": null,

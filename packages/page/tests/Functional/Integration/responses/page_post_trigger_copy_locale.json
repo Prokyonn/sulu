@@ -22,8 +22,7 @@
     "changer": "@integer@",
 
     "contentLocales": [
-        "en",
-        "de"
+        "en"
     ],
     "created": "@datetime@",
     "creator": "@integer@",

@@ -108,6 +108,44 @@ class SnippetResourceLoaderTest extends TestCase
         ], $result);
     }
 
+    public function testLoadFallsBackToRootLocale(): void
+    {
+        $snippet1 = $this->createSnippet('1');
+
+        // First query: de_li finds snippet 1 but not snippet 2.
+        $this->snippetRepository->findBy(
+            [
+                'uuids' => ['1', '2'],
+                'locale' => 'de_li',
+                'stage' => DimensionContentInterface::STAGE_LIVE,
+            ],
+            [],
+            [SnippetRepositoryInterface::GROUP_SELECT_SNIPPET_WEBSITE => true]
+        )->willReturn([$snippet1])
+            ->shouldBeCalled();
+
+        $snippet2 = $this->createSnippet('2');
+
+        // Second query: the shadow root locale en finds snippet 2 (whole chain shares the root's content).
+        $this->snippetRepository->findBy(
+            [
+                'uuids' => ['2'],
+                'locale' => 'en',
+                'stage' => DimensionContentInterface::STAGE_LIVE,
+            ],
+            [],
+            [SnippetRepositoryInterface::GROUP_SELECT_SNIPPET_WEBSITE => true]
+        )->willReturn([$snippet2])
+            ->shouldBeCalled();
+
+        $result = $this->loader->load(['1', '2'], 'de_li', ['_shadowLocale' => 'en']);
+
+        $this->assertSame([
+            '1' => $snippet1,
+            '2' => $snippet2,
+        ], $result);
+    }
+
     public function testLoadWithShadowLocaleNotTriggeredWhenAllFound(): void
     {
         $snippet1 = $this->createSnippet('1');

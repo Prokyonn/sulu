@@ -45,7 +45,7 @@ class SnippetResourceLoader implements ResourceLoaderContentViewEnhancementInter
 
         $mappedResult = $this->loadForLocale($ids, $locale);
 
-        // Fall back to shadow base locale for missing snippets.
+        // Fall back to the shadow root locale for missing snippets.
         $missingIds = \array_values(\array_diff($ids, \array_keys($mappedResult)));
         $shadowLocale = $params['_shadowLocale'] ?? null;
         if ([] !== $missingIds && \is_string($shadowLocale)) {

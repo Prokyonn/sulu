@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Content\Application\ContentDataMapper\DataMapper;
 
+use Sulu\Content\Domain\Exception\ShadowLocaleCycleException;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\ShadowInterface;
 
@@ -44,10 +45,34 @@ class ShadowDataMapper implements DataMapperInterface
             );
 
             if ($locale && $shadowLocale) {
+                $this->assertNoCycle($unlocalizedDimensionContent, $locale, $shadowLocale);
                 $unlocalizedDimensionContent->addShadowLocale($locale, $shadowLocale);
             } elseif ($locale) {
                 $unlocalizedDimensionContent->removeShadowLocale($locale);
             }
+        }
+    }
+
+    /**
+     * Reject a relation $locale => $shadowLocale whose prospective map is cyclic:
+     * a walk from $shadowLocale must never reach $locale.
+     */
+    private function assertNoCycle(ShadowInterface $unlocalizedDimensionContent, string $locale, string $shadowLocale): void
+    {
+        $map = $unlocalizedDimensionContent->getShadowLocales() ?? [];
+        $map[$locale] = $shadowLocale;
+
+        $current = $shadowLocale;
+        $visited = [];
+        while (\is_string($current)) {
+            if ($current === $locale) {
+                throw new ShadowLocaleCycleException($locale, $shadowLocale);
+            }
+            if (isset($visited[$current])) {
+                break; // pre-existing cycle not involving $locale — not this save's fault
+            }
+            $visited[$current] = true;
+            $current = $map[$current] ?? null;
         }
     }
 }

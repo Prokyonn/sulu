@@ -351,7 +351,7 @@ class ArticleControllerTest extends SuluTestCase
         $this->assertTrue($content['shadowOn']);
         $this->assertSame('en', $content['shadowLocale']);
         $this->assertSame(['en', 'de'], $content['availableLocales']);
-        $this->assertSame(['en', 'de'], $content['contentLocales']);
+        $this->assertSame(['en'], $content['contentLocales']);
 
         $this->assertResponseSnapshot('article_get_shadow_locale.json', $response, 200);
     }
@@ -525,7 +525,6 @@ class ArticleControllerTest extends SuluTestCase
         $this->assertContains('en', $availableLocales);
         $this->assertContains('de', $availableLocales);
         $this->assertContains('en', $contentLocales);
-        $this->assertContains('de', $contentLocales);
 
         $this->client->request('DELETE', '/admin/api/articles/' . $id . '?locale=de&deleteLocale=true');
         $response = $this->client->getResponse();
@@ -544,7 +543,6 @@ class ArticleControllerTest extends SuluTestCase
         $this->assertNotContains('de', $availableLocales);
         $this->assertContains('en', $availableLocales);
         $this->assertNotContains('de', $contentLocales);
-        $this->assertContains('en', $contentLocales);
 
         $this->client->request('GET', '/admin/api/articles/' . $id . '?locale=de');
         $response = $this->client->getResponse();
@@ -581,7 +579,6 @@ class ArticleControllerTest extends SuluTestCase
         $this->assertContains('en', $availableLocales);
         $this->assertContains('de', $availableLocales);
         $this->assertContains('en', $contentLocales);
-        $this->assertContains('de', $contentLocales);
 
         return $id;
     }

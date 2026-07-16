@@ -557,7 +557,6 @@ class PageControllerTest extends SuluTestCase
         $this->assertArrayHasKey('contentLocales', $content);
         $this->assertIsArray($content['contentLocales']);
         $this->assertContains('de', $content['contentLocales']);
-        $this->assertContains('en', $content['contentLocales']);
     }
 
     #[Depends('testPost')]
@@ -842,7 +841,6 @@ class PageControllerTest extends SuluTestCase
         $this->assertContains('en', $availableLocales);
         $this->assertContains('de', $availableLocales);
         $this->assertContains('en', $contentLocales);
-        $this->assertContains('de', $contentLocales);
 
         $this->client->request('DELETE', '/admin/api/pages/' . $id . '?locale=en&deleteLocale=true');
         $response = $this->client->getResponse();
@@ -861,7 +859,6 @@ class PageControllerTest extends SuluTestCase
         $this->assertNotContains('en', $availableLocales);
         $this->assertContains('de', $availableLocales);
         $this->assertNotContains('en', $contentLocales);
-        $this->assertContains('de', $contentLocales);
 
         $this->client->request('GET', '/admin/api/pages/' . $id . '?locale=en');
         $response = $this->client->getResponse();
@@ -897,7 +894,6 @@ class PageControllerTest extends SuluTestCase
         $contentLocales = $content['contentLocales'];
         $this->assertContains('en', $availableLocales);
         $this->assertContains('de', $availableLocales);
-        $this->assertContains('en', $contentLocales);
         $this->assertContains('de', $contentLocales);
 
         return $id;
