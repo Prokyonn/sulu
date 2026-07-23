@@ -15,10 +15,13 @@ namespace Sulu\Content\Infrastructure\Symfony\HttpKernel;
 
 use Sulu\Content\Application\PropertyResolver\Resolver\PropertyResolverInterface;
 use Sulu\Content\Application\PropertyResolver\Resolver\PropertyResolverMetadataAwareInterface;
+use Sulu\Content\Application\RequestWorkflow\Validator\RequestWorkflowValidatorInterface;
 use Sulu\Content\Application\ResourceLoader\Loader\ResourceLoaderInterface;
+use Sulu\Content\Application\Security\ResourceSecurityContextProviderInterface;
 use Sulu\Content\Domain\Exception\ShadowSourceNotPublishedException;
 use Sulu\Content\Infrastructure\Doctrine\EventListener\RouteCleanupListener;
 use Sulu\Content\Infrastructure\Symfony\HttpKernel\Compiler\ExcerptFormPass;
+use Sulu\Content\Infrastructure\Symfony\HttpKernel\Compiler\RequestWorkflowsCompilerPass;
 use Sulu\Content\Infrastructure\Symfony\HttpKernel\Compiler\ResourceLoaderCacheCompilerPass;
 use Sulu\Content\Infrastructure\Symfony\HttpKernel\Compiler\SeoFormPass;
 use Sulu\Content\Infrastructure\Symfony\HttpKernel\Compiler\SettingsFormPass;
@@ -47,6 +50,34 @@ final class SuluContentBundle extends AbstractBundle
                         ->scalarNode('max_depth')->defaultValue(5)->end()
                     ->end()
                 ->end()
+                ->arrayNode('workflow_transition_request')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        // Off by default: existing apps keep direct publishing. Opt in by setting this to
+                        // `true` to make the workflow enforce an approved request before publishing.
+                        ->booleanNode('publish_guard')->defaultFalse()->end()
+                    ->end()
+                ->end()
+                // Named request workflows. Each workflow declares which validators must pass before a
+                // workflow transition request is considered approved. Validators are registered as services
+                // tagged `sulu_content.request_workflow_validator` (key matches the YAML key). The
+                // `validators` map is intentionally permissive (each validator owns its own schema); the
+                // {@see RequestWorkflowsCompilerPass} resolves it at compile time and fails loudly on
+                // unknown validator keys.
+                ->arrayNode('request_workflows')
+                    ->useAttributeAsKey('name')
+                    ->normalizeKeys(false)
+                    ->arrayPrototype()
+                        ->children()
+                            ->scalarNode('label')->defaultNull()->end()
+                            ->arrayNode('validators')
+                                ->normalizeKeys(false)
+                                ->variablePrototype()->end()
+                                ->defaultValue([])
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
     }
@@ -59,6 +90,7 @@ final class SuluContentBundle extends AbstractBundle
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $loader = new PhpFileLoader($builder, new FileLocator(\dirname(__DIR__, 4) . '/config'));
+        $loader->load('workflow-transition-request.php');
         $loader->load('data-mapper.php');
         $loader->load('merger.php');
         $loader->load('normalizer.php');
@@ -77,6 +109,25 @@ final class SuluContentBundle extends AbstractBundle
         $builder->getDefinition('sulu_content.content_resolver')
             ->setArgument('$maxDepth', $contentResolverConfig['max_depth']);
 
+        /** @var array{publish_guard: bool} $workflowTransitionRequestConfig */
+        $workflowTransitionRequestConfig = $config['workflow_transition_request'];
+
+        // Hand the raw `request_workflows` config off to RequestWorkflowsCompilerPass. Hosts that do not
+        // declare any workflows get no workflows registered; the resolver returns null in that case and
+        // downstream subscribers skip workflow-transition-request creation.
+        /** @var array<string, array{label?: string|null, validators?: array<string, array<string, mixed>>}> $requestWorkflowsConfig */
+        $requestWorkflowsConfig = $config['request_workflows'] ?? [];
+        $builder->setParameter(RequestWorkflowsCompilerPass::CONFIG_PARAMETER, $requestWorkflowsConfig);
+
+        if (!$workflowTransitionRequestConfig['publish_guard']) {
+            // Drop everything tied to *enforcing* workflow transition requests when the guard is off. The
+            // normalizer + list enhancer stay registered because the resource (if it exists) should still
+            // be exposed in API responses; the workflow simply doesn't block publishes.
+            $builder->removeDefinition('sulu_content.workflow_transition_request_publish_guard_subscriber');
+            $builder->removeDefinition('sulu_content.workflow_transition_request_publish_transition_subscriber');
+            $builder->removeDefinition('sulu_content.workflow_transition_request_aware_content_manager');
+        }
+
         $services->set('sulu_content.doctrine_route_cleanup_listener')
             ->class(RouteCleanupListener::class)
             ->tag('doctrine.event_listener', ['event' => 'preRemove', 'method' => 'preRemove'])
@@ -90,6 +141,26 @@ final class SuluContentBundle extends AbstractBundle
      */
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
+        if ($builder->hasExtension('doctrine')) {
+            $builder->prependExtensionConfig(
+                'doctrine',
+                [
+                    'orm' => [
+                        'mappings' => [
+                            'SuluContentWorkflowTransitionRequest' => [
+                                'type' => 'xml',
+                                'prefix' => 'Sulu\Content\Domain\Model\WorkflowTransitionRequest',
+                                'dir' => \dirname(__DIR__, 4) . '/config/doctrine/WorkflowTransitionRequest',
+                                'alias' => 'SuluContentWorkflowTransitionRequest',
+                                'is_bundle' => false,
+                                'mapping' => true,
+                            ],
+                        ],
+                    ],
+                ],
+            );
+        }
+
         if ($builder->hasExtension('sulu_admin')) {
             $builder->prependExtensionConfig(
                 'sulu_admin',
@@ -97,6 +168,13 @@ final class SuluContentBundle extends AbstractBundle
                     'forms' => [
                         'directories' => [
                             \dirname(__DIR__, 4) . '/config/forms',
+                        ],
+                    ],
+                    'resources' => [
+                        'workflow_transition_requests' => [
+                            'routes' => [
+                                'detail' => 'sulu_content.get_workflow_transition_request',
+                            ],
                         ],
                     ],
                 ]
@@ -134,12 +212,23 @@ final class SuluContentBundle extends AbstractBundle
         $container->addCompilerPass(new ExcerptFormPass());
         $container->addCompilerPass(new SeoFormPass());
         $container->addCompilerPass(new ResourceLoaderCacheCompilerPass());
+        $container->addCompilerPass(new RequestWorkflowsCompilerPass());
+
+        // Validators must declare their key via the tag attribute so the compiler pass can map
+        // YAML keys to service IDs. The base interface does not know its own key, so autoconfiguration
+        // tags it without an attribute and individual implementations override the tag in their
+        // service definition (see workflow-transition-request.php).
+        $container->registerForAutoconfiguration(RequestWorkflowValidatorInterface::class)
+            ->addTag(RequestWorkflowsCompilerPass::VALIDATOR_TAG);
 
         $container->registerForAutoconfiguration(ResourceLoaderInterface::class)
             ->addTag('sulu_content.resource_loader');
 
         $container->registerForAutoconfiguration(PropertyResolverInterface::class)
             ->addTag('sulu_content.property_resolver');
+
+        $container->registerForAutoconfiguration(ResourceSecurityContextProviderInterface::class)
+            ->addTag('sulu_content.workflow_transition_request_security_context_provider');
 
         // ensure metadata-aware property resolvers are also tagged
         $container->registerForAutoconfiguration(PropertyResolverMetadataAwareInterface::class)
