@@ -28,6 +28,8 @@ use Sulu\Bundle\AdminBundle\Metadata\GroupProviderInterface;
 use Sulu\Component\Localization\Manager\LocalizationManagerInterface;
 use Sulu\Component\Security\Authorization\PermissionTypes;
 use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
+use Sulu\Content\Application\RequestWorkflow\RequestWorkflow;
+use Sulu\Content\Application\RequestWorkflow\RequestWorkflowRegistryInterface;
 use Sulu\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactoryInterface;
 
 /**
@@ -54,6 +56,7 @@ class ArticleAdmin extends Admin
         private LocalizationManagerInterface $localizationManager,
         private ActivityViewBuilderFactoryInterface $activityViewBuilderFactory,
         private GroupProviderInterface $groupProvider,
+        private ?RequestWorkflowRegistryInterface $requestWorkflowRegistry = null,
     ) {
     }
 
@@ -164,7 +167,90 @@ class ArticleAdmin extends Admin
                 ->setTitleProperty('title'),
         );
 
+        $saveVisibleCondition = '(!_permissions || _permissions.edit)';
+        $publishVisibleCondition = '(!_permissions || _permissions.live)';
+        $reviewVisibleCondition = '(!_permissions || _permissions.review)';
+
         $formToolbarActions = $this->contentViewBuilderFactory->getDefaultToolbarActions(ArticleInterface::class);
+        // See PageAdmin for the design rationale: two distinct dropdowns gated on
+        // `activeWorkflowTransitionRequest` from the normalized form data.
+        $noActiveRequest = '!activeWorkflowTransitionRequest';
+        $hasActiveRequest = '!!activeWorkflowTransitionRequest';
+        $isApproved = 'activeWorkflowTransitionRequest && activeWorkflowTransitionRequest.status == "approved"';
+        // Templates participate in the workflow when a `request_workflow` is configured for them (or a
+        // default workflow is registered). The normalizer emits `workflowTransitionRequestEnabled` for
+        // existing entities. New (unsaved) entities have no normalized response yet, so we fall back to
+        // the host's "default workflow registered" answer computed at compile time — without this fall-
+        // back, the create form would always show the direct "Save & publish" / "Publish" actions even
+        // when a workflow is configured, because `workflowTransitionRequestEnabled` is undefined.
+        $hasDefaultWorkflow = $this->requestWorkflowRegistry?->has(RequestWorkflow::DEFAULT_NAME) ?? false;
+        $workflowEnabled = $hasDefaultWorkflow
+            ? '(!!workflowTransitionRequestEnabled || workflowTransitionRequestEnabled == null)'
+            : '!!workflowTransitionRequestEnabled';
+        $noWorkflow = $hasDefaultWorkflow
+            ? '(!workflowTransitionRequestEnabled && workflowTransitionRequestEnabled != null)'
+            : '!workflowTransitionRequestEnabled';
+
+        $formToolbarActions['save'] = new DropdownToolbarAction(
+            'sulu_admin.save',
+            'su-save',
+            [
+                new ToolbarAction(
+                    'sulu_admin.save',
+                    [
+                        'label' => 'sulu_admin.save_draft',
+                        'options' => ['action' => 'draft'],
+                        'visible_condition' => '(' . $saveVisibleCondition . ') && ' . $noActiveRequest,
+                    ]
+                ),
+                new ToolbarAction(
+                    'sulu_content.request_for_publish',
+                    [
+                        'visible_condition' => '(' . $saveVisibleCondition . ') && ' . $noActiveRequest . ' && ' . $workflowEnabled,
+                    ]
+                ),
+                new ToolbarAction(
+                    'sulu_admin.save',
+                    [
+                        'label' => 'sulu_admin.save_publish',
+                        'options' => ['action' => 'publish'],
+                        'visible_condition' => '(' . $publishVisibleCondition . ') && ' . $noActiveRequest . ' && ' . $noWorkflow,
+                    ]
+                ),
+                new ToolbarAction(
+                    'sulu_admin.publish',
+                    [
+                        'visible_condition' => '(' . $publishVisibleCondition . ') && ' . $noActiveRequest . ' && ' . $noWorkflow,
+                    ]
+                ),
+            ]
+        );
+        $formToolbarActions['approval'] = new DropdownToolbarAction(
+            'sulu_content.approval',
+            'su-check-circle',
+            [
+                new ToolbarAction(
+                    'sulu_content.review_workflow_transition_request',
+                    [
+                        'visible_condition' => '(' . $reviewVisibleCondition . ') && ' . $hasActiveRequest,
+                    ]
+                ),
+                new ToolbarAction(
+                    'sulu_admin.publish',
+                    [
+                        'visible_condition' => '(' . $publishVisibleCondition . ') && ' . $hasActiveRequest,
+                        'disabled_condition' => '!(' . $isApproved . ')',
+                    ]
+                ),
+                new ToolbarAction(
+                    'sulu_content.bypass_review_and_publish',
+                    [
+                        'visible_condition' => '(' . $publishVisibleCondition . ') && ' . $hasActiveRequest,
+                        'disabled_condition' => $isApproved,
+                    ]
+                ),
+            ]
+        );
         $formToolbarActions['delete'] = new DropdownToolbarAction(
             'sulu_admin.delete',
             'su-trash-alt',
@@ -292,6 +378,7 @@ class ArticleAdmin extends Admin
                     PermissionTypes::EDIT,
                     PermissionTypes::DELETE,
                     PermissionTypes::LIVE,
+                    PermissionTypes::REVIEW,
                 ];
             }
         }
@@ -306,6 +393,7 @@ class ArticleAdmin extends Admin
                             PermissionTypes::EDIT,
                             PermissionTypes::DELETE,
                             PermissionTypes::LIVE,
+                            PermissionTypes::REVIEW,
                         ],
                     ],
                     $securityContext,

@@ -70,7 +70,7 @@
                     "segment": "",
                     "redirect": "",
                     "main": true,
-                    "url": "blog.io\/{localization}",
+                    "url": "blog.io/{localization}",
                     "environment": "test"
                 }
             ],
@@ -92,6 +92,7 @@
                 "delete": false,
                 "archive": false,
                 "live": false,
+                "review": false,
                 "security": false
             },
             "allLocalizations": [
@@ -150,7 +151,7 @@
                     "segment": "",
                     "redirect": "",
                     "main": true,
-                    "url": "sulu.io\/{localization}",
+                    "url": "sulu.io/{localization}",
                     "environment": "test"
                 }
             ],
@@ -172,6 +173,7 @@
                 "delete": false,
                 "archive": false,
                 "live": false,
+                "review": false,
                 "security": false
             },
             "allLocalizations": [
@@ -217,7 +219,7 @@
                     "segment": "",
                     "redirect": "",
                     "main": true,
-                    "url": "sulu-segments.io\/{localization}",
+                    "url": "sulu-segments.io/{localization}",
                     "environment": "test"
                 }
             ],
@@ -250,6 +252,7 @@
                 "delete": false,
                 "archive": false,
                 "live": false,
+                "review": false,
                 "security": false
             },
             "allLocalizations": [
@@ -304,7 +307,7 @@
                     "segment": "",
                     "redirect": "",
                     "main": true,
-                    "url": "sulu-secure.io\/{localization}",
+                    "url": "sulu-secure.io/{localization}",
                     "environment": "test"
                 }
             ],
@@ -326,6 +329,7 @@
                 "delete": false,
                 "archive": false,
                 "live": false,
+                "review": false,
                 "security": false
             },
             "allLocalizations": [
@@ -374,7 +378,7 @@
                     "segment": "",
                     "redirect": "",
                     "main": true,
-                    "url": "aaa-sorted.io\/{localization}",
+                    "url": "aaa-sorted.io/{localization}",
                     "environment": "test"
                 }
             ],
@@ -396,6 +400,7 @@
                 "delete": false,
                 "archive": false,
                 "live": false,
+                "review": false,
                 "security": false
             },
             "allLocalizations": [

@@ -25,6 +25,8 @@ use Sulu\Component\Rest\ListBuilder\Metadata\FieldDescriptorFactoryInterface;
 use Sulu\Component\Rest\ListBuilder\PaginatedRepresentation;
 use Sulu\Component\Rest\RestHelperInterface;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestListEnhancerInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Content\Tests\Application\ExampleTestBundle\Entity\Example;
@@ -46,6 +48,7 @@ class ExampleController extends AbstractRestController
         private ContentManagerInterface $contentManager,
         private EntityManagerInterface $entityManager,
         private ExampleRepository $exampleRepository,
+        private WorkflowTransitionRequestListEnhancerInterface $workflowTransitionRequestListEnhancer,
     ) {
         parent::__construct($viewHandler, $tokenStorage);
     }
@@ -64,11 +67,41 @@ class ExampleController extends AbstractRestController
         if (isset($fieldDescriptors['ghostLocale'])) {
             $listBuilder->addSelectField($fieldDescriptors['ghostLocale']);
         }
-        $listBuilder->setParameter('locale', $request->query->get('locale'));
+        $locale = $request->query->get('locale');
+        $listBuilder->setParameter('locale', $locale);
         $this->restHelper->initializeListBuilder($listBuilder, $fieldDescriptors);
 
+        if ($request->query->getBoolean('hasActiveWorkflowTransitionRequest')) {
+            $resourceIds = $this->workflowTransitionRequestListEnhancer->findResourceIdsWithActiveRequest(
+                Example::RESOURCE_KEY,
+                \is_string($locale) ? $locale : null,
+            );
+
+            if ([] === $resourceIds) {
+                return $this->handleView($this->view(new PaginatedRepresentation(
+                    [],
+                    Example::RESOURCE_KEY,
+                    1,
+                    (int) $listBuilder->getLimit(),
+                    0,
+                )));
+            }
+
+            $listBuilder->addExpression(
+                $listBuilder->createInExpression($fieldDescriptors['id'], $resourceIds),
+            );
+        }
+
+        /** @var list<array<string, mixed>> $rows */
+        $rows = \array_values($listBuilder->execute());
+        $rows = $this->workflowTransitionRequestListEnhancer->enhanceRows(
+            $rows,
+            Example::RESOURCE_KEY,
+            \is_string($locale) ? $locale : null,
+        );
+
         $listRepresentation = new PaginatedRepresentation(
-            $listBuilder->execute(),
+            $rows,
             Example::RESOURCE_KEY,
             (int) $listBuilder->getCurrentPage(),
             (int) $listBuilder->getLimit(),
@@ -141,10 +174,17 @@ class ExampleController extends AbstractRestController
         $this->entityManager->flush();
 
         if ('publish' === $request->query->get('action')) {
+            $context = $this->resolveWorkflowContext(
+                $request,
+                (string) $example->getId(),
+                WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH,
+            );
+
             $dimensionContent = $this->contentManager->applyTransition(
                 $example,
                 $dimensionAttributes,
-                WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
+                WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH,
+                $context,
             );
 
             $this->entityManager->flush();
@@ -239,6 +279,23 @@ class ExampleController extends AbstractRestController
                 $this->entityManager->flush();
 
                 return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
+            case 'publish':
+                $context = $this->resolveWorkflowContext(
+                    $request,
+                    (string) $example->getId(),
+                    WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH,
+                );
+
+                $dimensionContent = $this->contentManager->applyTransition(
+                    $example,
+                    $dimensionAttributes,
+                    WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH,
+                    $context,
+                );
+
+                $this->entityManager->flush();
+
+                return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
             default:
                 throw new RestException('Unrecognized action: ' . $action);
         }
@@ -282,16 +339,38 @@ class ExampleController extends AbstractRestController
         $this->entityManager->flush();
 
         if ('publish' === $request->query->get('action')) {
+            $context = $this->resolveWorkflowContext(
+                $request,
+                (string) $example->getId(),
+                WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH,
+            );
+
             $dimensionContent = $this->contentManager->applyTransition(
                 $example,
                 $dimensionAttributes,
-                WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
+                WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH,
+                $context,
             );
 
             $this->entityManager->flush();
         }
 
         return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
+    }
+
+    /**
+     * Builds the workflow context for transitions. Forwards the `?force=true` flag as
+     * FORCE_CONTEXT_KEY; the publish guard subscriber checks LIVE permission before honoring it.
+     *
+     * @return array<string, mixed>
+     */
+    private function resolveWorkflowContext(Request $request, string $resourceId, string $transitionName): array
+    {
+        if ($request->query->getBoolean('force', false)) {
+            return [ContentWorkflowInterface::FORCE_CONTEXT_KEY => true];
+        }
+
+        return [];
     }
 
     /**

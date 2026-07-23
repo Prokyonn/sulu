@@ -22,6 +22,7 @@ services:
             - '@sulu_content.content_manager'
             - '@doctrine.orm.entity_manager'
             - '@example_test.example_repository'
+            - '@sulu_content.workflow_transition_request_list_enhancer'
         tags:
             - { name: sulu.context, context: admin }
 
@@ -111,3 +112,8 @@ services:
     Sulu\Bundle\ReferenceBundle\Application\MessageHandler\RefreshReferenceMessageHandler:
         alias: sulu_reference.refresh_reference_message_handler
         public: true
+
+    example_test.example_security_context_provider:
+        class: Sulu\Content\Tests\Application\ExampleTestBundle\Security\ExampleSecurityContextProvider
+        tags:
+            - { name: 'sulu_content.workflow_transition_request_security_context_provider' }

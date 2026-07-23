@@ -23,7 +23,9 @@ use Sulu\Content\Application\ContentNormalizer\ContentNormalizerInterface;
 use Sulu\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
+use Sulu\Content\Domain\Repository\WorkflowTransitionRequestRepositoryInterface;
 use Sulu\Content\Infrastructure\Doctrine\MetadataLoader;
+use Sulu\Content\Infrastructure\Doctrine\Repository\WorkflowTransitionRequestRepository;
 use Sulu\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactoryInterface;
 use Sulu\Content\Infrastructure\Symfony\HttpKernel\SuluContentBundle;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -33,6 +35,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 
 class SuluContentBundleTest extends AbstractExtensionTestCase
 {
@@ -63,7 +66,7 @@ class SuluContentBundleTest extends AbstractExtensionTestCase
         $passConfig = $containerBuilder->getCompiler()->getPassConfig();
 
         $this->assertSame(
-            4,
+            5,
             \count($passConfig->getPasses()) - $beforeCount
         );
     }
@@ -94,6 +97,10 @@ class SuluContentBundleTest extends AbstractExtensionTestCase
                 'content_resolver' => [
                     'max_depth' => 5,
                 ],
+                'workflow_transition_request' => [
+                    'publish_guard' => false,
+                ],
+                'request_workflows' => [],
             ],
         ], [
             $tree->getName() => $tree->finalize([]),
@@ -108,6 +115,7 @@ class SuluContentBundleTest extends AbstractExtensionTestCase
         $this->load();
 
         $this->assertContainerBuilderHasService('sulu_content.metadata_loader', MetadataLoader::class);
+        $this->assertContainerBuilderHasService('sulu_content.workflow_transition_request_repository', WorkflowTransitionRequestRepository::class);
 
         // Main services aliases
         $this->assertContainerBuilderHasAlias(ContentManagerInterface::class, 'sulu_content.content_manager');
@@ -120,6 +128,33 @@ class SuluContentBundleTest extends AbstractExtensionTestCase
         // Additional services aliases
         $this->assertContainerBuilderHasAlias(ContentViewBuilderFactoryInterface::class, 'sulu_content.content_view_builder_factory');
         $this->assertContainerBuilderHasAlias(DimensionContentCollectionFactoryInterface::class, 'sulu_content.dimension_content_collection_factory');
+        $this->assertContainerBuilderHasAlias(WorkflowTransitionRequestRepositoryInterface::class, 'sulu_content.workflow_transition_request_repository');
+
+        $repositoryDefinition = $this->container->getDefinition('sulu_content.workflow_transition_request_repository');
+        $this->assertSame(WorkflowTransitionRequestRepository::class, $repositoryDefinition->getClass());
+        $this->assertEquals(new Reference('doctrine.orm.entity_manager'), $repositoryDefinition->getArgument(0));
+    }
+
+    public function testLoadWithPublishGuardEnabled(): void
+    {
+        $this->container->setParameter('kernel.environment', 'test');
+        $this->container->setParameter('kernel.build_dir', \dirname(__DIR__, 4) . '/Application/var/cache/builddir');
+
+        $this->load(['workflow_transition_request' => ['publish_guard' => true]]);
+
+        $this->assertContainerBuilderHasService('sulu_content.workflow_transition_request_publish_guard_subscriber');
+        $this->assertContainerBuilderHasService('sulu_content.workflow_transition_request_aware_content_manager');
+    }
+
+    public function testLoadWithPublishGuardDisabledByDefault(): void
+    {
+        $this->container->setParameter('kernel.environment', 'test');
+        $this->container->setParameter('kernel.build_dir', \dirname(__DIR__, 4) . '/Application/var/cache/builddir');
+
+        $this->load();
+
+        $this->assertFalse($this->container->hasDefinition('sulu_content.workflow_transition_request_publish_guard_subscriber'));
+        $this->assertFalse($this->container->hasDefinition('sulu_content.workflow_transition_request_aware_content_manager'));
     }
 
     public function testPrepend(): void
@@ -141,15 +176,39 @@ class SuluContentBundleTest extends AbstractExtensionTestCase
         $doctrineExtension = new DoctrineExtension();
         $containerBuilder->registerExtension($doctrineExtension);
 
-        $doctrineExtension = new SuluAdminExtension();
-        $containerBuilder->registerExtension($doctrineExtension);
+        $adminExtension = new SuluAdminExtension();
+        $containerBuilder->registerExtension($adminExtension);
         $extension->prependExtension($containerConfigurator, $containerBuilder);
+
+        $this->assertSame([
+            [
+                'orm' => [
+                    'mappings' => [
+                        'SuluContentWorkflowTransitionRequest' => [
+                            'type' => 'xml',
+                            'prefix' => 'Sulu\\Content\\Domain\\Model\\WorkflowTransitionRequest',
+                            'dir' => \dirname(__DIR__, 5) . '/config/doctrine/WorkflowTransitionRequest',
+                            'alias' => 'SuluContentWorkflowTransitionRequest',
+                            'is_bundle' => false,
+                            'mapping' => true,
+                        ],
+                    ],
+                ],
+            ],
+        ], $containerBuilder->getExtensionConfig('doctrine'));
 
         $this->assertSame([
             [
                 'forms' => [
                     'directories' => [
                         \dirname(__DIR__, 5) . '/config/forms',
+                    ],
+                ],
+                'resources' => [
+                    'workflow_transition_requests' => [
+                        'routes' => [
+                            'detail' => 'sulu_content.get_workflow_transition_request',
+                        ],
                     ],
                 ],
             ],

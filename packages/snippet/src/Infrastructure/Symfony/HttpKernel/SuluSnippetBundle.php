@@ -59,6 +59,7 @@ use Sulu\Snippet\Infrastructure\Sulu\Reference\SnippetReferenceRefresher;
 use Sulu\Snippet\Infrastructure\Sulu\Search\AdminSnippetIndexListener;
 use Sulu\Snippet\Infrastructure\Sulu\Search\AdminSnippetReindexProvider;
 use Sulu\Snippet\Infrastructure\Sulu\Search\Visitor\AdminSnippetReindexProviderEnhancerInterface;
+use Sulu\Snippet\Infrastructure\Sulu\Security\SnippetSecurityContextProvider;
 use Sulu\Snippet\Infrastructure\Sulu\Trash\SnippetTrashItemHandler;
 use Sulu\Snippet\Infrastructure\Symfony\CompilerPass\SnippetAreaCompilerPass;
 use Sulu\Snippet\Infrastructure\Symfony\Normalizer\SnippetAreaNormalizer;
@@ -175,7 +176,7 @@ final class SuluSnippetBundle extends AbstractBundle
             ->class(ApplyWorkflowTransitionSnippetMessageHandler::class)
             ->args([
                 new Reference('sulu_snippet.snippet_repository'),
-                new Reference('sulu_content.content_workflow'),
+                new Reference('sulu_content.content_manager'),
                 new Reference('sulu_activity.domain_event_collector'),
             ])
             ->tag('messenger.message_handler');
@@ -225,6 +226,10 @@ final class SuluSnippetBundle extends AbstractBundle
                 new Reference('sulu_activity.domain_event_collector'),
             ])
             ->tag('messenger.message_handler');
+
+        $services->set('sulu_snippet.workflow_transition_request_security_context_provider')
+            ->class(SnippetSecurityContextProvider::class)
+            ->tag('sulu_content.workflow_transition_request_security_context_provider');
 
         // Mapper service
         $services->set('sulu_snippet.snippet_content_mapper')

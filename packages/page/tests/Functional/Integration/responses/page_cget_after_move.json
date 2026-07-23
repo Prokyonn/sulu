@@ -6,8 +6,8 @@
                 "title": null,
                 "author": null,
                 "authored": null,
-                "created" : null,
-                "changed" : null,
+                "created": null,
+                "changed": null,
                 "creator": null,
                 "changer": null,
                 "locale": null,
@@ -36,11 +36,13 @@
                             "shadowLocale": null,
                             "webspaceKey": "sulu-io",
                             "template": "default",
-                            "version" : 0,
+                            "version": 0,
                             "publishedState": false,
                             "linkProvider": null,
                             "hasChildren": true,
-                            "_hasPermissions": false
+                            "_hasPermissions": false,
+                            "workflowPlace": "@string@||@null@",
+                            "workflowTransitionRequestStatus": null
                         },
                         {
                             "id": "@string@",
@@ -56,11 +58,13 @@
                             "shadowLocale": null,
                             "webspaceKey": "sulu-io",
                             "template": "default",
-                            "version" : 0,
+                            "version": 0,
                             "publishedState": true,
                             "linkProvider": null,
                             "hasChildren": false,
-                            "_hasPermissions": false
+                            "_hasPermissions": false,
+                            "workflowPlace": "@string@||@null@",
+                            "workflowTransitionRequestStatus": null
                         },
                         {
                             "id": "@string@",
@@ -76,14 +80,18 @@
                             "shadowLocale": null,
                             "webspaceKey": "sulu-io",
                             "template": "default",
-                            "version" : 0,
+                            "version": 0,
                             "publishedState": false,
                             "linkProvider": null,
                             "hasChildren": false,
-                            "_hasPermissions": false
+                            "_hasPermissions": false,
+                            "workflowPlace": "@string@||@null@",
+                            "workflowTransitionRequestStatus": null
                         }
                     ]
-                }
+                },
+                "workflowPlace": "@string@||@null@",
+                "workflowTransitionRequestStatus": null
             }
         ]
     }

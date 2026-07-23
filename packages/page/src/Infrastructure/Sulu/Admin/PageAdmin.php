@@ -27,6 +27,8 @@ use Sulu\Component\Security\Authorization\PermissionTypes;
 use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
 use Sulu\Component\Webspace\Webspace;
+use Sulu\Content\Application\RequestWorkflow\RequestWorkflow;
+use Sulu\Content\Application\RequestWorkflow\RequestWorkflowRegistryInterface;
 use Sulu\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactoryInterface;
 use Sulu\Page\Domain\Model\PageInterface;
 
@@ -61,6 +63,7 @@ class PageAdmin extends Admin
         private ContentViewBuilderFactoryInterface $contentViewBuilderFactory,
         private ActivityViewBuilderFactoryInterface $activityViewBuilderFactory,
         private TeaserProviderPoolInterface $teaserProviderPool,
+        private ?RequestWorkflowRegistryInterface $requestWorkflowRegistry = null,
     ) {
     }
 
@@ -88,7 +91,33 @@ class PageAdmin extends Admin
         $editPagePublishVisibleCondition = '(!_permissions || _permissions.live)';
         $publishVisibleCondition = '(' . $createPagePublishVisibleCondition . ') || (' . $editPagePublishVisibleCondition . ')';
 
-        $saveWithPublishingDropdown = new DropdownToolbarAction(
+        $createPageReviewVisibleCondition = '!_permissions && (!__webspace || __webspace._permissions.review)';
+        $editPageReviewVisibleCondition = '(!_permissions || _permissions.review)';
+        $reviewVisibleCondition = '(' . $createPageReviewVisibleCondition . ') || (' . $editPageReviewVisibleCondition . ')';
+
+        // Two distinct dropdowns: the "save" dropdown is shown while no workflow transition request is
+        // active, the "approval" dropdown takes over once a request is open. Item visibility is gated
+        // both on the user's permissions (existing webspace conditions) and on the request state read
+        // from the normalized form data (`activeWorkflowTransitionRequest` is emitted by
+        // {@see \Sulu\Content\Application\ContentNormalizer\Normalizer\WorkflowTransitionRequestNormalizer}).
+        $noActiveRequest = '!activeWorkflowTransitionRequest';
+        $hasActiveRequest = '!!activeWorkflowTransitionRequest';
+        $isApproved = 'activeWorkflowTransitionRequest && activeWorkflowTransitionRequest.status == "approved"';
+        // Templates participate in the workflow when a `request_workflow` is configured for them (or a
+        // default workflow is registered). The normalizer emits `workflowTransitionRequestEnabled` for
+        // existing entities. New (unsaved) entities have no normalized response yet, so we fall back to
+        // the host's "default workflow registered" answer computed at compile time — without this fall-
+        // back, the create form would always show the direct "Save & publish" / "Publish" actions even
+        // when a workflow is configured, because `workflowTransitionRequestEnabled` is undefined.
+        $hasDefaultWorkflow = $this->requestWorkflowRegistry?->has(RequestWorkflow::DEFAULT_NAME) ?? false;
+        $workflowEnabled = $hasDefaultWorkflow
+            ? '(!!workflowTransitionRequestEnabled || workflowTransitionRequestEnabled == null)'
+            : '!!workflowTransitionRequestEnabled';
+        $noWorkflow = $hasDefaultWorkflow
+            ? '(!workflowTransitionRequestEnabled && workflowTransitionRequestEnabled != null)'
+            : '!workflowTransitionRequestEnabled';
+
+        $saveDropdown = new DropdownToolbarAction(
             'sulu_admin.save',
             'su-save',
             [
@@ -97,7 +126,13 @@ class PageAdmin extends Admin
                     [
                         'label' => 'sulu_admin.save_draft',
                         'options' => ['action' => 'draft'],
-                        'visible_condition' => $saveVisibleCondition,
+                        'visible_condition' => '(' . $saveVisibleCondition . ') && ' . $noActiveRequest,
+                    ]
+                ),
+                new ToolbarAction(
+                    'sulu_content.request_for_publish',
+                    [
+                        'visible_condition' => '(' . $saveVisibleCondition . ') && ' . $noActiveRequest . ' && ' . $workflowEnabled,
                     ]
                 ),
                 new ToolbarAction(
@@ -105,20 +140,48 @@ class PageAdmin extends Admin
                     [
                         'label' => 'sulu_admin.save_publish',
                         'options' => ['action' => 'publish'],
-                        'visible_condition' => '(' . $saveVisibleCondition . ') && (' . $publishVisibleCondition . ')',
+                        'visible_condition' => '(' . $publishVisibleCondition . ') && ' . $noActiveRequest . ' && ' . $noWorkflow,
                     ]
                 ),
                 new ToolbarAction(
                     'sulu_admin.publish',
                     [
-                        'visible_condition' => $publishVisibleCondition,
+                        'visible_condition' => '(' . $publishVisibleCondition . ') && ' . $noActiveRequest . ' && ' . $noWorkflow,
+                    ]
+                ),
+            ]
+        );
+
+        $approvalDropdown = new DropdownToolbarAction(
+            'sulu_content.approval',
+            'su-check-circle',
+            [
+                new ToolbarAction(
+                    'sulu_content.review_workflow_transition_request',
+                    [
+                        'visible_condition' => '(' . $reviewVisibleCondition . ') && ' . $hasActiveRequest,
+                    ]
+                ),
+                new ToolbarAction(
+                    'sulu_admin.publish',
+                    [
+                        'visible_condition' => '(' . $publishVisibleCondition . ') && ' . $hasActiveRequest,
+                        'disabled_condition' => '!(' . $isApproved . ')',
+                    ]
+                ),
+                new ToolbarAction(
+                    'sulu_content.bypass_review_and_publish',
+                    [
+                        'visible_condition' => '(' . $publishVisibleCondition . ') && ' . $hasActiveRequest,
+                        'disabled_condition' => $isApproved,
                     ]
                 ),
             ]
         );
 
         $formToolbarActionsWithType = [
-            'save' => $saveWithPublishingDropdown,
+            'save' => $saveDropdown,
+            'approval' => $approvalDropdown,
             'type' => new ToolbarAction(
                 'sulu_admin.type',
                 [
@@ -174,7 +237,7 @@ class PageAdmin extends Admin
         ];
 
         $formToolbarActionsWithoutType = [
-            $saveWithPublishingDropdown,
+            $saveDropdown,
         ];
 
         $routerAttributesToFormRequest = ['parentId', 'webspace'];
@@ -363,6 +426,7 @@ class PageAdmin extends Admin
                 PermissionTypes::EDIT,
                 PermissionTypes::DELETE,
                 PermissionTypes::LIVE,
+                PermissionTypes::REVIEW,
                 PermissionTypes::SECURITY,
             ];
         }
@@ -412,6 +476,7 @@ class PageAdmin extends Admin
                             PermissionTypes::EDIT,
                             PermissionTypes::DELETE,
                             PermissionTypes::LIVE,
+                            PermissionTypes::REVIEW,
                             PermissionTypes::SECURITY,
                         ],
                     ],

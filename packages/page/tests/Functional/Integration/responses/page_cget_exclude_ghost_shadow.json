@@ -4,12 +4,12 @@
             {
                 "_hasPermissions": false,
                 "id": "0199ee04-c220-784e-a6fa-ac985870f2d5",
-                "version" : null,
+                "version": null,
                 "title": null,
                 "author": null,
                 "authored": null,
-                "created" : null,
-                "changed" : null,
+                "created": null,
+                "changed": null,
                 "creator": null,
                 "changer": null,
                 "locale": null,
@@ -34,16 +34,20 @@
                             "hasChildren": true,
                             "id": "@string@",
                             "linkProvider": null,
-                            "version" : 0,
+                            "version": 0,
                             "locale": "de",
                             "publishedState": false,
                             "shadowLocale": null,
                             "template": "default",
                             "title": "Test Page",
-                            "webspaceKey": "sulu-io"
+                            "webspaceKey": "sulu-io",
+                            "workflowPlace": "@string@||@null@",
+                            "workflowTransitionRequestStatus": null
                         }
                     ]
-                }
+                },
+                "workflowPlace": "@string@||@null@",
+                "workflowTransitionRequestStatus": null
             }
         ]
     }

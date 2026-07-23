@@ -7,8 +7,8 @@
                 "title": null,
                 "author": null,
                 "authored": null,
-                "created" : null,
-                "changed" : null,
+                "created": null,
+                "changed": null,
                 "creator": null,
                 "changer": null,
                 "locale": null,
@@ -24,7 +24,7 @@
                     "pages": [
                         {
                             "id": "@string@",
-                            "version" : 0,
+                            "version": 0,
                             "title": "Test Page 2",
                             "author": "@string@",
                             "authored": "@datetime@",
@@ -40,11 +40,13 @@
                             "publishedState": false,
                             "linkProvider": null,
                             "hasChildren": true,
-                            "_hasPermissions": false
+                            "_hasPermissions": false,
+                            "workflowPlace": "@string@||@null@",
+                            "workflowTransitionRequestStatus": null
                         },
                         {
                             "id": "@string@",
-                            "version" : 0,
+                            "version": 0,
                             "title": "Test page for copy",
                             "author": "@string@",
                             "authored": "@datetime@",
@@ -65,7 +67,7 @@
                                 "pages": [
                                     {
                                         "id": "@string@",
-                                        "version" : 0,
+                                        "version": 0,
                                         "title": "Test page for copy",
                                         "author": "@string@",
                                         "authored": "@datetime@",
@@ -81,13 +83,19 @@
                                         "publishedState": false,
                                         "linkProvider": null,
                                         "hasChildren": false,
-                                        "_hasPermissions": false
+                                        "_hasPermissions": false,
+                                        "workflowPlace": "@string@||@null@",
+                                        "workflowTransitionRequestStatus": null
                                     }
                                 ]
-                            }
+                            },
+                            "workflowPlace": "@string@||@null@",
+                            "workflowTransitionRequestStatus": null
                         }
                     ]
-                }
+                },
+                "workflowPlace": "@string@||@null@",
+                "workflowTransitionRequestStatus": null
             }
         ]
     }

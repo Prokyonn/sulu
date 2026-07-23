@@ -347,7 +347,9 @@ final class SnippetController implements SecuredControllerInterface
             /** @var SnippetInterface|null */
             return $this->handle(new Envelope($message, [new EnableFlushStamp()]));
         } else {
-            $message = new ApplyWorkflowTransitionSnippetMessage(['uuid' => $uuid], $this->getLocale($request), $action);
+            // Bypass authorization is enforced in WorkflowTransitionRequestPublishGuardSubscriber.
+            $force = $request->query->getBoolean('force', false);
+            $message = new ApplyWorkflowTransitionSnippetMessage(['uuid' => $uuid], $this->getLocale($request), $action, $force);
 
             /** @see \Sulu\Snippet\Application\MessageHandler\ApplyWorkflowTransitionSnippetMessageHandler */
             /** @var null */

@@ -1,15 +1,20 @@
 {
     "_hasPermissions": false,
     "_hash": "@string@",
+    "_locked": false,
+    "_lockReason": null,
     "_permissions": {
         "add": false,
         "archive": false,
         "delete": false,
         "edit": false,
         "live": false,
+        "review": false,
         "security": false,
         "view": false
     },
+    "activeWorkflowTransitionRequest": null,
+    "workflowTransitionRequestEnabled": false,
     "author": null,
     "authored": "2020-05-08T00:00:00+00:00",
     "availableLocales": [
@@ -19,7 +24,6 @@
     "linkData": null,
     "changed": "@datetime@",
     "changer": "@integer@",
-
     "contentLocales": [
         "en"
     ],
@@ -50,7 +54,9 @@
     "lastModified": "2022-05-08T00:00:00+00:00",
     "lastModifiedEnabled": true,
     "locale": "en",
-    "navigationContexts": ["main"],
+    "navigationContexts": [
+        "main"
+    ],
     "published": "@string@.isDateTime()",
     "parentUuid": "@uuid@",
     "publishedState": true,

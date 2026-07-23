@@ -4,6 +4,7 @@
             {
                 "authored": "@datetime@",
                 "id": "@integer@",
+                "workflowTransitionRequestStatus": null,
                 "title": "Test Example 2"
             }
         ]

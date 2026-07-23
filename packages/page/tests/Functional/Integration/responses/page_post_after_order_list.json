@@ -5,8 +5,8 @@
                 "id": "@string@",
                 "title": null,
                 "author": null,
-                "created" : null,
-                "changed" : null,
+                "created": null,
+                "changed": null,
                 "creator": null,
                 "changer": null,
                 "locale": null,
@@ -34,7 +34,7 @@
                             "ghostLocale": null,
                             "webspaceKey": "sulu-io",
                             "template": "default",
-                            "version" : 0,
+                            "version": 0,
                             "hasChildren": true,
                             "_hasPermissions": false,
                             "_embedded": {
@@ -53,9 +53,11 @@
                                         "ghostLocale": null,
                                         "webspaceKey": "sulu-io",
                                         "template": "default",
-                                        "version" : 0,
+                                        "version": 0,
                                         "hasChildren": false,
-                                        "_hasPermissions": false
+                                        "_hasPermissions": false,
+                                        "workflowPlace": "@string@||@null@",
+                                        "workflowTransitionRequestStatus": null
                                     },
                                     {
                                         "id": "@string@",
@@ -71,9 +73,11 @@
                                         "ghostLocale": null,
                                         "webspaceKey": "sulu-io",
                                         "template": "default",
-                                        "version" : 0,
+                                        "version": 0,
                                         "hasChildren": false,
-                                        "_hasPermissions": false
+                                        "_hasPermissions": false,
+                                        "workflowPlace": "@string@||@null@",
+                                        "workflowTransitionRequestStatus": null
                                     },
                                     {
                                         "id": "@string@",
@@ -89,15 +93,21 @@
                                         "ghostLocale": null,
                                         "webspaceKey": "sulu-io",
                                         "template": "default",
-                                        "version" : 0,
+                                        "version": 0,
                                         "hasChildren": false,
-                                        "_hasPermissions": false
+                                        "_hasPermissions": false,
+                                        "workflowPlace": "@string@||@null@",
+                                        "workflowTransitionRequestStatus": null
                                     }
                                 ]
-                            }
+                            },
+                            "workflowPlace": "@string@||@null@",
+                            "workflowTransitionRequestStatus": null
                         }
                     ]
-                }
+                },
+                "workflowPlace": "@string@||@null@",
+                "workflowTransitionRequestStatus": null
             }
         ]
     }

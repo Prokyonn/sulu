@@ -1,67 +1,82 @@
 {
     "_hasPermissions": false,
     "_hash": "@string@",
+    "_locked": false,
+    "_lockReason": null,
     "_permissions": {
         "add": false,
         "archive": false,
         "delete": false,
         "edit": false,
         "live": false,
+        "review": false,
         "security": false,
         "view": false
     },
-    "author" : null,
-    "authored" : "@dateTime@",
-    "availableLocales" : [ "en" ],
+    "activeWorkflowTransitionRequest": null,
+    "workflowTransitionRequestEnabled": false,
+    "author": null,
+    "authored": "@dateTime@",
+    "availableLocales": [
+        "en"
+    ],
     "linkOn": false,
     "linkData": null,
-    "changed" : "@datetime@",
-    "changer" : "@integer@",
-
-    "contentLocales" : [ "en" ],
-    "created" : "@datetime@",
-    "creator" : "@integer@",
-    "description" : null,
+    "changed": "@datetime@",
+    "changer": "@integer@",
+    "contentLocales": [
+        "en"
+    ],
+    "created": "@datetime@",
+    "creator": "@integer@",
+    "description": null,
     "excerpt": {
         "title": "Excerpt Title",
         "description": "Excerpt Description",
         "more": "Excerpt More"
     },
-    "excerptCategories" : [ ],
-    "excerptTags" : [ "@integer@", "@integer@" ],
+    "excerptCategories": [],
+    "excerptTags": [
+        "@integer@",
+        "@integer@"
+    ],
     "excerptAudienceTargetGroups": [
         "@integer@",
         "@integer@"
     ],
-    "excerptSegment" : { "sulu-io" : "@string@" },
-    "ghostLocale" : "en",
-    "hasSub" : false,
-    "id" : "@string@",
-    "image" : null,
-    "lastModified" : "@dateTime@",
-    "lastModifiedEnabled" : true,
-    "locale" : "en",
-    "navigationContexts" : [ "main" ],
-    "parentUuid" : "@uuid@",
-    "published" : "@dateTime@",
-    "publishedState" : false,
+    "excerptSegment": {
+        "sulu-io": "@string@"
+    },
+    "ghostLocale": "en",
+    "hasSub": false,
+    "id": "@string@",
+    "image": null,
+    "lastModified": "@dateTime@",
+    "lastModifiedEnabled": true,
+    "locale": "en",
+    "navigationContexts": [
+        "main"
+    ],
+    "parentUuid": "@uuid@",
+    "published": "@dateTime@",
+    "publishedState": false,
     "seo": {
         "title": "Seo Title",
         "description": "Seo Description",
         "keywords": "Seo Keyword 1, Seo Keyword 2",
         "canonicalUrl": "https://sulu.io/"
     },
-    "seoHideInSitemap" : true,
-    "seoNoFollow" : true,
-    "seoNoIndex" : true,
-    "shadowLocale" : null,
-    "shadowLocales" : [ ],
-    "shadowOn" : false,
-    "stage" : "draft",
-    "template" : "default",
-    "title" : "Test Page",
-    "url" : "/my-page",
-    "version" : 0,
-    "webspace" : "sulu-io",
-    "workflowPlace" : "draft"
+    "seoHideInSitemap": true,
+    "seoNoFollow": true,
+    "seoNoIndex": true,
+    "shadowLocale": null,
+    "shadowLocales": [],
+    "shadowOn": false,
+    "stage": "draft",
+    "template": "default",
+    "title": "Test Page",
+    "url": "/my-page",
+    "version": 0,
+    "webspace": "sulu-io",
+    "workflowPlace": "draft"
 }

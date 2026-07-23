@@ -62,6 +62,7 @@ use Sulu\Article\Infrastructure\Sulu\Search\Visitor\WebsiteArticleReindexProvide
 use Sulu\Article\Infrastructure\Sulu\Search\Visitor\WebsiteArticleReindexTaxonomyEnhancer;
 use Sulu\Article\Infrastructure\Sulu\Search\WebsiteArticleIndexListener;
 use Sulu\Article\Infrastructure\Sulu\Search\WebsiteArticleReindexProvider;
+use Sulu\Article\Infrastructure\Sulu\Security\ArticleSecurityContextProvider;
 use Sulu\Article\Infrastructure\Sulu\Sitemap\ArticlesSitemapProvider;
 use Sulu\Article\Infrastructure\Sulu\Trash\ArticleTrashItemHandler;
 use Sulu\Article\Infrastructure\Symfony\HttpKernel\Compiler\ValidateDefaultMainWebspacePass;
@@ -210,7 +211,7 @@ final class SuluArticleBundle extends AbstractBundle
             ->class(ApplyWorkflowTransitionArticleMessageHandler::class)
             ->args([
                 new Reference('sulu_article.article_repository'),
-                new Reference('sulu_content.content_workflow'),
+                new Reference('sulu_content.content_manager'),
                 new Reference('doctrine.orm.entity_manager'),
                 new Reference('sulu_activity.domain_event_collector'),
             ])
@@ -243,6 +244,10 @@ final class SuluArticleBundle extends AbstractBundle
                 new Reference('sulu_activity.domain_event_collector'),
             ])
             ->tag('messenger.message_handler');
+
+        $services->set('sulu_article.workflow_transition_request_security_context_provider')
+            ->class(ArticleSecurityContextProvider::class)
+            ->tag('sulu_content.workflow_transition_request_security_context_provider');
 
         $services->set('sulu_article.article_content_mapper')
             ->class(ArticleContentMapper::class)
@@ -280,6 +285,7 @@ final class SuluArticleBundle extends AbstractBundle
                 new Reference('sulu.core.localization_manager'),
                 new Reference('sulu_activity.activity_list_view_builder_factory'),
                 new Reference('sulu_admin.metadata_group_provider'),
+                new Reference('sulu_content.request_workflow_registry', ContainerInterface::NULL_ON_INVALID_REFERENCE),
             ])
             ->tag('sulu.context', ['context' => 'admin'])
             ->tag('sulu.admin');
@@ -306,6 +312,7 @@ final class SuluArticleBundle extends AbstractBundle
                 new Reference('sulu_core.list_builder.field_descriptor_factory'),
                 new Reference('sulu_core.doctrine_list_builder_factory'),
                 new Reference('sulu_core.doctrine_rest_helper'),
+                new Reference('sulu_content.workflow_transition_request_list_enhancer'),
                 param('sulu_core.is_single_locale'),
             ])
             ->tag('sulu.context', ['context' => 'admin']);

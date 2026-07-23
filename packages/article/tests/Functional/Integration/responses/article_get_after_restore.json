@@ -1,5 +1,9 @@
 {
     "_hash": "@string@",
+    "_locked": false,
+    "_lockReason": null,
+    "activeWorkflowTransitionRequest": null,
+    "workflowTransitionRequestEnabled": false,
     "author": null,
     "authored": "@datetime@",
     "availableLocales": [

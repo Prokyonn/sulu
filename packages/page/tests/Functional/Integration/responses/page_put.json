@@ -1,15 +1,20 @@
 {
     "_hasPermissions": false,
     "_hash": "@string@",
+    "_locked": false,
+    "_lockReason": null,
     "_permissions": {
         "add": false,
         "archive": false,
         "delete": false,
         "edit": false,
         "live": false,
+        "review": false,
         "security": false,
         "view": false
     },
+    "activeWorkflowTransitionRequest": null,
+    "workflowTransitionRequestEnabled": false,
     "author": "@integer@",
     "authored": "2020-06-09T00:00:00+00:00",
     "availableLocales": [
@@ -20,7 +25,6 @@
     "linkData": null,
     "changed": "@datetime@",
     "changer": "@integer@",
-
     "contentLocales": [
         "en",
         "de"
@@ -53,7 +57,7 @@
     "lastModifiedEnabled": true,
     "locale": "en",
     "navigationContexts": [],
-    "parentUuid" : "@uuid@",
+    "parentUuid": "@uuid@",
     "published": null,
     "publishedState": false,
     "seo": {
@@ -72,7 +76,7 @@
     "template": "default",
     "title": "Test Page 2",
     "url": "/my-page-2",
-    "version" : 0,
+    "version": 0,
     "webspace": "sulu-io",
     "workflowPlace": "unpublished"
 }

@@ -36,7 +36,9 @@
                             "template": "blog",
                             "version": 0,
                             "hasChildren": false,
-                            "_hasPermissions": false
+                            "_hasPermissions": false,
+                            "workflowPlace": "@string@||@null@",
+                            "workflowTransitionRequestStatus": null
                         },
                         {
                             "id": "@string@",
@@ -54,10 +56,14 @@
                             "template": "landing_page",
                             "version": 0,
                             "hasChildren": false,
-                            "_hasPermissions": false
+                            "_hasPermissions": false,
+                            "workflowPlace": "@string@||@null@",
+                            "workflowTransitionRequestStatus": null
                         }
                     ]
-                }
+                },
+                "workflowPlace": "@string@||@null@",
+                "workflowTransitionRequestStatus": null
             }
         ]
     }

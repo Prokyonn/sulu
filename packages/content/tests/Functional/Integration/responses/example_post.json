@@ -1,10 +1,14 @@
 {
     "_hash": "@string@",
+    "_locked": false,
+    "_lockReason": null,
+    "activeWorkflowTransitionRequest": null,
+    "workflowTransitionRequestEnabled": false,
     "author": null,
     "authored": "2020-05-08T00:00:00+00:00",
-    "changer" : null,
+    "changer": null,
     "changed": "@datetime@",
-    "creator" : null,
+    "creator": null,
     "created": "@datetime@",
     "availableLocales": [
         "en"

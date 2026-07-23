@@ -180,6 +180,7 @@ class PagePermissionInheritanceTest extends SuluTestCase
                 'delete' => true,
                 'archive' => false,
                 'live' => true,
+                'review' => false,
                 'security' => true,
             ],
         ];
@@ -212,6 +213,84 @@ class PagePermissionInheritanceTest extends SuluTestCase
 
         $childPermissions = $accessControlManager->getPermissions(Page::class, $parentPage->getUuid());
         $this->assertArrayHasKey($roleId, $childPermissions);
+        $this->assertSame($expectedPermissions, $childPermissions);
+    }
+
+    public function testChildPageInheritsParentPermissionsOnCreation(): void
+    {
+        self::purgeDatabase();
+
+        $entityManager = self::getEntityManager();
+
+        $role = new Role();
+        $role->setName('Child Inheritance Role');
+        $role->setSystem('Sulu');
+
+        $permission = new Permission();
+        $permission->setRole($role);
+        $permission->setPermissions(127);
+        $permission->setContext('sulu.webspaces.sulu-io');
+        $role->addPermission($permission);
+
+        $entityManager->persist($role);
+        $entityManager->persist($permission);
+        $entityManager->flush();
+
+        $roleId = $role->getId();
+
+        $homepage = $this->createPage([
+            'en' => [
+                'live' => [
+                    'template' => 'default',
+                    'title' => 'Homepage',
+                    'url' => '/',
+                ],
+            ],
+        ]);
+
+        $parentPage = $this->createPage([
+            'en' => [
+                'live' => [
+                    'template' => 'default',
+                    'title' => 'Parent Page',
+                    'url' => '/parent',
+                    'parentId' => $homepage->getUuid(),
+                ],
+            ],
+        ]);
+
+        /** @var AccessControlManagerInterface $accessControlManager */
+        $accessControlManager = self::getContainer()->get('sulu_security.access_control_manager');
+        $expectedPermissions = [
+            $roleId => [
+                'view' => true,
+                'add' => true,
+                'edit' => true,
+                'delete' => true,
+                'archive' => false,
+                'live' => true,
+                'security' => true,
+            ],
+        ];
+        $accessControlManager->setPermissions(Page::class, $parentPage->getUuid(), $expectedPermissions);
+
+        $childPage = $this->createPage([
+            'en' => [
+                'live' => [
+                    'template' => 'default',
+                    'title' => 'Child Page',
+                    'url' => '/parent/child',
+                    'parentId' => $parentPage->getUuid(),
+                ],
+            ],
+        ]);
+
+        self::ensureKernelShutdown();
+
+        $childPermissions = self::getContainer()
+            ->get('sulu_security.access_control_manager')
+            ->getPermissions(Page::class, $childPage->getUuid());
+
         $this->assertSame($expectedPermissions, $childPermissions);
     }
 }

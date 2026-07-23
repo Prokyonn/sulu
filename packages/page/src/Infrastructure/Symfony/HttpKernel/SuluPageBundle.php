@@ -81,6 +81,7 @@ use Sulu\Page\Infrastructure\Sulu\Search\Visitor\WebsitePageReindexTaxonomyEnhan
 use Sulu\Page\Infrastructure\Sulu\Search\WebsitePageIndexListener;
 use Sulu\Page\Infrastructure\Sulu\Search\WebsitePageReindexProvider;
 use Sulu\Page\Infrastructure\Sulu\Security\PageDescendantSecurityListener;
+use Sulu\Page\Infrastructure\Sulu\Security\PageSecurityContextProvider;
 use Sulu\Page\Infrastructure\Sulu\Security\PageSecurityListener;
 use Sulu\Page\Infrastructure\Sulu\Sitemap\PagesSitemapProvider;
 use Sulu\Page\Infrastructure\Sulu\Trash\PageTrashItemHandler;
@@ -204,7 +205,7 @@ final class SuluPageBundle extends AbstractBundle
             ->class(ApplyWorkflowTransitionPageMessageHandler::class)
             ->args([
                 new Reference('sulu_page.page_repository'),
-                new Reference('sulu_content.content_workflow'),
+                new Reference('sulu_content.content_manager'),
                 new Reference('doctrine.orm.entity_manager'),
                 new Reference('sulu_activity.domain_event_collector'),
             ])
@@ -257,6 +258,13 @@ final class SuluPageBundle extends AbstractBundle
                 new Reference('sulu_activity.domain_event_collector'),
             ])
             ->tag('messenger.message_handler');
+
+        $services->set('sulu_page.workflow_transition_request_security_context_provider')
+            ->class(PageSecurityContextProvider::class)
+            ->args([
+                new Reference('sulu_page.page_repository'),
+            ])
+            ->tag('sulu_content.workflow_transition_request_security_context_provider');
 
         // Mapper service
         $services->set('sulu_page.page_content_mapper')
@@ -354,6 +362,7 @@ final class SuluPageBundle extends AbstractBundle
                 new Reference('sulu_content.content_view_builder_factory'),
                 new Reference('sulu_activity.activity_list_view_builder_factory'),
                 new Reference('sulu_admin.teaser_provider_pool'),
+                new Reference('sulu_content.request_workflow_registry', ContainerInterface::NULL_ON_INVALID_REFERENCE),
             ])
             ->tag('sulu.context', ['context' => 'admin'])
             ->tag('sulu.admin');
@@ -429,6 +438,7 @@ final class SuluPageBundle extends AbstractBundle
                 new Reference('security.token_storage'),
                 new Reference('sulu_core.webspace.webspace_manager'),
                 new Reference('sulu_security.security_checker'),
+                new Reference('sulu_content.workflow_transition_request_list_enhancer'),
                 param('sulu_core.is_single_locale'),
             ])
             ->tag('sulu.context', ['context' => 'admin']);

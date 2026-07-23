@@ -1,12 +1,16 @@
 {
     "_hash": "@string@",
+    "_locked": false,
+    "_lockReason": null,
+    "activeWorkflowTransitionRequest": null,
+    "workflowTransitionRequestEnabled": false,
     "availableLocales": [
         "en"
     ],
     "changed": "@datetime@",
-    "changer" : "@integer@",
+    "changer": "@integer@",
     "created": "@datetime@",
-    "creator" : "@integer@",
+    "creator": "@integer@",
     "description": null,
     "excerptCategories": [],
     "excerptTags": [

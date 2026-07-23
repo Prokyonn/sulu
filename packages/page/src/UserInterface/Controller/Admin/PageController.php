@@ -30,6 +30,7 @@ use Sulu\Component\Security\SecuredControllerInterface;
 use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
 use Sulu\Component\Webspace\Webspace;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestListEnhancerInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Messenger\Infrastructure\Symfony\Messenger\FlushMiddleware\EnableFlushStamp;
@@ -78,6 +79,7 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
         private TokenStorageInterface $tokenStorage,
         private WebspaceManagerInterface $webspaceManager,
         private SecurityCheckerInterface $securityChecker,
+        private WorkflowTransitionRequestListEnhancerInterface $workflowTransitionRequestListEnhancer,
         private bool $isSingleLocale = false,
     ) {
         // TODO controller should not need more then Repository, MessageBus, Serializer
@@ -362,7 +364,9 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
             return $this->handle(new Envelope($message, [new EnableFlushStamp()]));
         }
 
-        $message = new ApplyWorkflowTransitionPageMessage(['uuid' => $uuid], $this->getLocale($request), $action);
+        // Bypass authorization is enforced in WorkflowTransitionRequestPublishGuardSubscriber.
+        $force = $request->query->getBoolean('force', false);
+        $message = new ApplyWorkflowTransitionPageMessage(['uuid' => $uuid], $this->getLocale($request), $action, $force);
 
         /** @see \Sulu\Page\Application\MessageHandler\ApplyWorkflowTransitionPageMessageHandler */
         /** @var PageInterface|null */
@@ -465,7 +469,7 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
 
             /** @var mixed[][] $rows */
             $rows = $listBuilder->execute();
-            $enhancedRows = $this->enhanceRows($rows);
+            $enhancedRows = $this->enhanceRows($rows, $this->extractLocale($parameters));
 
             // Remove tree properties for flat list
             foreach ($enhancedRows as &$row) {
@@ -516,7 +520,7 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
 
         /** @var mixed[][] $rows */
         $rows = $listBuilder->execute();
-        $enhancedRows = $this->enhanceRows($rows);
+        $enhancedRows = $this->enhanceRows($rows, $this->extractLocale($parameters));
 
         return new CollectionRepresentation(
             $this->generateNestedRows($parentId, $resourceKey, $enhancedRows),
@@ -525,11 +529,21 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
     }
 
     /**
+     * @param array<string, mixed> $parameters
+     */
+    private function extractLocale(array $parameters): ?string
+    {
+        $locale = $parameters['locale'] ?? null;
+
+        return \is_string($locale) ? $locale : null;
+    }
+
+    /**
      * @param mixed[][] $rows
      *
      * @return mixed[][]
      */
-    private function enhanceRows(array $rows): array
+    private function enhanceRows(array $rows, ?string $locale = null): array
     {
         foreach ($rows as &$row) {
             /** @var int $lft */
@@ -538,6 +552,10 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
         }
 
         foreach ($rows as &$row) {
+            // Preserve the original workflow place for the PublishIndicator's `state` prop, which
+            // distinguishes between e.g. `unpublished` (grey) and `draft` (green+grey). The legacy
+            // `publishedState` boolean below stays for older callers that haven't migrated yet.
+            $row['workflowPlace'] = $row['publishedState'] ?? null;
             // TODO this should be handled by the listbuilder
             $row['publishedState'] = WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $row['publishedState'];
 
@@ -570,7 +588,14 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
             }
         }
 
-        return $rows;
+        /** @var list<array<string, mixed>> $values */
+        $values = \array_values($rows);
+
+        return $this->workflowTransitionRequestListEnhancer->enhanceRows(
+            $values,
+            PageInterface::RESOURCE_KEY,
+            $locale,
+        );
     }
 
     /**

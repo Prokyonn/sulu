@@ -33,6 +33,7 @@ use Sulu\Component\Rest\ListBuilder\PaginatedRepresentation;
 use Sulu\Component\Rest\RestHelperInterface;
 use Sulu\Component\Security\SecuredControllerInterface;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestListEnhancerInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Messenger\Infrastructure\Symfony\Messenger\FlushMiddleware\EnableFlushStamp;
@@ -63,6 +64,7 @@ final class ArticleController implements SecuredControllerInterface
         private FieldDescriptorFactoryInterface $fieldDescriptorFactory,
         private DoctrineListBuilderFactoryInterface $listBuilderFactory,
         private RestHelperInterface $restHelper,
+        private WorkflowTransitionRequestListEnhancerInterface $workflowTransitionRequestListEnhancer,
         private bool $isSingleLocale = false,
     ) {
         $this->messageBus = $messageBus;
@@ -113,9 +115,35 @@ final class ArticleController implements SecuredControllerInterface
         if (isset($fieldDescriptors['ghostLocale'])) {
             $listBuilder->addSelectField($fieldDescriptors['ghostLocale']);
         }
-        $listBuilder->setParameter('locale', $this->getLocale($request));
+        $locale = $this->getLocale($request);
+        $listBuilder->setParameter('locale', $locale);
         if (0 !== \count($templateKeys)) {
             $listBuilder->in($fieldDescriptors['templateKey'], $templateKeys);
+        }
+
+        if ($request->query->getBoolean('hasActiveWorkflowTransitionRequest')) {
+            $resourceIds = $this->workflowTransitionRequestListEnhancer->findResourceIdsWithActiveRequest(
+                ArticleInterface::RESOURCE_KEY,
+                \is_string($locale) ? $locale : null,
+            );
+
+            if ([] === $resourceIds) {
+                return new JsonResponse($this->normalizer->normalize(
+                    (new PaginatedRepresentation(
+                        [],
+                        ArticleInterface::RESOURCE_KEY,
+                        1,
+                        (int) $listBuilder->getLimit(),
+                        0,
+                    ))->toArray(),
+                    'json',
+                    ['sulu_admin' => true, 'sulu_admin_article' => true, 'sulu_admin_article_list' => true],
+                ));
+            }
+
+            $listBuilder->addExpression(
+                $listBuilder->createInExpression($fieldDescriptors['id'], $resourceIds),
+            );
         }
 
         $listRepresentation = new PaginatedRepresentation(
@@ -129,8 +157,19 @@ final class ArticleController implements SecuredControllerInterface
         /** @var array{_embedded: array{articles: mixed[][]}} $list */
         $list = $listRepresentation->toArray();
         foreach ($list['_embedded']['articles'] as &$item) {
+            // Preserve the original workflow place for the PublishIndicator's `state` prop.
+            $item['workflowPlace'] = $item['publishedState'] ?? null;
             $item['publishedState'] = WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === ($item['publishedState'] ?? null);
         }
+        unset($item);
+
+        /** @var list<array<string, mixed>> $articles */
+        $articles = \array_values($list['_embedded']['articles']);
+        $list['_embedded']['articles'] = $this->workflowTransitionRequestListEnhancer->enhanceRows(
+            $articles,
+            ArticleInterface::RESOURCE_KEY,
+            \is_string($locale) ? $locale : null,
+        );
 
         return new JsonResponse($this->normalizer->normalize(
             $list, // TODO maybe a listener should automatically do that for `sulu_admin` context
@@ -333,7 +372,11 @@ final class ArticleController implements SecuredControllerInterface
             /** @var ArticleInterface|null */
             return $this->handle(new Envelope($message, [new EnableFlushStamp()]));
         }
-        $message = new ApplyWorkflowTransitionArticleMessage(['uuid' => $uuid], $this->getLocale($request), $action);
+        // The bypass authorization (when $force is true) is enforced inside
+        // {@see \Sulu\Content\Application\ContentWorkflow\Subscriber\WorkflowTransitionRequestPublishGuardSubscriber}
+        // so it covers any caller — not just this controller.
+        $force = $request->query->getBoolean('force', false);
+        $message = new ApplyWorkflowTransitionArticleMessage(['uuid' => $uuid], $this->getLocale($request), $action, $force);
 
         /** @see \Sulu\Article\Application\MessageHandler\ApplyWorkflowTransitionArticleMessageHandler */
         /** @var null */

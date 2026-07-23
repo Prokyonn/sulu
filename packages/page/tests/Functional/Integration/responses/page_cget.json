@@ -1,46 +1,54 @@
 {
-    "_embedded" : {
-        "pages" : [ {
-            "_hasPermissions": false,
-            "id" : "0199ee04-c220-784e-a6fa-ac985870f2d5",
-            "title" : null,
-            "author" : null,
-            "authored" : null,
-            "created" : null,
-            "changed" : null,
-            "creator" : null,
-            "changer" : null,
-            "locale" : null,
-            "publishedState": false,
-            "shadowLocale": null,
-            "ghostLocale" : null,
-            "webspaceKey" : "sulu-io",
-            "template" : null,
-            "version" : null,
-            "linkProvider": null,
-            "hasChildren" : true,
-            "_embedded" : {
-                "pages" : [ {
-                    "_hasPermissions": false,
-                    "id" : "@string@",
-                    "title" : "Test Page 2",
-                    "author" : "@string@",
-                    "authored" : "@datetime@",
-                    "created" : "@datetime@",
-                    "changed" : "@datetime@",
-                    "creator" : "@string@",
-                    "changer" : "@string@",
-                    "locale" : "en",
-                    "publishedState": false,
-                    "shadowLocale": null,
-                    "ghostLocale" : null,
-                    "webspaceKey" : "sulu-io",
-                    "template" : "default",
-                    "version" : 0,
-                    "linkProvider": null,
-                    "hasChildren" : false
-                } ]
+    "_embedded": {
+        "pages": [
+            {
+                "_hasPermissions": false,
+                "id": "0199ee04-c220-784e-a6fa-ac985870f2d5",
+                "title": null,
+                "author": null,
+                "authored": null,
+                "created": null,
+                "changed": null,
+                "creator": null,
+                "changer": null,
+                "locale": null,
+                "publishedState": false,
+                "shadowLocale": null,
+                "ghostLocale": null,
+                "webspaceKey": "sulu-io",
+                "template": null,
+                "version": null,
+                "linkProvider": null,
+                "hasChildren": true,
+                "_embedded": {
+                    "pages": [
+                        {
+                            "_hasPermissions": false,
+                            "id": "@string@",
+                            "title": "Test Page 2",
+                            "author": "@string@",
+                            "authored": "@datetime@",
+                            "created": "@datetime@",
+                            "changed": "@datetime@",
+                            "creator": "@string@",
+                            "changer": "@string@",
+                            "locale": "en",
+                            "publishedState": false,
+                            "shadowLocale": null,
+                            "ghostLocale": null,
+                            "webspaceKey": "sulu-io",
+                            "template": "default",
+                            "version": 0,
+                            "linkProvider": null,
+                            "hasChildren": false,
+                            "workflowPlace": "@string@||@null@",
+                            "workflowTransitionRequestStatus": null
+                        }
+                    ]
+                },
+                "workflowPlace": "@string@||@null@",
+                "workflowTransitionRequestStatus": null
             }
-        } ]
+        ]
     }
 }
