@@ -12,6 +12,7 @@
 namespace Sulu\Snippet\Application\MessageHandler;
 
 use Sulu\Bundle\ActivityBundle\Application\Collector\DomainEventCollectorInterface;
+use Sulu\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Infrastructure\Doctrine\DimensionContentQueryEnhancer;
@@ -28,7 +29,7 @@ final class ApplyWorkflowTransitionSnippetMessageHandler
 {
     public function __construct(
         private SnippetRepositoryInterface $snippetRepository,
-        private ContentWorkflowInterface $contentWorkflow,
+        private ContentManagerInterface $contentManager,
         private DomainEventCollectorInterface $domainEventCollector
     ) {
     }
@@ -48,10 +49,11 @@ final class ApplyWorkflowTransitionSnippetMessageHandler
             ]
         );
 
-        $this->contentWorkflow->apply(
+        $this->contentManager->applyTransition(
             $snippet,
             ['locale' => $message->getLocale()],
-            $message->getTransitionName()
+            $message->getTransitionName(),
+            [ContentWorkflowInterface::FORCE_CONTEXT_KEY => $message->isForced()]
         );
 
         $this->domainEventCollector->collect(new SnippetWorkflowTransitionAppliedEvent($snippet, $message->getTransitionName(), $message->getLocale()));

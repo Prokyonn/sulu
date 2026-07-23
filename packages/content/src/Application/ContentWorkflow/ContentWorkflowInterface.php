@@ -23,16 +23,24 @@ interface ContentWorkflowInterface
     public const DIMENSION_ATTRIBUTES_CONTEXT_KEY = 'dimensionAttributes';
 
     /**
+     * Workflow context key that bypasses guard subscribers (e.g. the workflow-transition-request publish guard)
+     * for system-driven transitions like CLI commands, fixtures, or migrations.
+     */
+    public const FORCE_CONTEXT_KEY = 'force';
+
+    /**
      * @template T of DimensionContentInterface
      *
      * @param ContentRichEntityInterface<T> $contentRichEntity
      * @param mixed[] $dimensionAttributes
+     * @param array<string, mixed> $context additional context forwarded to workflow guard subscribers
      *
      * @return T
      */
     public function apply(
         ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
-        string $transitionName
+        string $transitionName,
+        array $context = []
     ): DimensionContentInterface;
 }

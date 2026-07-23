@@ -72,12 +72,15 @@ interface ContentManagerInterface
      *
      * @param ContentRichEntityInterface<T> $contentRichEntity
      * @param mixed[] $dimensionAttributes
+     * @param array<string, mixed> $context additional context forwarded to the workflow guard subscribers
+     *                                      (see {@see \Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface::FORCE_CONTEXT_KEY})
      *
      * @return T
      */
     public function applyTransition(
         ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
-        string $transitionName
+        string $transitionName,
+        array $context = []
     ): DimensionContentInterface;
 }

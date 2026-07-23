@@ -58,7 +58,8 @@ class ContentWorkflow implements ContentWorkflowInterface
     public function apply(
         ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
-        string $transitionName
+        string $transitionName,
+        array $context = []
     ): DimensionContentInterface {
         /*
          * Transition should always be applied to the STAGE_DRAFT content-dimension of the given $dimensionAttributes.
@@ -95,11 +96,11 @@ class ContentWorkflow implements ContentWorkflowInterface
         );
 
         try {
-            $workflow->apply($localizedDimensionContent, $transitionName, [
+            $workflow->apply($localizedDimensionContent, $transitionName, \array_merge($context, [
                 ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY => $contentRichEntity,
                 ContentWorkflowInterface::DIMENSION_CONTENT_COLLECTION_CONTEXT_KEY => $dimensionContentCollection,
                 ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY => $dimensionAttributes,
-            ]);
+            ]));
         } catch (UndefinedTransitionException $e) {
             throw new UnknownContentTransitionException($e->getMessage(), $e->getCode(), $e);
         } catch (NotEnabledTransitionException $e) {
@@ -126,7 +127,7 @@ class ContentWorkflow implements ContentWorkflowInterface
         // |     |  create  |             |--------------------->|        |  publish  |            |<---------------|       |---------------------------->|               |
         // | New |--------->| Unpublished |                      | Review |---------->| Published  |                | draft |                             | Review draft  |
         // |     |          |             |<---------------------|        |           |            |--------------->|       |<----------------------------|               |
-        // +-----+          +-------------+       reject         +--------+           +------------+      edit      +-------+        reject draft         +---------------+
+        // +-----+          +-------------+  reject/cancel review +--------+           +------------+      edit      +-------+   reject/cancel draft       +---------------+
         //                     A   |                                                    A   |    A                    A    |                                      |
         //                     +---+                                                    +---+    |                    +----+                                      |
         //                     edit                                                    publish   |                     edit                                       |
@@ -226,6 +227,18 @@ class ContentWorkflow implements ContentWorkflowInterface
             // Reject a review of a draft
             ->addTransition(new Transition(
                 WorkflowInterface::WORKFLOW_TRANSITION_REJECT_DRAFT,
+                WorkflowInterface::WORKFLOW_PLACE_REVIEW_DRAFT,
+                WorkflowInterface::WORKFLOW_PLACE_DRAFT
+            ))
+            // Cancel a review (creator-initiated; mirrors reject but originates from the request creator)
+            ->addTransition(new Transition(
+                WorkflowInterface::WORKFLOW_TRANSITION_CANCEL_REVIEW,
+                WorkflowInterface::WORKFLOW_PLACE_REVIEW,
+                WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED
+            ))
+            // Cancel a review of a draft (creator-initiated; mirrors reject_draft)
+            ->addTransition(new Transition(
+                WorkflowInterface::WORKFLOW_TRANSITION_CANCEL_REVIEW_DRAFT,
                 WorkflowInterface::WORKFLOW_PLACE_REVIEW_DRAFT,
                 WorkflowInterface::WORKFLOW_PLACE_DRAFT
             ))

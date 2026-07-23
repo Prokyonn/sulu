@@ -202,7 +202,8 @@ class ContentManagerTest extends TestCase
         $contentWorkflow->apply(
             $contentRichEntity->reveal(),
             $dimensionAttributes,
-            $transitionName
+            $transitionName,
+            []
         )
             ->willReturn($dimensionContent->reveal())
             ->shouldBeCalled();

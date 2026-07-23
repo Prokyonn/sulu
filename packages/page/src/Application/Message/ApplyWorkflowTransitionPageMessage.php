@@ -24,16 +24,21 @@ class ApplyWorkflowTransitionPageMessage
 
     private string $transitionName;
 
+    private bool $force;
+
     /**
      * @param array{
      *     uuid?: string
      * } $identifier
+     * @param bool $force when true, bypasses workflow guards (e.g. workflow-transition-request guard) for
+     *                    system-driven publishes such as CLI commands or fixtures
      */
-    public function __construct(array $identifier, string $locale, string $transitionName)
+    public function __construct(array $identifier, string $locale, string $transitionName, bool $force = false)
     {
         $this->identifier = $identifier;
         $this->locale = $locale;
         $this->transitionName = $transitionName;
+        $this->force = $force;
     }
 
     /**
@@ -54,5 +59,10 @@ class ApplyWorkflowTransitionPageMessage
     public function getTransitionName(): string
     {
         return $this->transitionName;
+    }
+
+    public function isForced(): bool
+    {
+        return $this->force;
     }
 }

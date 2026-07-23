@@ -24,16 +24,19 @@ class ApplyWorkflowTransitionSnippetMessage
 
     private string $transitionName;
 
+    private bool $force;
+
     /**
      * @param array{
      *     uuid?: string
      * } $identifier
      */
-    public function __construct(array $identifier, string $locale, string $transitionName)
+    public function __construct(array $identifier, string $locale, string $transitionName, bool $force = false)
     {
         $this->identifier = $identifier;
         $this->locale = $locale;
         $this->transitionName = $transitionName;
+        $this->force = $force;
     }
 
     /**
@@ -54,5 +57,10 @@ class ApplyWorkflowTransitionSnippetMessage
     public function getTransitionName(): string
     {
         return $this->transitionName;
+    }
+
+    public function isForced(): bool
+    {
+        return $this->force;
     }
 }

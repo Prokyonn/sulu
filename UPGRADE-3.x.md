@@ -1,5 +1,59 @@
 # Upgrade
 
+## 3.1.0
+
+### Register `SuluContentBundle` admin API routes
+
+The workflow transition request endpoints (`sulu_content.get_workflow_transition_request`, `sulu_content.post_workflow_transition_request`) live in `@SuluContentBundle/config/routing_admin_api.yaml`. The bundle does not auto-register them, so the file must be imported from your application's admin routing config. Without this import, the admin UI throws `Error: The route "sulu_content.get_workflow_transition_request" does not exist.` when reviewing a publish request.
+
+Add the following entry to `config/routes/sulu_admin.yaml`:
+
+```diff
+ sulu_article_api:
+     resource: "@SuluArticleBundle/config/routing_admin_api.yaml"
+     prefix: /admin/api
+
++sulu_content_api:
++    resource: "@SuluContentBundle/config/routing_admin_api.yaml"
++    prefix: /admin/api
+```
+
+### `ContentManagerInterface::applyTransition()` gained a `$context` parameter
+
+`Sulu\Content\Application\ContentManager\ContentManagerInterface::applyTransition()` now accepts a fourth parameter `array $context = []`. The parameter is forwarded to `ContentWorkflow::apply()` and reaches workflow guard subscribers (e.g. the workflow-transition-request publish guard).
+
+This is the canonical entry point for bypassing the publish guard via `ContentWorkflowInterface::FORCE_CONTEXT_KEY`. Previously, callers had to bypass `ContentManager` and call `ContentWorkflow::apply()` directly to pass workflow context — that workaround is no longer necessary.
+
+```php
+// before
+$this->contentWorkflow->apply(
+    $entity,
+    ['locale' => 'en'],
+    WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH,
+    [ContentWorkflowInterface::FORCE_CONTEXT_KEY => true],
+);
+
+// after
+$this->contentManager->applyTransition(
+    $entity,
+    ['locale' => 'en'],
+    WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH,
+    [ContentWorkflowInterface::FORCE_CONTEXT_KEY => true],
+);
+```
+
+**Callers:** no change required. The new parameter has a default value, so existing 3-argument calls keep working.
+
+**Implementers of `ContentManagerInterface`:** add the parameter to your implementation. PHP 8 requires the implementation signature to match.
+
+### `ContentWorkflowInterface::apply()` gained a `$context` parameter
+
+`Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface::apply()` now accepts a fourth parameter `array $context = []`. The context is merged into the Symfony Workflow event context and is how the publish-guard subscriber receives the `ContentWorkflowInterface::FORCE_CONTEXT_KEY` flag.
+
+**Callers:** no change required. The new parameter has a default value, so existing 3-argument calls keep working.
+
+**Implementers of `ContentWorkflowInterface`:** add the parameter to your implementation. PHP 8 requires the implementation signature to match.
+
 ## 3.0.8
 
 ### Route value is required when saving routable content

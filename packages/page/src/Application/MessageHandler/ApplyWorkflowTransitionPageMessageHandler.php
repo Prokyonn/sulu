@@ -13,6 +13,7 @@ namespace Sulu\Page\Application\MessageHandler;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ActivityBundle\Application\Collector\DomainEventCollectorInterface;
+use Sulu\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Infrastructure\Doctrine\DimensionContentQueryEnhancer;
@@ -29,7 +30,7 @@ final class ApplyWorkflowTransitionPageMessageHandler
 {
     public function __construct(
         private PageRepositoryInterface $pageRepository,
-        private ContentWorkflowInterface $contentWorkflow,
+        private ContentManagerInterface $contentManager,
         private EntityManagerInterface $entityManager,
         private DomainEventCollectorInterface $domainEventCollector,
     ) {
@@ -51,10 +52,11 @@ final class ApplyWorkflowTransitionPageMessageHandler
             $page = $this->loadPage($message, [$locale, ...$relatedLocales]);
         }
 
-        $this->contentWorkflow->apply(
+        $this->contentManager->applyTransition(
             $page,
             ['locale' => $locale],
-            $message->getTransitionName()
+            $message->getTransitionName(),
+            [ContentWorkflowInterface::FORCE_CONTEXT_KEY => $message->isForced()]
         );
 
         $this->domainEventCollector->collect(new PageWorkflowTransitionAppliedEvent($page, $message->getTransitionName(), $locale));

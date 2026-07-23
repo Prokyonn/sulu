@@ -66,8 +66,9 @@ class ContentManager implements ContentManagerInterface
     public function applyTransition(
         ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
-        string $transitionName
+        string $transitionName,
+        array $context = []
     ): DimensionContentInterface {
-        return $this->contentWorkflow->apply($contentRichEntity, $dimensionAttributes, $transitionName);
+        return $this->contentWorkflow->apply($contentRichEntity, $dimensionAttributes, $transitionName, $context);
     }
 }

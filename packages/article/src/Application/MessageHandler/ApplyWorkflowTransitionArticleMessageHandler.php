@@ -17,6 +17,7 @@ use Sulu\Article\Domain\Event\ArticleWorkflowTransitionAppliedEvent;
 use Sulu\Article\Domain\Model\ArticleInterface;
 use Sulu\Article\Domain\Repository\ArticleRepositoryInterface;
 use Sulu\Bundle\ActivityBundle\Application\Collector\DomainEventCollectorInterface;
+use Sulu\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Infrastructure\Doctrine\DimensionContentQueryEnhancer;
@@ -29,7 +30,7 @@ final class ApplyWorkflowTransitionArticleMessageHandler
 {
     public function __construct(
         private ArticleRepositoryInterface $articleRepository,
-        private ContentWorkflowInterface $contentWorkflow,
+        private ContentManagerInterface $contentManager,
         private EntityManagerInterface $entityManager,
         private DomainEventCollectorInterface $domainEventCollector,
     ) {
@@ -51,10 +52,11 @@ final class ApplyWorkflowTransitionArticleMessageHandler
             $article = $this->loadArticle($message, [$locale, ...$relatedLocales]);
         }
 
-        $this->contentWorkflow->apply(
+        $this->contentManager->applyTransition(
             $article,
             ['locale' => $locale],
-            $message->getTransitionName()
+            $message->getTransitionName(),
+            [ContentWorkflowInterface::FORCE_CONTEXT_KEY => $message->isForced()]
         );
 
         $this->domainEventCollector->collect(new ArticleWorkflowTransitionAppliedEvent($article, $message->getTransitionName(), $locale));
