@@ -21,6 +21,11 @@ $arrowMenuBoxShadow: 0 0 14px 0 rgba($doveGray, .5);
     box-shadow: $arrowMenuBoxShadow;
     overflow: auto;
     min-width: 200px;
+
+    &.dark {
+        background-color: $blueZodiac;
+        color: $white;
+    }
 }
 
 .arrow {
@@ -41,6 +46,10 @@ $arrowMenuBoxShadow: 0 0 14px 0 rgba($doveGray, .5);
         border-left: 15px solid transparent;
         border-right: 15px solid transparent;
         border-bottom: 15px solid $arrowMenuBackgroundColor;
+
+        &.dark {
+            border-bottom-color: $blueZodiac;
+        }
     }
 
     &.bottom {
@@ -48,5 +57,9 @@ $arrowMenuBoxShadow: 0 0 14px 0 rgba($doveGray, .5);
         border-left: 15px solid transparent;
         border-right: 15px solid transparent;
         border-top: 15px solid $arrowMenuBackgroundColor;
+
+        &.dark {
+            border-top-color: $blueZodiac;
+        }
     }
 }

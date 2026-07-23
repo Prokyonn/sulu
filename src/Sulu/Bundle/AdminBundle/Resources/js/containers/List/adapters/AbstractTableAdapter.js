@@ -54,17 +54,28 @@ export default class AbstractTableAdapter extends AbstractAdapter {
                         />
                     );
                 } else {
-                    if (item.publishedState !== undefined || item.published !== undefined) {
+                    if (item.publishedState !== undefined || item.published !== undefined
+                        || item.workflowPlace !== undefined
+                    ) {
                         const draft = !item.publishedState;
                         const published = !!item.published;
 
-                        if (draft || !published) {
+                        // In list views, suppress the "fully published" indicator — it adds noise
+                        // to the common case. Only render when the workflow state is interesting
+                        // (unpublished/review/draft/review_draft) or the legacy booleans signal
+                        // something worth flagging.
+                        const hasInterestingState = item.workflowPlace !== undefined
+                            ? item.workflowPlace !== 'published'
+                            : (draft || !published);
+
+                        if (hasInterestingState) {
                             indicators.push(
                                 <PublishIndicator
                                     className={abstractTableAdapterStyles.publishIndicator}
                                     draft={draft}
                                     key="publish"
                                     published={published}
+                                    state={item.workflowPlace}
                                 />
                             );
                         }

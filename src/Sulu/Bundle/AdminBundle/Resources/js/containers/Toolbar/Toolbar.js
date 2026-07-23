@@ -116,11 +116,23 @@ class Toolbar extends React.Component<ToolbarProps> {
                     type="error"
                     visible={errors.length > 0}
                 />
-                <Snackbar
-                    message={warnings[warnings.length - 1]}
-                    type="warning"
-                    visible={warnings.length > 0}
-                />
+                {(() => {
+                    const latestWarning = warnings[warnings.length - 1];
+                    const warningProps = typeof latestWarning === 'string'
+                        ? {message: latestWarning}
+                        : (latestWarning || {message: ''});
+
+                    return (
+                        <Snackbar
+                            actionLabel={warningProps.actionLabel}
+                            icon={warningProps.icon}
+                            message={warningProps.message}
+                            onActionClick={warningProps.onActionClick}
+                            type="warning"
+                            visible={warnings.length > 0}
+                        />
+                    );
+                })()}
                 <ToolbarComponent>
                     <ToolbarComponent.Controls grow={true}>
                         {!!onNavigationButtonClick &&

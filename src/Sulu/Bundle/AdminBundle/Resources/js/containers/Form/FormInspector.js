@@ -37,6 +37,14 @@ export default class FormInspector {
         return this.formStore.id;
     }
 
+    /**
+     * Mirrors {@see ResourceFormStore.locked}. True when the backend marked the form as
+     * read-only via the `_locked` field on the resource data.
+     */
+    @computed get locked(): boolean {
+        return !!this.formStore.locked;
+    }
+
     getValueByPath(path: string): mixed {
         return this.formStore.getValueByPath(path);
     }

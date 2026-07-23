@@ -85,3 +85,41 @@ test('Call onCloseClick callback when close button is clicked', async() => {
 
     expect(closeClickSpy).toHaveBeenCalledWith();
 });
+
+test('Render an action button when actionLabel and onActionClick are provided', () => {
+    render(
+        <Snackbar
+            actionLabel="Cancel request"
+            message="Locked"
+            onActionClick={jest.fn()}
+            type="warning"
+        />
+    );
+
+    expect(screen.getByRole('button', {name: 'Cancel request'})).toBeInTheDocument();
+});
+
+test('Call onActionClick when the action button is clicked, without firing onClick', async() => {
+    const actionClickSpy = jest.fn();
+    const clickSpy = jest.fn();
+    render(
+        <Snackbar
+            actionLabel="Cancel request"
+            message="Locked"
+            onActionClick={actionClickSpy}
+            onClick={clickSpy}
+            type="warning"
+        />
+    );
+
+    await userEvent.click(screen.queryByRole('button', {name: 'Cancel request'}));
+
+    expect(actionClickSpy).toBeCalled();
+    expect(clickSpy).not.toBeCalled();
+});
+
+test('Do not render an action button when only actionLabel is provided', () => {
+    render(<Snackbar actionLabel="Cancel" message="Locked" type="warning" />);
+
+    expect(screen.queryByRole('button', {name: 'Cancel'})).not.toBeInTheDocument();
+});

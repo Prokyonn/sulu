@@ -329,6 +329,14 @@ export default class ResourceFormStore extends AbstractFormStore implements Form
         this.resourceStore.dirty = dirty;
     }
 
+    /**
+     * True when the backend marked this resource as locked (e.g. an active workflow transition
+     * request exists). Disables every field in the form and the toolbar actions.
+     */
+    @computed get locked(): boolean {
+        return !!this.data._locked;
+    }
+
     @action setSchemaLoading(schemaLoading: boolean) {
         this.schemaLoading = schemaLoading;
     }

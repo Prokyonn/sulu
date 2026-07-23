@@ -32,6 +32,13 @@ export type ToolbarProps = {
     storeKey?: string,
 };
 
+export type ToolbarWarning = string | {|
+    actionLabel?: string,
+    icon?: string,
+    message: string,
+    onActionClick?: () => void,
+|};
+
 export type ToolbarConfig = {
     backButton?: Button,
     disableAll?: boolean,
@@ -40,5 +47,5 @@ export type ToolbarConfig = {
     items?: Array<ToolbarItemConfig<*>>,
     locale?: Select<string>,
     showSuccess?: IObservableValue<boolean>,
-    warnings?: Array<string>,
+    warnings?: Array<ToolbarWarning>,
 };

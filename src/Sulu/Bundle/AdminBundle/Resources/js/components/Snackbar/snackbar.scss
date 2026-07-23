@@ -59,6 +59,22 @@ $snackbarSuccessBackgroundColor: $mantis;
     padding: 3px;
 }
 
+.action-button {
+    background: rgb(0 0 0 / 15%);
+    border: 0;
+    border-radius: 3px;
+    color: inherit;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0 8px 0 12px;
+    padding: 4px 10px;
+
+    &:hover:not(:disabled) {
+        background: rgb(0 0 0 / 25%);
+    }
+}
+
 .clickable {
     cursor: pointer;
 }
@@ -80,6 +96,20 @@ $snackbarSuccessBackgroundColor: $mantis;
     .close-button {
         background-color: $snackbarWarningColor;
         color: $snackbarWarningColor;
+    }
+
+    .action-button {
+        background: transparent;
+        border-radius: 0;
+        font-weight: 700;
+        margin: 0;
+        padding: 0 0 0 12px;
+        text-decoration: underline;
+
+        &:hover:not(:disabled) {
+            background: transparent;
+            text-decoration: underline;
+        }
     }
 }
 

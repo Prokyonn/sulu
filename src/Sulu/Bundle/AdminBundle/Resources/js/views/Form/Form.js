@@ -6,6 +6,8 @@ import equals from 'fast-deep-equal';
 import log from 'loglevel';
 import Dialog from '../../components/Dialog';
 import PublishIndicator from '../../components/PublishIndicator';
+import WorkflowTransitionRequestTimeline from './components/WorkflowTransitionRequestTimeline';
+import ResourceRequester from '../../services/ResourceRequester';
 import {default as FormContainer, ResourceFormStore, resourceFormStoreFactory} from '../../containers/Form';
 import {withToolbar} from '../../containers/Toolbar';
 import ResourceStore from '../../stores/ResourceStore';
@@ -501,6 +503,20 @@ class Form extends React.Component<Props> {
         this.form = form;
     };
 
+    handleWorkflowTransitionRequestCancel = () => {
+        const {data} = this.resourceFormStore;
+        const request = data.activeWorkflowTransitionRequest;
+        if (!request || !request.id) {
+            return;
+        }
+
+        const cancelTransition = data.workflowPlace === 'review_draft'
+            ? 'cancel_review_draft'
+            : 'cancel_review';
+
+        this.form.submit({action: cancelTransition});
+    };
+
     render() {
         const {
             route: {
@@ -586,14 +602,31 @@ export default withToolbar(Form, function() {
     const icons = [];
     const formData = this.resourceFormStore.data;
 
-    if (formData.hasOwnProperty('publishedState') || formData.hasOwnProperty('published')) {
-        const {publishedState, published} = formData;
-        icons.push(
+    if (formData.hasOwnProperty('publishedState') || formData.hasOwnProperty('published')
+        || formData.hasOwnProperty('workflowPlace')
+    ) {
+        const {publishedState, published, workflowPlace} = formData;
+        const activeWorkflowTransitionRequest = formData.activeWorkflowTransitionRequest;
+
+        const indicator = (
             <PublishIndicator
                 draft={publishedState === undefined ? false : !publishedState}
-                key="publish"
                 published={published === undefined ? false : !!published}
+                state={workflowPlace}
             />
+        );
+
+        icons.push(
+            activeWorkflowTransitionRequest
+                ? (
+                    <WorkflowTransitionRequestTimeline
+                        key="publish"
+                        request={activeWorkflowTransitionRequest}
+                    >
+                        {indicator}
+                    </WorkflowTransitionRequestTimeline>
+                )
+                : React.cloneElement(indicator, {key: 'publish'})
         );
     }
 
@@ -603,6 +636,26 @@ export default withToolbar(Form, function() {
             translate('sulu_admin.form_used_by'),
             this.collaborationStore.collaborations.map((collaboration) => collaboration.fullName).join(', '),
         ].join(' '));
+    }
+    if (this.resourceFormStore.locked) {
+        const activeWorkflowTransitionRequest = formData.activeWorkflowTransitionRequest;
+        const status = activeWorkflowTransitionRequest && activeWorkflowTransitionRequest.status;
+
+        let message = translate('sulu_content.workflow_transition_request.locked_snackbar');
+        if (status === 'pending') {
+            message = translate('sulu_content.workflow_transition_request.banner_pending');
+        } else if (status === 'rejected') {
+            message = translate('sulu_content.workflow_transition_request.banner_rejected');
+        } else if (status === 'approved') {
+            message = translate('sulu_content.workflow_transition_request.banner_approved');
+        }
+
+        warnings.push({
+            actionLabel: translate('sulu_content.workflow_transition_request.cancel_request_action'),
+            icon: 'su-exclamation-triangle',
+            message,
+            onActionClick: this.handleWorkflowTransitionRequestCancel,
+        });
     }
 
     return {

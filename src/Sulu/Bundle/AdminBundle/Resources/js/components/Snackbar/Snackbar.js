@@ -10,8 +10,10 @@ import snackbarStyles from './snackbar.scss';
 export type SnackbarType = 'error' | 'warning' | 'info' | 'success';
 
 type Props = {|
+    actionLabel?: string,
     icon?: string,
     message: string,
+    onActionClick?: () => void,
     onClick?: () => void,
     onCloseClick?: () => void,
     skin: 'static' | 'floating',
@@ -76,8 +78,18 @@ class Snackbar extends React.Component<Props> {
         }
     };
 
+    handleActionClick = (event: SyntheticMouseEvent<HTMLButtonElement>) => {
+        // Prevent the surrounding snackbar's `onClick` from firing when the action button is used.
+        event.stopPropagation();
+
+        const {onActionClick} = this.props;
+        if (onActionClick) {
+            onActionClick();
+        }
+    };
+
     render() {
-        const {icon, onCloseClick, onClick, skin, visible} = this.props;
+        const {actionLabel, icon, onActionClick, onCloseClick, onClick, skin, visible} = this.props;
 
         const snackbarClass = classNames(
             snackbarStyles.snackbar,
@@ -102,6 +114,15 @@ class Snackbar extends React.Component<Props> {
                     }
                     {this.message}
                 </div>
+                {actionLabel && onActionClick &&
+                    <button
+                        className={snackbarStyles.actionButton}
+                        onClick={this.handleActionClick}
+                        type="button"
+                    >
+                        {actionLabel}
+                    </button>
+                }
                 {onCloseClick &&
                     <Icon className={snackbarStyles.closeIcon} name="su-times" onClick={onCloseClick} />
                 }

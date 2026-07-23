@@ -13,10 +13,12 @@ import type {ChildrenArray, Element, ElementRef} from 'react';
 
 type Props = {
     anchorElement: Element<*>,
+    backdrop: boolean,
     children: ChildrenArray<Element<*> | false>,
     onClose?: () => void,
     open: boolean,
     refProp: string,
+    skin: 'light' | 'dark',
 };
 
 const VERTICAL_OFFSET = 20;
@@ -24,7 +26,9 @@ const VERTICAL_OFFSET = 20;
 @observer
 class ArrowMenu extends React.Component<Props> {
     static defaultProps = {
+        backdrop: true,
         refProp: 'ref',
+        skin: 'light',
     };
 
     static Section = Section;
@@ -93,6 +97,7 @@ class ArrowMenu extends React.Component<Props> {
     render() {
         const {
             anchorElement,
+            backdrop,
             open,
             onClose,
         } = this.props;
@@ -104,6 +109,7 @@ class ArrowMenu extends React.Component<Props> {
                 {clonedAnchorElement}
                 <Popover
                     anchorElement={this.displayValueRef}
+                    backdrop={backdrop}
                     onClose={onClose}
                     open={open}
                     verticalOffset={VERTICAL_OFFSET}
@@ -133,6 +139,7 @@ class ArrowMenu extends React.Component<Props> {
     ) {
         const {
             children,
+            skin,
         } = this.props;
 
         const clonedChildren = this.cloneChildren(children);
@@ -144,13 +151,21 @@ class ArrowMenu extends React.Component<Props> {
                 [arrowMenuStyles.bottom]: arrowVerticalPosition === 'bottom',
                 [arrowMenuStyles.left]: arrowHorizontalPosition === 'left',
                 [arrowMenuStyles.right]: arrowHorizontalPosition === 'right',
+                [arrowMenuStyles.dark]: skin === 'dark',
+            }
+        );
+
+        const menuClass = classNames(
+            arrowMenuStyles.arrowMenu,
+            {
+                [arrowMenuStyles.dark]: skin === 'dark',
             }
         );
 
         return (
             <div className={arrowMenuStyles.arrowMenuContainer} ref={setPopoverElementRef} style={popoverStyle}>
                 <div className={arrowClass} />
-                <div className={arrowMenuStyles.arrowMenu}>
+                <div className={menuClass}>
                     {clonedChildren}
                 </div>
             </div>

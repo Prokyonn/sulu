@@ -121,16 +121,27 @@ class ColumnListAdapter extends AbstractAdapter {
             indicators.push(<Icon key="shadow" name="su-shadow-page" />);
         }
 
-        if (item.publishedState !== undefined || item.published !== undefined) {
+        if (item.publishedState !== undefined || item.published !== undefined
+            || item.workflowPlace !== undefined
+        ) {
             const draft = !item.publishedState;
             const published = !!item.published;
 
-            if (draft || !published) {
+            // In list views, do not surface a "fully published" indicator — it adds noise to the
+            // common case. Only show the indicator when the workflow state is interesting
+            // (unpublished/review/draft/review_draft) or when the legacy draft/published booleans
+            // signal something worth flagging.
+            const hasInterestingState = item.workflowPlace !== undefined
+                ? item.workflowPlace !== 'published'
+                : (draft || !published);
+
+            if (hasInterestingState) {
                 indicators.push(
                     <PublishIndicator
                         draft={draft}
                         key="publish"
                         published={published}
+                        state={item.workflowPlace}
                     />
                 );
             }

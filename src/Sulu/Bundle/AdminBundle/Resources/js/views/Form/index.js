@@ -2,6 +2,7 @@
 import Form from './Form';
 import formToolbarActionRegistry from './registries/formToolbarActionRegistry';
 import AbstractFormToolbarAction from './toolbarActions/AbstractFormToolbarAction';
+import BypassReviewAndPublishToolbarAction from './toolbarActions/BypassReviewAndPublishToolbarAction';
 import CopyToolbarAction from './toolbarActions/CopyToolbarAction';
 import CopyLocaleToolbarAction from './toolbarActions/CopyLocaleToolbarAction';
 import DeleteDraftToolbarAction from './toolbarActions/DeleteDraftToolbarAction';
@@ -9,6 +10,9 @@ import DeleteToolbarAction from './toolbarActions/DeleteToolbarAction';
 import DropdownToolbarAction from './toolbarActions/DropdownToolbarAction';
 import PublishToolbarAction from './toolbarActions/PublishToolbarAction';
 import ReloadFormStoreToolbarAction from './toolbarActions/ReloadFormStoreToolbarAction';
+import RequestForPublishToolbarAction from './toolbarActions/RequestForPublishToolbarAction';
+import ReviewWorkflowTransitionRequestToolbarAction
+    from './toolbarActions/ReviewWorkflowTransitionRequestToolbarAction';
 import SaveWithPublishingToolbarAction from './toolbarActions/SaveWithPublishingToolbarAction';
 import SaveWithFormDialogToolbarAction from './toolbarActions/SaveWithFormDialogToolbarAction';
 import SaveToolbarAction from './toolbarActions/SaveToolbarAction';
@@ -22,6 +26,7 @@ export default Form;
 export {
     formToolbarActionRegistry,
     AbstractFormToolbarAction,
+    BypassReviewAndPublishToolbarAction,
     CopyToolbarAction,
     CopyLocaleToolbarAction,
     DeleteDraftToolbarAction,
@@ -29,6 +34,8 @@ export {
     DropdownToolbarAction,
     PublishToolbarAction,
     ReloadFormStoreToolbarAction,
+    RequestForPublishToolbarAction,
+    ReviewWorkflowTransitionRequestToolbarAction,
     SaveWithPublishingToolbarAction,
     SaveToolbarAction,
     SaveWithFormDialogToolbarAction,
