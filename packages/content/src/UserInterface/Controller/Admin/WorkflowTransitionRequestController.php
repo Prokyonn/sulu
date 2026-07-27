@@ -13,23 +13,23 @@ declare(strict_types=1);
 
 namespace Sulu\Content\UserInterface\Controller\Admin;
 
-use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Sulu\Component\Rest\AbstractRestController;
 use Sulu\Component\Security\Authorization\PermissionTypes;
 use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 use Sulu\Content\Application\Message\ApproveWorkflowTransitionRequestMessage;
-use Sulu\Content\Application\Message\CancelWorkflowTransitionRequestMessage;
 use Sulu\Content\Application\Message\RejectWorkflowTransitionRequestMessage;
 use Sulu\Content\Application\Security\WorkflowTransitionRequestSecurityContextResolverInterface;
 use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestViewFactoryInterface;
 use Sulu\Content\Domain\Exception\WorkflowTransitionRequestNotFoundException;
 use Sulu\Content\Domain\Model\WorkflowTransitionRequest\WorkflowTransitionRequest;
 use Sulu\Content\Domain\Repository\WorkflowTransitionRequestRepositoryInterface;
+use Sulu\Messenger\Infrastructure\Symfony\Messenger\FlushMiddleware\EnableFlushStamp;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -43,7 +43,6 @@ final class WorkflowTransitionRequestController extends AbstractRestController
 
     public function __construct(
         private readonly WorkflowTransitionRequestRepositoryInterface $workflowTransitionRequestRepository,
-        private readonly EntityManagerInterface $entityManager,
         private readonly SecurityCheckerInterface $securityChecker,
         private readonly WorkflowTransitionRequestSecurityContextResolverInterface $securityContextResolver,
         private readonly WorkflowTransitionRequestViewFactoryInterface $viewFactory,
@@ -88,16 +87,16 @@ final class WorkflowTransitionRequestController extends AbstractRestController
 
         $comment = $this->getComment($request);
 
+        // Cancelling is not offered here: it has to move the content's workflow place too, so it
+        // runs as the `cancel_review` content transition instead.
         $message = match ($action) {
             'approve' => new ApproveWorkflowTransitionRequestMessage($id, $comment),
             'reject' => new RejectWorkflowTransitionRequestMessage($id, $comment),
-            'cancel' => new CancelWorkflowTransitionRequestMessage($id),
             default => throw new BadRequestHttpException(\sprintf('Unrecognized action "%s".', (string) $action)),
         };
 
         /** @var WorkflowTransitionRequest $workflowTransitionRequest */
-        $workflowTransitionRequest = $this->handle($message);
-        $this->entityManager->flush();
+        $workflowTransitionRequest = $this->handle(new Envelope($message, [new EnableFlushStamp()]));
 
         return $this->handleView($this->view($this->viewFactory->build($workflowTransitionRequest)));
     }
@@ -111,7 +110,6 @@ final class WorkflowTransitionRequestController extends AbstractRestController
 
         $permission = match ($action) {
             'approve', 'reject' => PermissionTypes::REVIEW,
-            'cancel' => PermissionTypes::EDIT,
             default => PermissionTypes::VIEW,
         };
 

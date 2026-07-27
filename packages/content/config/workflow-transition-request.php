@@ -13,14 +13,12 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Sulu\Content\Application\ContentManager\WorkflowTransitionRequestAwareContentManager;
 use Sulu\Content\Application\ContentNormalizer\Normalizer\WorkflowTransitionRequestNormalizer;
 use Sulu\Content\Application\ContentWorkflow\Subscriber\WorkflowTransitionRequestCancelTransitionSubscriber;
 use Sulu\Content\Application\ContentWorkflow\Subscriber\WorkflowTransitionRequestPublishGuardSubscriber;
 use Sulu\Content\Application\ContentWorkflow\Subscriber\WorkflowTransitionRequestPublishTransitionSubscriber;
 use Sulu\Content\Application\ContentWorkflow\Subscriber\WorkflowTransitionRequestTransitionSubscriber;
 use Sulu\Content\Application\MessageHandler\ApproveWorkflowTransitionRequestMessageHandler;
-use Sulu\Content\Application\MessageHandler\CancelWorkflowTransitionRequestMessageHandler;
 use Sulu\Content\Application\MessageHandler\RejectWorkflowTransitionRequestMessageHandler;
 use Sulu\Content\Application\RequestWorkflow\RequestWorkflowEvaluator;
 use Sulu\Content\Application\RequestWorkflow\RequestWorkflowEvaluatorInterface;
@@ -108,7 +106,10 @@ return static function(ContainerConfigurator $container) {
         ->tag('sulu.context', ['context' => 'admin']);
 
     $services->set('sulu_content.workflow_transition_request_cancel_transition_subscriber', WorkflowTransitionRequestCancelTransitionSubscriber::class)
-        ->args([new Reference('sulu_content.workflow_transition_request_repository')])
+        ->args([
+            new Reference('sulu_content.workflow_transition_request_repository'),
+            new Reference('security.token_storage'),
+        ])
         ->tag('kernel.event_subscriber')
         ->tag('sulu.context', ['context' => 'admin']);
 
@@ -116,7 +117,7 @@ return static function(ContainerConfigurator $container) {
         ->args([
             new Reference('sulu_content.workflow_transition_request_repository'),
             new Reference('sulu_content.request_workflow_evaluator'),
-            new Reference('sulu_content.bypass_review_authorizer'),
+            new Reference('sulu_content.request_workflow_resolver'),
         ])
         ->tag('kernel.event_subscriber')
         ->tag('sulu.context', ['context' => 'admin']);
@@ -128,14 +129,6 @@ return static function(ContainerConfigurator $container) {
 
     $services->set('sulu_content.workflow_transition_request_cascade_delete_listener', CascadeDeleteWorkflowTransitionRequestListener::class)
         ->tag('doctrine.event_listener', ['event' => 'onFlush'])
-        ->tag('sulu.context', ['context' => 'admin']);
-
-    $services->set('sulu_content.workflow_transition_request_aware_content_manager', WorkflowTransitionRequestAwareContentManager::class)
-        ->decorate('sulu_content.content_manager')
-        ->args([
-            new Reference('.inner'),
-            new Reference('sulu_content.workflow_transition_request_repository'),
-        ])
         ->tag('sulu.context', ['context' => 'admin']);
 
     $services->set('sulu_content.approve_workflow_transition_request_handler', ApproveWorkflowTransitionRequestMessageHandler::class)
@@ -152,14 +145,6 @@ return static function(ContainerConfigurator $container) {
             new Reference('sulu_content.workflow_transition_request_repository'),
             new Reference('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE),
             new Reference('sulu_content.request_workflow_evaluator'),
-        ])
-        ->tag('messenger.message_handler')
-        ->tag('sulu.context', ['context' => 'admin']);
-
-    $services->set('sulu_content.cancel_workflow_transition_request_handler', CancelWorkflowTransitionRequestMessageHandler::class)
-        ->args([
-            new Reference('sulu_content.workflow_transition_request_repository'),
-            new Reference('security.token_storage'),
         ])
         ->tag('messenger.message_handler')
         ->tag('sulu.context', ['context' => 'admin']);

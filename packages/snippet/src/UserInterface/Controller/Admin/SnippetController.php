@@ -20,6 +20,7 @@ use Sulu\Component\Rest\ListBuilder\PaginatedRepresentation;
 use Sulu\Component\Rest\RestHelperInterface;
 use Sulu\Component\Security\SecuredControllerInterface;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Content\Application\Security\BypassReviewAuthorizerInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Messenger\Infrastructure\Symfony\Messenger\FlushMiddleware\EnableFlushStamp;
@@ -66,6 +67,7 @@ final class SnippetController implements SecuredControllerInterface
         private FieldDescriptorFactoryInterface $fieldDescriptorFactory,
         private DoctrineListBuilderFactoryInterface $listBuilderFactory,
         private RestHelperInterface $restHelper,
+        private BypassReviewAuthorizerInterface $bypassReviewAuthorizer,
         private array $snippetAreas = [],
         private bool $isSingleLocale = false,
     ) {
@@ -347,9 +349,14 @@ final class SnippetController implements SecuredControllerInterface
             /** @var SnippetInterface|null */
             return $this->handle(new Envelope($message, [new EnableFlushStamp()]));
         } else {
-            // Bypass authorization is enforced in WorkflowTransitionRequestPublishGuardSubscriber.
-            $force = $request->query->getBoolean('force', false);
-            $message = new ApplyWorkflowTransitionSnippetMessage(['uuid' => $uuid], $this->getLocale($request), $action, $force);
+            // `bypassReview` is deliberately not `force`: `force` already means "overwrite despite
+            // concurrent changes" for a save, and must not double as a review bypass.
+            $bypassReview = $request->query->getBoolean('bypassReview', false);
+            if ($bypassReview) {
+                $this->bypassReviewAuthorizer->assertCanBypass(SnippetInterface::RESOURCE_KEY, $uuid);
+            }
+
+            $message = new ApplyWorkflowTransitionSnippetMessage(['uuid' => $uuid], $this->getLocale($request), $action, $bypassReview);
 
             /** @see \Sulu\Snippet\Application\MessageHandler\ApplyWorkflowTransitionSnippetMessageHandler */
             /** @var null */

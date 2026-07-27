@@ -24,9 +24,6 @@ final class WorkflowTransitionRequestStrictKernel extends Kernel
 
         $loader->load(static function(ContainerBuilder $container): void {
             $container->prependExtensionConfig('sulu_content', [
-                'workflow_transition_request' => [
-                    'publish_guard' => true,
-                ],
                 'request_workflows' => [
                     'default' => [
                         'validators' => ['user_approvals' => ['count' => 1]],

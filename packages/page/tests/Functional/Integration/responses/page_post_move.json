@@ -1,5 +1,7 @@
 {
     "_hasPermissions": false,
+    "_lockReason": null,
+    "_locked": false,
     "_hash": "@string@",
     "_permissions": {
         "add": false,
@@ -7,9 +9,11 @@
         "delete": false,
         "edit": false,
         "live": false,
+        "review": false,
         "security": false,
         "view": false
     },
+    "activeWorkflowTransitionRequest": null,
     "author" : "@integer@",
     "authored" : "2020-05-08T00:00:00+00:00",
     "availableLocales" : [ "en" ],
@@ -62,5 +66,6 @@
     "url" : "/test-page-for-copy-1",
     "version" : 0,
     "webspace": "sulu-io",
-    "workflowPlace" : "unpublished"
+    "workflowPlace" : "unpublished",
+    "workflowTransitionRequestEnabled": false
 }

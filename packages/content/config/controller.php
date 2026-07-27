@@ -35,11 +35,10 @@ return static function(ContainerConfigurator $container) {
         ->public()
         ->args([
             new Reference('sulu_content.workflow_transition_request_repository'),
-            new Reference('doctrine.orm.entity_manager'),
             new Reference('sulu_security.security_checker'),
             new Reference('sulu_content.workflow_transition_request_security_context_resolver'),
             new Reference('sulu_content.workflow_transition_request_view_factory'),
-            new Reference('messenger.default_bus'),
+            new Reference('sulu_message_bus'),
             new Reference('fos_rest.view_handler'),
             new Reference('security.token_storage', DIContainerInterface::NULL_ON_INVALID_REFERENCE),
         ])

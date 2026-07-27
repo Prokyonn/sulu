@@ -15,7 +15,6 @@ namespace Sulu\Content\Infrastructure\Symfony\HttpKernel;
 
 use Sulu\Content\Application\PropertyResolver\Resolver\PropertyResolverInterface;
 use Sulu\Content\Application\PropertyResolver\Resolver\PropertyResolverMetadataAwareInterface;
-use Sulu\Content\Application\RequestWorkflow\Validator\RequestWorkflowValidatorInterface;
 use Sulu\Content\Application\ResourceLoader\Loader\ResourceLoaderInterface;
 use Sulu\Content\Application\Security\ResourceSecurityContextProviderInterface;
 use Sulu\Content\Domain\Exception\ShadowSourceNotPublishedException;
@@ -50,26 +49,29 @@ final class SuluContentBundle extends AbstractBundle
                         ->scalarNode('max_depth')->defaultValue(5)->end()
                     ->end()
                 ->end()
-                ->arrayNode('workflow_transition_request')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        // Off by default: existing apps keep direct publishing. Opt in by setting this to
-                        // `true` to make the workflow enforce an approved request before publishing.
-                        ->booleanNode('publish_guard')->defaultFalse()->end()
-                    ->end()
-                ->end()
                 // Named request workflows. Each workflow declares which validators must pass before a
                 // workflow transition request is considered approved. Validators are registered as services
                 // tagged `sulu_content.request_workflow_validator` (key matches the YAML key). The
                 // `validators` map is intentionally permissive (each validator owns its own schema); the
                 // {@see RequestWorkflowsCompilerPass} resolves it at compile time and fails loudly on
                 // unknown validator keys.
+                //
+                // Declaring no workflows keeps direct publishing: the resolver returns null for every
+                // content, so no request is ever created and nothing blocks a publish.
                 ->arrayNode('request_workflows')
                     ->useAttributeAsKey('name')
                     ->normalizeKeys(false)
                     ->arrayPrototype()
                         ->children()
                             ->scalarNode('label')->defaultNull()->end()
+                            // Resource keys the `default` workflow covers when a template carries no
+                            // explicit `sulu_content.request_workflow` tag, e.g. ['pages', 'articles'] to
+                            // review pages and articles but not snippets. Empty means every resource.
+                            // Workflows assigned explicitly via a template tag always apply.
+                            ->arrayNode('resources')
+                                ->scalarPrototype()->end()
+                                ->defaultValue([])
+                            ->end()
                             ->arrayNode('validators')
                                 ->normalizeKeys(false)
                                 ->variablePrototype()->end()
@@ -109,24 +111,12 @@ final class SuluContentBundle extends AbstractBundle
         $builder->getDefinition('sulu_content.content_resolver')
             ->setArgument('$maxDepth', $contentResolverConfig['max_depth']);
 
-        /** @var array{publish_guard: bool} $workflowTransitionRequestConfig */
-        $workflowTransitionRequestConfig = $config['workflow_transition_request'];
-
         // Hand the raw `request_workflows` config off to RequestWorkflowsCompilerPass. Hosts that do not
-        // declare any workflows get no workflows registered; the resolver returns null in that case and
-        // downstream subscribers skip workflow-transition-request creation.
-        /** @var array<string, array{label?: string|null, validators?: array<string, array<string, mixed>>}> $requestWorkflowsConfig */
+        // declare any workflows get no workflows registered; the resolver returns null in that case, so
+        // the subscribers stay registered but never create or enforce a request.
+        /** @var array<string, array{label?: string|null, resources?: list<string>, validators?: array<string, array<string, mixed>>}> $requestWorkflowsConfig */
         $requestWorkflowsConfig = $config['request_workflows'] ?? [];
         $builder->setParameter(RequestWorkflowsCompilerPass::CONFIG_PARAMETER, $requestWorkflowsConfig);
-
-        if (!$workflowTransitionRequestConfig['publish_guard']) {
-            // Drop everything tied to *enforcing* workflow transition requests when the guard is off. The
-            // normalizer + list enhancer stay registered because the resource (if it exists) should still
-            // be exposed in API responses; the workflow simply doesn't block publishes.
-            $builder->removeDefinition('sulu_content.workflow_transition_request_publish_guard_subscriber');
-            $builder->removeDefinition('sulu_content.workflow_transition_request_publish_transition_subscriber');
-            $builder->removeDefinition('sulu_content.workflow_transition_request_aware_content_manager');
-        }
 
         $services->set('sulu_content.doctrine_route_cleanup_listener')
             ->class(RouteCleanupListener::class)
@@ -218,8 +208,9 @@ final class SuluContentBundle extends AbstractBundle
         // YAML keys to service IDs. The base interface does not know its own key, so autoconfiguration
         // tags it without an attribute and individual implementations override the tag in their
         // service definition (see workflow-transition-request.php).
-        $container->registerForAutoconfiguration(RequestWorkflowValidatorInterface::class)
-            ->addTag(RequestWorkflowsCompilerPass::VALIDATOR_TAG);
+        // No autoconfiguration for RequestWorkflowValidatorInterface: the tag carries a required
+        // `key` attribute that autoconfiguration cannot supply, and a key-less tag makes
+        // RequestWorkflowsCompilerPass fail. Validators are tagged explicitly instead.
 
         $container->registerForAutoconfiguration(ResourceLoaderInterface::class)
             ->addTag('sulu_content.resource_loader');

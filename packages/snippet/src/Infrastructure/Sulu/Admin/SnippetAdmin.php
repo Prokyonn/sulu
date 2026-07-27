@@ -110,7 +110,10 @@ class SnippetAdmin extends Admin
                     ->setTitleProperty('title')
             );
 
-            $formToolbarActions = $this->contentViewBuilderFactory->getDefaultToolbarActions(SnippetInterface::class);
+            $formToolbarActions = \array_replace(
+                $this->contentViewBuilderFactory->getDefaultToolbarActions(SnippetInterface::class),
+                $this->contentViewBuilderFactory->getWorkflowTransitionRequestToolbarActions(),
+            );
             $formToolbarActions['delete'] = new DropdownToolbarAction(
                 'sulu_admin.delete',
                 'su-trash-alt',

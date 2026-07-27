@@ -24,8 +24,8 @@ use Sulu\Content\Domain\Model\TemplateInterface;
  *
  *   <tag name="sulu_content.request_workflow" workflow="blog"/>
  *
- * If the tag is absent, the resolver falls back to the `default` workflow when one is
- * registered, or returns `null` (no review required) otherwise.
+ * If the tag is absent, the resolver falls back to the `default` workflow when one is registered
+ * and covers the content's resource key, or returns `null` (no review required) otherwise.
  */
 final class RequestWorkflowResolver implements RequestWorkflowResolverInterface
 {
@@ -49,24 +49,20 @@ final class RequestWorkflowResolver implements RequestWorkflowResolverInterface
      */
     public function resolveForContent(DimensionContentInterface $dimensionContent): ?RequestWorkflow
     {
+        $resourceKey = $dimensionContent::getResourceKey();
+
         if (!$dimensionContent instanceof TemplateInterface) {
-            return $this->fallback();
+            return $this->fallback($resourceKey);
         }
 
         $templateKey = $dimensionContent->getTemplateKey();
-        $templateType = $dimensionContent::getTemplateType();
         if (null === $templateKey || '' === $templateKey) {
-            return $this->fallback();
+            return $this->fallback($resourceKey);
         }
 
-        return $this->resolveForTemplate($templateType, $templateKey);
-    }
-
-    public function resolveForTemplate(string $templateType, string $templateKey): ?RequestWorkflow
-    {
-        $name = $this->readWorkflowNameFromTemplate($templateType, $templateKey);
+        $name = $this->readWorkflowNameFromTemplate($dimensionContent::getTemplateType(), $templateKey);
         if (null === $name) {
-            return $this->fallback();
+            return $this->fallback($resourceKey);
         }
 
         // Explicit assignment must resolve. A typo in a template tag should fail loudly
@@ -74,11 +70,15 @@ final class RequestWorkflowResolver implements RequestWorkflowResolverInterface
         return $this->registry->get($name);
     }
 
-    private function fallback(): ?RequestWorkflow
+    private function fallback(string $resourceKey): ?RequestWorkflow
     {
-        return $this->registry->has(RequestWorkflow::DEFAULT_NAME)
-            ? $this->registry->get(RequestWorkflow::DEFAULT_NAME)
-            : null;
+        if (!$this->registry->has(RequestWorkflow::DEFAULT_NAME)) {
+            return null;
+        }
+
+        $workflow = $this->registry->get(RequestWorkflow::DEFAULT_NAME);
+
+        return $workflow->appliesToResource($resourceKey) ? $workflow : null;
     }
 
     private function readWorkflowNameFromTemplate(string $templateType, string $templateKey): ?string

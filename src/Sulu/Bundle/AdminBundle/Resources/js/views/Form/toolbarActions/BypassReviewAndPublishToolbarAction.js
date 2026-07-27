@@ -8,10 +8,10 @@ import AbstractFormToolbarAction from './AbstractFormToolbarAction';
 
 /**
  * Opens the review overlay in bypass mode (status summary + publishValidation warnings, no review
- * form). The overlay's confirm button submits a publish transition with `force=true`, bypassing the
- * workflow transition request guard. The per-content-type controllers read `?force=true` and call
- * the BypassReviewAuthorizer; backend rejects with 403 if the current user lacks the LIVE
- * permission.
+ * form). The overlay's confirm button submits a publish transition with `bypassReview=true`,
+ * bypassing the workflow transition request guard. The per-content-type controllers read
+ * `?bypassReview=true` and call the BypassReviewAuthorizer; backend rejects with 403 if the current
+ * user lacks the LIVE permission.
  */
 export default class BypassReviewAndPublishToolbarAction extends AbstractFormToolbarAction {
     @observable open: boolean = false;
@@ -26,7 +26,7 @@ export default class BypassReviewAndPublishToolbarAction extends AbstractFormToo
 
     handleBypassConfirm = () => {
         this.handleClose();
-        this.form.submit({action: 'publish', force: true});
+        this.form.submit({action: 'publish', bypassReview: true});
     };
 
     getNode(index: ?number) {

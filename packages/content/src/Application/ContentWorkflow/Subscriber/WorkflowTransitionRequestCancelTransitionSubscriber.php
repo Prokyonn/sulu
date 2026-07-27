@@ -13,16 +13,22 @@ declare(strict_types=1);
 
 namespace Sulu\Content\Application\ContentWorkflow\Subscriber;
 
+use Sulu\Component\Security\Authentication\UserInterface;
+use Sulu\Content\Domain\Exception\MissingAuthenticatedUserException;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Content\Domain\Repository\WorkflowTransitionRequestRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 
 /**
  * When a `cancel_review` / `cancel_review_draft` workflow transition fires, mark the associated
  * active workflow transition request as cancelled. The transition itself moves the dimension
  * content's `workflowPlace` back to `unpublished`/`draft` so the user can submit a new request.
+ *
+ * This is the only way to cancel a request: it keeps the request row and the content's workflow
+ * place in step, which a request-only cancel could not.
  *
  * @final
  *
@@ -32,6 +38,7 @@ class WorkflowTransitionRequestCancelTransitionSubscriber implements EventSubscr
 {
     public function __construct(
         private readonly WorkflowTransitionRequestRepositoryInterface $workflowTransitionRequestRepository,
+        private readonly TokenStorageInterface $tokenStorage,
     ) {
     }
 
@@ -60,7 +67,14 @@ class WorkflowTransitionRequestCancelTransitionSubscriber implements EventSubscr
             return;
         }
 
-        $activeRequest->cancel();
+        // Only the requester may withdraw their own request, matching the rule the domain model
+        // enforces for every other decision on a request.
+        $user = $this->tokenStorage->getToken()?->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new MissingAuthenticatedUserException('cancel a workflow transition request');
+        }
+
+        $activeRequest->cancelByUser($user);
     }
 
     public static function getSubscribedEvents(): array

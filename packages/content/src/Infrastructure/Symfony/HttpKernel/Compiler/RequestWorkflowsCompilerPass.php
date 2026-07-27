@@ -47,7 +47,7 @@ final class RequestWorkflowsCompilerPass implements CompilerPassInterface
             return;
         }
 
-        /** @var array<string, array{label?: ?string, validators?: array<string, array<string, mixed>|null>}> $workflows */
+        /** @var array<string, array{label?: ?string, resources?: list<string>, validators?: array<string, array<string, mixed>|null>}> $workflows */
         $workflows = $container->getParameter(self::CONFIG_PARAMETER);
 
         $validatorIdsByKey = $this->buildValidatorMap($container);
@@ -76,6 +76,7 @@ final class RequestWorkflowsCompilerPass implements CompilerPassInterface
                 $name,
                 $workflowConfig['label'] ?? null,
                 $validators,
+                $workflowConfig['resources'] ?? [],
             ]);
             $definition->addTag(self::WORKFLOW_TAG);
             $definition->setPublic(false);

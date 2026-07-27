@@ -23,6 +23,7 @@ services:
             - '@doctrine.orm.entity_manager'
             - '@example_test.example_repository'
             - '@sulu_content.workflow_transition_request_list_enhancer'
+            - '@sulu_content.bypass_review_authorizer'
         tags:
             - { name: sulu.context, context: admin }
 

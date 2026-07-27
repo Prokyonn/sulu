@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Content\Application\ContentDataMapper\DataMapper;
 
 use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
+use Sulu\Content\Domain\Exception\ContentInReviewException;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 
@@ -81,6 +82,8 @@ class WorkflowDataMapper implements DataMapperInterface
 
         if (DimensionContentInterface::STAGE_LIVE !== $object->getStage()) {
             if (WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED !== $object->getWorkflowPlace()) {
+                $this->assertNotInReview($object);
+
                 $this->contentWorkflow->apply(
                     $object->getResource(),
                     $object::getEffectiveDimensionAttributes(['locale' => $object->getLocale()]),
@@ -99,5 +102,29 @@ class WorkflowDataMapper implements DataMapperInterface
         }
 
         $object->setWorkflowPublished(new \DateTimeImmutable($published));
+    }
+
+    /**
+     * The content workflow has no `edit` transition out of a review place, so applying one would
+     * fail with an UndefinedTransitionException. Report the frozen draft as such instead.
+     *
+     * @template T of DimensionContentInterface
+     *
+     * @param WorkflowInterface&T $object
+     */
+    private function assertNotInReview(WorkflowInterface $object): void
+    {
+        if (!\in_array($object->getWorkflowPlace(), [
+            WorkflowInterface::WORKFLOW_PLACE_REVIEW,
+            WorkflowInterface::WORKFLOW_PLACE_REVIEW_DRAFT,
+        ], true)) {
+            return;
+        }
+
+        throw new ContentInReviewException(
+            $object::getResourceKey(),
+            (string) $object->getResource()->getId(),
+            (string) $object->getLocale(),
+        );
     }
 }

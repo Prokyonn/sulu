@@ -15,7 +15,7 @@ namespace Sulu\Content\Application\ContentWorkflow\Subscriber;
 
 use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Content\Application\RequestWorkflow\RequestWorkflowEvaluatorInterface;
-use Sulu\Content\Application\Security\BypassReviewAuthorizerInterface;
+use Sulu\Content\Application\RequestWorkflow\RequestWorkflowResolverInterface;
 use Sulu\Content\Domain\Exception\WorkflowTransitionRequestNotApprovedException;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
@@ -26,12 +26,15 @@ use Symfony\Component\Workflow\Event\TransitionEvent;
 
 /**
  * Blocks `publish` transitions unless the active workflow transition request passes its workflow's
- * validators against the current dimension content. Listens to the transition event (not the guard
- * event) so it can read the workflow context — Symfony 7 removed `GuardEvent::getContext()`.
+ * validators against the current dimension content. Content that no workflow covers is left alone.
+ * Listens to the transition event (not the guard event) so it can read the workflow context —
+ * Symfony 7 removed `GuardEvent::getContext()`.
  *
  * Callers can opt out by passing `['force' => true]` as workflow context (see
  * {@see ContentWorkflowInterface::FORCE_CONTEXT_KEY}). System-driven publishes such as
- * `sulu:page:initialize` and the "Bypass review and publish" admin action use this.
+ * `sulu:page:initialize` use this directly. The "Bypass review and publish" admin action reaches
+ * it through `?bypassReview=true`, which the controllers authorize via
+ * {@see \Sulu\Content\Application\Security\BypassReviewAuthorizerInterface} before setting `force`.
  *
  * The resolved request is stored back on the event context under {@see self::CONTEXT_KEY} so the
  * downstream {@see WorkflowTransitionRequestPublishTransitionSubscriber} can consume it without a
@@ -48,7 +51,7 @@ class WorkflowTransitionRequestPublishGuardSubscriber implements EventSubscriber
     public function __construct(
         private readonly WorkflowTransitionRequestRepositoryInterface $workflowTransitionRequestRepository,
         private readonly RequestWorkflowEvaluatorInterface $requestWorkflowEvaluator,
-        private readonly BypassReviewAuthorizerInterface $bypassReviewAuthorizer,
+        private readonly RequestWorkflowResolverInterface $requestWorkflowResolver,
     ) {
     }
 
@@ -60,21 +63,20 @@ class WorkflowTransitionRequestPublishGuardSubscriber implements EventSubscriber
             return;
         }
 
-        $resourceKey = $dimensionContent::getResourceKey();
-        $resourceId = (string) $dimensionContent->getResource()->getId();
+        if (null === $this->requestWorkflowResolver->resolveForContent($dimensionContent)) {
+            // No workflow covers this content, so publishing it was never subject to a review
+            // request and there is nothing to bypass either.
+            return;
+        }
 
         $context = $event->getContext();
 
         if (true === ($context[ContentWorkflowInterface::FORCE_CONTEXT_KEY] ?? false)) {
-            // Co-locate the bypass authorization with what it bypasses: any caller that sets
-            // FORCE_CONTEXT_KEY must hold the LIVE permission for this resource, otherwise the
-            // BypassReviewAuthorizer throws AccessDeniedException. This protects against future
-            // guard subscribers being silently bypassed by callers that have force=true but no
-            // explicit authorization check at the controller layer.
-            $this->bypassReviewAuthorizer->assertCanBypass($resourceKey, $resourceId);
-
             return;
         }
+
+        $resourceKey = $dimensionContent::getResourceKey();
+        $resourceId = (string) $dimensionContent->getResource()->getId();
 
         $locale = $dimensionContent->getLocale();
         if (null === $locale || '' === $locale) {

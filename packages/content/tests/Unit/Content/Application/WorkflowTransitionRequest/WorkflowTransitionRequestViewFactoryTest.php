@@ -101,8 +101,10 @@ class WorkflowTransitionRequestViewFactoryTest extends TestCase
 
         $view = $factory->build($this->createRequest());
 
-        $this->assertSame(2, $view['approvalProgress']['required']);
-        $this->assertSame(0, $view['approvalProgress']['approved']);
-        $this->assertSame(2, $view['approvalProgress']['remainingApprovals']);
+        $approvalProgress = $view['approvalProgress'];
+        $this->assertIsArray($approvalProgress);
+        $this->assertSame(2, $approvalProgress['required']);
+        $this->assertSame(0, $approvalProgress['approved']);
+        $this->assertSame(2, $approvalProgress['remainingApprovals']);
     }
 }

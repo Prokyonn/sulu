@@ -13,14 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Content\Application\RequestWorkflow\Validator;
 
-use Symfony\Component\Config\Definition\Builder\NodeBuilder;
-
 /**
- * Pluggable validator that contributes both:
- *   - a config schema (e.g. `user_approvals.count: 2`) that hosts can supply per workflow, and
- *   - a runtime check that reports whether the workflow transition request satisfies its rule.
+ * Pluggable rule that reports whether a workflow transition request satisfies it.
  *
- * Validators are autoconfigured via tag `sulu_content.request_workflow_validator`.
+ * Validators are registered with tag `sulu_content.request_workflow_validator` and a `key`
+ * attribute matching {@see self::getKey()}. Their per-workflow config (e.g. `user_approvals.count`)
+ * is passed through from the bundle config unvalidated, so every implementation must supply its own
+ * defaults in {@see self::check()} and fail closed when a setting is missing.
  */
 interface RequestWorkflowValidatorInterface
 {
@@ -29,12 +28,6 @@ interface RequestWorkflowValidatorInterface
      * all registered validators.
      */
     public function getKey(): string;
-
-    /**
-     * Contribute this validator's config schema to the parent `validators:` node.
-     * Implementations should add a single child node whose name matches `getKey()`.
-     */
-    public function configure(NodeBuilder $builder): void;
 
     /**
      * Run the validator against the request. Pure function: must not mutate the request

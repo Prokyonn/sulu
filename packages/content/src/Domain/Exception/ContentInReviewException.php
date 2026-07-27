@@ -15,7 +15,12 @@ namespace Sulu\Content\Domain\Exception;
 
 use Sulu\Component\Rest\Exception\TranslationErrorMessageExceptionInterface;
 
-class WorkflowTransitionRequestInProgressException extends \RuntimeException implements TranslationErrorMessageExceptionInterface
+/**
+ * Thrown when a draft save targets content sitting in a review place. The content workflow has no
+ * `edit` transition out of `review`/`review_draft`, so the draft is frozen until the review is
+ * published, rejected or cancelled.
+ */
+class ContentInReviewException extends \RuntimeException implements TranslationErrorMessageExceptionInterface
 {
     public function __construct(
         private readonly string $resourceKey,
@@ -23,7 +28,7 @@ class WorkflowTransitionRequestInProgressException extends \RuntimeException imp
         private readonly string $locale,
     ) {
         parent::__construct(\sprintf(
-            'An active workflow transition request exists for "%s" "%s" in locale "%s". The content cannot be modified until the request is resolved.',
+            'The content "%s" "%s" in locale "%s" is in review and cannot be modified until the review is resolved.',
             $resourceKey,
             $resourceId,
             $locale,
@@ -32,7 +37,7 @@ class WorkflowTransitionRequestInProgressException extends \RuntimeException imp
 
     public function getMessageTranslationKey(): string
     {
-        return 'sulu_content.workflow_transition_request.in_progress';
+        return 'sulu_content.content_in_review';
     }
 
     public function getMessageTranslationParameters(): array

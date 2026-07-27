@@ -50,48 +50,33 @@ class WorkflowTransitionRequestTransitionSubscriberTest extends TestCase
         );
     }
 
-    public function testOnRequestForReviewCreatesRequestWithDefaultWorkflowNameWhenResolverReturnsNull(): void
+    public function testOnRequestForReviewSkipsCreationWhenResolverReturnsNull(): void
     {
-        $user = $this->prophesize(UserInterface::class)->reveal();
-
         $example = $this->createExample('42');
         $dimensionContent = $this->createDimensionContent($example, 'en');
 
         $repository = $this->prophesize(WorkflowTransitionRequestRepositoryInterface::class);
-        $repository->findOneBy([
-            'resourceKey' => Example::RESOURCE_KEY,
-            'resourceId' => '42',
-            'locale' => 'en',
-            'active' => true,
-        ])->willReturn(null);
-        $capturedRequest = null;
-        $repository->add(Argument::type(WorkflowTransitionRequest::class))
-            ->will(static function(array $args) use (&$capturedRequest): void {
-                $capturedRequest = $args[0];
-            });
+        $repository->findOneBy(Argument::any())->shouldNotBeCalled();
+        $repository->add(Argument::any())->shouldNotBeCalled();
 
-        $token = $this->prophesize(TokenInterface::class);
-        $token->getUser()->willReturn($user);
         $tokenStorage = $this->prophesize(TokenStorageInterface::class);
-        $tokenStorage->getToken()->willReturn($token->reveal());
+        $tokenStorage->getToken()->shouldNotBeCalled();
 
         $resolver = $this->prophesize(RequestWorkflowResolverInterface::class);
         $resolver->resolveForContent($dimensionContent)->willReturn(null);
+
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $entityManager->flush()->shouldNotBeCalled();
 
         $subscriber = new WorkflowTransitionRequestTransitionSubscriber(
             $repository->reveal(),
             $tokenStorage->reveal(),
             $resolver->reveal(),
-            $this->prophesize(EntityManagerInterface::class)->reveal(),
+            $entityManager->reveal(),
         );
 
         $event = new TransitionEvent($dimensionContent, new Marking());
         $subscriber->onRequestForReview($event);
-
-        $this->assertNotNull($capturedRequest);
-        $this->assertInstanceOf(WorkflowTransitionRequest::class, $capturedRequest);
-        $this->assertSame(RequestWorkflow::DEFAULT_NAME, $capturedRequest->getWorkflowName());
-        $this->assertSame($user, $capturedRequest->getCreator());
     }
 
     public function testOnRequestForReviewStampsWorkflowNameFromResolver(): void
@@ -169,7 +154,7 @@ class WorkflowTransitionRequestTransitionSubscriberTest extends TestCase
         $event = new TransitionEvent($dimensionContent, new Marking());
         $subscriber->onRequestForReview($event);
 
-        $this->assertNotNull($capturedRequest);
+        $this->assertInstanceOf(WorkflowTransitionRequest::class, $capturedRequest);
         $this->assertSame(2, $capturedRequest->getRequiredApprovalCount());
     }
 
@@ -186,6 +171,7 @@ class WorkflowTransitionRequestTransitionSubscriberTest extends TestCase
 
         $tokenStorage = $this->prophesize(TokenStorageInterface::class);
         $resolver = $this->prophesize(RequestWorkflowResolverInterface::class);
+        $resolver->resolveForContent($dimensionContent)->willReturn(new RequestWorkflow('default', null, []));
 
         $subscriber = new WorkflowTransitionRequestTransitionSubscriber(
             $repository->reveal(),

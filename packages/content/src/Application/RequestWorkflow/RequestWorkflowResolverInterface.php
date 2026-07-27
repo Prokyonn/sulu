@@ -19,18 +19,12 @@ interface RequestWorkflowResolverInterface
 {
     /**
      * Resolve the request workflow that applies to the given dimension content. Returns `null`
-     * when the content's template carries no `sulu_content.request_workflow` tag and no
-     * `default` workflow is configured — meaning publishes are not subject to a review request.
+     * when the content's template carries no `sulu_content.request_workflow` tag and no `default`
+     * workflow covers its resource key — meaning publishes are not subject to a review request.
      *
      * @template T of \Sulu\Content\Domain\Model\ContentRichEntityInterface
      *
      * @param DimensionContentInterface<T> $dimensionContent
      */
     public function resolveForContent(DimensionContentInterface $dimensionContent): ?RequestWorkflow;
-
-    /**
-     * Resolve by an already-known template type + key, used outside the dimension content
-     * context (e.g. inside the workflow transition subscriber where we only have the type/key).
-     */
-    public function resolveForTemplate(string $templateType, string $templateKey): ?RequestWorkflow;
 }

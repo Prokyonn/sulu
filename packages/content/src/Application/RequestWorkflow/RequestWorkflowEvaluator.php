@@ -39,12 +39,16 @@ final class RequestWorkflowEvaluator implements RequestWorkflowEvaluatorInterfac
     ): ValidationResult {
         $failures = [];
         $hasPending = false;
+        $hasFailure = false;
         foreach ($this->evaluateOutcomes($request, $dimensionContent) as $outcome) {
             if ($outcome->pending) {
                 $hasPending = true;
                 continue;
             }
             if (!$outcome->passed) {
+                // Track the verdict separately from the messages: a validator may fail without
+                // describing why, and that must not read as a pass.
+                $hasFailure = true;
                 $failures = \array_merge($failures, $outcome->failures);
             }
         }
@@ -53,7 +57,7 @@ final class RequestWorkflowEvaluator implements RequestWorkflowEvaluatorInterfac
             return ValidationResult::pending();
         }
 
-        return [] === $failures ? ValidationResult::pass() : ValidationResult::fail(...$failures);
+        return $hasFailure ? ValidationResult::fail(...$failures) : ValidationResult::pass();
     }
 
     public function evaluateOutcomes(
@@ -78,6 +82,11 @@ final class RequestWorkflowEvaluator implements RequestWorkflowEvaluatorInterfac
     }
 
     /**
+     * Recomputes the persisted status after a reviewer decision. Callers that hold the dimension
+     * content should pass it; the approve/reject handlers do not, so content-dependent validators
+     * are skipped there. The publish guard re-evaluates with the content before publishing, which
+     * is the authoritative check — content can change after a decision either way.
+     *
      * @template T of \Sulu\Content\Domain\Model\ContentRichEntityInterface
      *
      * @param DimensionContentInterface<T>|null $dimensionContent

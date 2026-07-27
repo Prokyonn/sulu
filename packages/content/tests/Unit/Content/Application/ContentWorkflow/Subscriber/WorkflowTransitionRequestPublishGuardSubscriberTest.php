@@ -19,9 +19,10 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Content\Application\ContentWorkflow\Subscriber\WorkflowTransitionRequestPublishGuardSubscriber;
+use Sulu\Content\Application\RequestWorkflow\RequestWorkflow;
 use Sulu\Content\Application\RequestWorkflow\RequestWorkflowEvaluatorInterface;
+use Sulu\Content\Application\RequestWorkflow\RequestWorkflowResolverInterface;
 use Sulu\Content\Application\RequestWorkflow\Validator\ValidationResult;
-use Sulu\Content\Application\Security\BypassReviewAuthorizerInterface;
 use Sulu\Content\Domain\Exception\WorkflowTransitionRequestNotApprovedException;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
@@ -55,20 +56,20 @@ class WorkflowTransitionRequestPublishGuardSubscriberTest extends TestCase
         $evaluator = $this->prophesize(RequestWorkflowEvaluatorInterface::class);
         $evaluator->evaluate(Argument::any(), Argument::any())->shouldNotBeCalled();
 
-        $bypassReviewAuthorizer = $this->prophesize(BypassReviewAuthorizerInterface::class);
-        $bypassReviewAuthorizer->assertCanBypass(Argument::any(), Argument::any())->shouldNotBeCalled();
+        $resolver = $this->prophesize(RequestWorkflowResolverInterface::class);
+        $resolver->resolveForContent(Argument::any())->willReturn(new RequestWorkflow('default', null, []));
 
         $subscriber = new WorkflowTransitionRequestPublishGuardSubscriber(
             $repository->reveal(),
             $evaluator->reveal(),
-            $bypassReviewAuthorizer->reveal(),
+            $resolver->reveal(),
         );
 
         $event = new TransitionEvent(new \stdClass(), new Marking());
         $subscriber->onPublishTransition($event);
     }
 
-    public function testOnPublishTransitionForceContextCallsBypassAuthorizerAndSkipsValidation(): void
+    public function testOnPublishTransitionSkipsWhenNoWorkflowResolves(): void
     {
         $repository = $this->prophesize(WorkflowTransitionRequestRepositoryInterface::class);
         $repository->findOneBy(Argument::any())->shouldNotBeCalled();
@@ -76,13 +77,35 @@ class WorkflowTransitionRequestPublishGuardSubscriberTest extends TestCase
         $evaluator = $this->prophesize(RequestWorkflowEvaluatorInterface::class);
         $evaluator->evaluate(Argument::any(), Argument::any())->shouldNotBeCalled();
 
-        $bypassReviewAuthorizer = $this->prophesize(BypassReviewAuthorizerInterface::class);
-        $bypassReviewAuthorizer->assertCanBypass(Example::RESOURCE_KEY, '1')->shouldBeCalledOnce();
+        $resolver = $this->prophesize(RequestWorkflowResolverInterface::class);
+        $resolver->resolveForContent(Argument::any())->willReturn(null);
 
         $subscriber = new WorkflowTransitionRequestPublishGuardSubscriber(
             $repository->reveal(),
             $evaluator->reveal(),
-            $bypassReviewAuthorizer->reveal(),
+            $resolver->reveal(),
+        );
+
+        $dimensionContent = $this->createDimensionContent('42', 'en');
+        $event = new TransitionEvent($dimensionContent, new Marking());
+        $subscriber->onPublishTransition($event);
+    }
+
+    public function testOnPublishTransitionForceContextSkipsValidation(): void
+    {
+        $repository = $this->prophesize(WorkflowTransitionRequestRepositoryInterface::class);
+        $repository->findOneBy(Argument::any())->shouldNotBeCalled();
+
+        $evaluator = $this->prophesize(RequestWorkflowEvaluatorInterface::class);
+        $evaluator->evaluate(Argument::any(), Argument::any())->shouldNotBeCalled();
+
+        $resolver = $this->prophesize(RequestWorkflowResolverInterface::class);
+        $resolver->resolveForContent(Argument::any())->willReturn(new RequestWorkflow('default', null, []));
+
+        $subscriber = new WorkflowTransitionRequestPublishGuardSubscriber(
+            $repository->reveal(),
+            $evaluator->reveal(),
+            $resolver->reveal(),
         );
 
         $dimensionContent = $this->createDimensionContent('1', 'en');
@@ -104,13 +127,13 @@ class WorkflowTransitionRequestPublishGuardSubscriberTest extends TestCase
         $evaluator = $this->prophesize(RequestWorkflowEvaluatorInterface::class);
         $evaluator->evaluate(Argument::any(), Argument::any())->shouldNotBeCalled();
 
-        $bypassReviewAuthorizer = $this->prophesize(BypassReviewAuthorizerInterface::class);
-        $bypassReviewAuthorizer->assertCanBypass(Argument::any(), Argument::any())->shouldNotBeCalled();
+        $resolver = $this->prophesize(RequestWorkflowResolverInterface::class);
+        $resolver->resolveForContent(Argument::any())->willReturn(new RequestWorkflow('default', null, []));
 
         $subscriber = new WorkflowTransitionRequestPublishGuardSubscriber(
             $repository->reveal(),
             $evaluator->reveal(),
-            $bypassReviewAuthorizer->reveal(),
+            $resolver->reveal(),
         );
 
         $dimensionContent = $this->createDimensionContent('1', null);
@@ -133,13 +156,13 @@ class WorkflowTransitionRequestPublishGuardSubscriberTest extends TestCase
         $evaluator = $this->prophesize(RequestWorkflowEvaluatorInterface::class);
         $evaluator->evaluate(Argument::any(), Argument::any())->shouldNotBeCalled();
 
-        $bypassReviewAuthorizer = $this->prophesize(BypassReviewAuthorizerInterface::class);
-        $bypassReviewAuthorizer->assertCanBypass(Argument::any(), Argument::any())->shouldNotBeCalled();
+        $resolver = $this->prophesize(RequestWorkflowResolverInterface::class);
+        $resolver->resolveForContent(Argument::any())->willReturn(new RequestWorkflow('default', null, []));
 
         $subscriber = new WorkflowTransitionRequestPublishGuardSubscriber(
             $repository->reveal(),
             $evaluator->reveal(),
-            $bypassReviewAuthorizer->reveal(),
+            $resolver->reveal(),
         );
 
         $this->expectException(WorkflowTransitionRequestNotApprovedException::class);
@@ -158,13 +181,13 @@ class WorkflowTransitionRequestPublishGuardSubscriberTest extends TestCase
         $evaluator = $this->prophesize(RequestWorkflowEvaluatorInterface::class);
         $evaluator->evaluate($request, $dimensionContent)->willReturn(ValidationResult::fail());
 
-        $bypassReviewAuthorizer = $this->prophesize(BypassReviewAuthorizerInterface::class);
-        $bypassReviewAuthorizer->assertCanBypass(Argument::any(), Argument::any())->shouldNotBeCalled();
+        $resolver = $this->prophesize(RequestWorkflowResolverInterface::class);
+        $resolver->resolveForContent(Argument::any())->willReturn(new RequestWorkflow('default', null, []));
 
         $subscriber = new WorkflowTransitionRequestPublishGuardSubscriber(
             $repository->reveal(),
             $evaluator->reveal(),
-            $bypassReviewAuthorizer->reveal(),
+            $resolver->reveal(),
         );
 
         $this->expectException(WorkflowTransitionRequestNotApprovedException::class);
@@ -183,13 +206,13 @@ class WorkflowTransitionRequestPublishGuardSubscriberTest extends TestCase
         $evaluator = $this->prophesize(RequestWorkflowEvaluatorInterface::class);
         $evaluator->evaluate($request, $dimensionContent)->willReturn(ValidationResult::pass());
 
-        $bypassReviewAuthorizer = $this->prophesize(BypassReviewAuthorizerInterface::class);
-        $bypassReviewAuthorizer->assertCanBypass(Argument::any(), Argument::any())->shouldNotBeCalled();
+        $resolver = $this->prophesize(RequestWorkflowResolverInterface::class);
+        $resolver->resolveForContent(Argument::any())->willReturn(new RequestWorkflow('default', null, []));
 
         $subscriber = new WorkflowTransitionRequestPublishGuardSubscriber(
             $repository->reveal(),
             $evaluator->reveal(),
-            $bypassReviewAuthorizer->reveal(),
+            $resolver->reveal(),
         );
 
         $event = new TransitionEvent($dimensionContent, new Marking());

@@ -26,7 +26,9 @@ use Sulu\Content\Application\RequestWorkflow\RequestWorkflow;
 use Sulu\Content\Application\RequestWorkflow\RequestWorkflowRegistryInterface;
 use Sulu\Content\Application\RequestWorkflow\RequestWorkflowResolver;
 use Sulu\Content\Domain\Exception\UnknownRequestWorkflowException;
-use Sulu\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Content\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Content\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
+use Sulu\Content\Tests\Application\ExampleTestBundle\Fixture\NonTemplateDimensionContent;
 
 #[CoversClass(RequestWorkflowResolver::class)]
 class RequestWorkflowResolverTest extends TestCase
@@ -86,7 +88,7 @@ class RequestWorkflowResolverTest extends TestCase
 
         $resolver = new RequestWorkflowResolver($registry->reveal(), $metadataRegistry);
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class)->reveal();
+        $dimensionContent = new NonTemplateDimensionContent(new Example());
 
         $result = $resolver->resolveForContent($dimensionContent);
 
@@ -102,46 +104,45 @@ class RequestWorkflowResolverTest extends TestCase
 
         $resolver = new RequestWorkflowResolver($registry->reveal(), $metadataRegistry);
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class)->reveal();
+        $dimensionContent = new NonTemplateDimensionContent(new Example());
 
         $result = $resolver->resolveForContent($dimensionContent);
 
         $this->assertNull($result);
     }
 
-    public function testResolveForTemplateWithTagPointingToRegisteredWorkflowReturnsIt(): void
+    public function testResolveForContentWithTagPointingToRegisteredWorkflowReturnsIt(): void
     {
         $blogWorkflow = $this->makeWorkflow('blog');
 
         $registry = $this->prophesize(RequestWorkflowRegistryInterface::class);
         $registry->get('blog')->willReturn($blogWorkflow);
 
-        $provider = $this->makeMetadataProviderWithTypedForm('pages', 'blog_article', 'blog');
-
+        $provider = $this->makeMetadataProviderWithTypedForm(Example::TEMPLATE_TYPE, 'blog_article', 'blog');
         $metadataRegistry = $this->makeMetadataProviderRegistry($provider);
 
         $resolver = new RequestWorkflowResolver($registry->reveal(), $metadataRegistry);
 
-        $result = $resolver->resolveForTemplate('pages', 'blog_article');
+        $result = $resolver->resolveForContent($this->makeDimensionContent('blog_article'));
 
         $this->assertSame($blogWorkflow, $result);
     }
 
-    public function testResolveForTemplateWithTagPointingToUnregisteredWorkflowThrows(): void
+    public function testResolveForContentWithTagPointingToUnregisteredWorkflowThrows(): void
     {
         $registry = $this->prophesize(RequestWorkflowRegistryInterface::class);
         $registry->get('nonexistent')->willThrow(new UnknownRequestWorkflowException('nonexistent'));
 
-        $provider = $this->makeMetadataProviderWithTypedForm('pages', 'article', 'nonexistent');
+        $provider = $this->makeMetadataProviderWithTypedForm(Example::TEMPLATE_TYPE, 'article', 'nonexistent');
         $metadataRegistry = $this->makeMetadataProviderRegistry($provider);
 
         $resolver = new RequestWorkflowResolver($registry->reveal(), $metadataRegistry);
 
         $this->expectException(UnknownRequestWorkflowException::class);
-        $resolver->resolveForTemplate('pages', 'article');
+        $resolver->resolveForContent($this->makeDimensionContent('article'));
     }
 
-    public function testResolveForTemplateWithNoTagFallsBackToDefault(): void
+    public function testResolveForContentWithNoTagFallsBackToDefault(): void
     {
         $defaultWorkflow = $this->makeWorkflow(RequestWorkflow::DEFAULT_NAME);
 
@@ -149,17 +150,17 @@ class RequestWorkflowResolverTest extends TestCase
         $registry->has(RequestWorkflow::DEFAULT_NAME)->willReturn(true);
         $registry->get(RequestWorkflow::DEFAULT_NAME)->willReturn($defaultWorkflow);
 
-        $provider = $this->makeMetadataProviderWithTypedForm('pages', 'simple', null);
+        $provider = $this->makeMetadataProviderWithTypedForm(Example::TEMPLATE_TYPE, 'simple', null);
         $metadataRegistry = $this->makeMetadataProviderRegistry($provider);
 
         $resolver = new RequestWorkflowResolver($registry->reveal(), $metadataRegistry);
 
-        $result = $resolver->resolveForTemplate('pages', 'simple');
+        $result = $resolver->resolveForContent($this->makeDimensionContent('simple'));
 
         $this->assertSame($defaultWorkflow, $result);
     }
 
-    public function testResolveForTemplateWhenMetadataProviderThrowsFallsBackToDefault(): void
+    public function testResolveForContentWhenMetadataProviderThrowsFallsBackToDefault(): void
     {
         $defaultWorkflow = $this->makeWorkflow(RequestWorkflow::DEFAULT_NAME);
 
@@ -168,14 +169,56 @@ class RequestWorkflowResolverTest extends TestCase
         $registry->get(RequestWorkflow::DEFAULT_NAME)->willReturn($defaultWorkflow);
 
         $provider = $this->prophesize(MetadataProviderInterface::class);
-        $provider->getMetadata('pages', 'en', [])->willThrow(new \RuntimeException('Not found'));
+        $provider->getMetadata(Example::TEMPLATE_TYPE, 'en', [])->willThrow(new \RuntimeException('Not found'));
 
         $metadataRegistry = $this->makeMetadataProviderRegistry($provider->reveal());
 
         $resolver = new RequestWorkflowResolver($registry->reveal(), $metadataRegistry);
 
-        $result = $resolver->resolveForTemplate('pages', 'some_template');
+        $result = $resolver->resolveForContent($this->makeDimensionContent('some_template'));
 
         $this->assertSame($defaultWorkflow, $result);
+    }
+
+    public function testResolveForContentReturnsNullWhenDefaultWorkflowDoesNotCoverTheResource(): void
+    {
+        $defaultWorkflow = new RequestWorkflow(RequestWorkflow::DEFAULT_NAME, null, [], ['pages', 'articles']);
+
+        $registry = $this->prophesize(RequestWorkflowRegistryInterface::class);
+        $registry->has(RequestWorkflow::DEFAULT_NAME)->willReturn(true);
+        $registry->get(RequestWorkflow::DEFAULT_NAME)->willReturn($defaultWorkflow);
+
+        $provider = $this->makeMetadataProviderWithTypedForm(Example::TEMPLATE_TYPE, 'simple', null);
+        $metadataRegistry = $this->makeMetadataProviderRegistry($provider);
+
+        $resolver = new RequestWorkflowResolver($registry->reveal(), $metadataRegistry);
+
+        // ExampleDimensionContent resolves to the `examples` resource key, which the workflow
+        // does not list, so the implicit default must not apply.
+        $this->assertNull($resolver->resolveForContent($this->makeDimensionContent('simple')));
+    }
+
+    public function testResolveForContentReturnsDefaultWhenItCoversTheResource(): void
+    {
+        $defaultWorkflow = new RequestWorkflow(RequestWorkflow::DEFAULT_NAME, null, [], [Example::RESOURCE_KEY]);
+
+        $registry = $this->prophesize(RequestWorkflowRegistryInterface::class);
+        $registry->has(RequestWorkflow::DEFAULT_NAME)->willReturn(true);
+        $registry->get(RequestWorkflow::DEFAULT_NAME)->willReturn($defaultWorkflow);
+
+        $provider = $this->makeMetadataProviderWithTypedForm(Example::TEMPLATE_TYPE, 'simple', null);
+        $metadataRegistry = $this->makeMetadataProviderRegistry($provider);
+
+        $resolver = new RequestWorkflowResolver($registry->reveal(), $metadataRegistry);
+
+        $this->assertSame($defaultWorkflow, $resolver->resolveForContent($this->makeDimensionContent('simple')));
+    }
+
+    private function makeDimensionContent(string $templateKey): ExampleDimensionContent
+    {
+        $dimensionContent = new ExampleDimensionContent(new Example());
+        $dimensionContent->setTemplateKey($templateKey);
+
+        return $dimensionContent;
     }
 }

@@ -177,30 +177,30 @@ class WorkflowTransitionRequestControllerTest extends SuluTestCase
         $this->assertCount(1, $reviewers);
     }
 
-    public function testCancelTransitionsToCancelled(): void
+    public function testCancelActionIsNotExposed(): void
     {
         $workflowTransitionRequest = $this->persistWorkflowTransitionRequest('examples', '1', 'en', static::getTestUser());
 
+        // Cancelling has to move the content's workflow place too, so it runs as the
+        // `cancel_review` content transition rather than through this endpoint.
         $this->client->request(
             'POST',
             \sprintf('/admin/api/workflow-transition-requests/%s.json?action=cancel', $workflowTransitionRequest->getId()),
         );
 
-        $response = $this->client->getResponse();
-        $this->assertHttpStatusCode(200, $response);
-
-        /** @var array<string, mixed> $content */
-        $content = \json_decode((string) $response->getContent(), true);
-        $this->assertSame('cancelled', $content['status']);
+        $this->assertHttpStatusCode(400, $this->client->getResponse());
     }
 
     public function testApproveOnCancelledReturnsTranslatable400(): void
     {
         $workflowTransitionRequest = $this->persistWorkflowTransitionRequest('examples', '1', 'en', static::getTestUser());
-        $baseUrl = \sprintf('/admin/api/workflow-transition-requests/%s.json', $workflowTransitionRequest->getId());
+        $workflowTransitionRequest->cancel();
+        static::getEntityManager()->flush();
 
-        $this->client->request('POST', $baseUrl . '?action=cancel');
-        $this->client->request('POST', $baseUrl . '?action=approve');
+        $this->client->request(
+            'POST',
+            \sprintf('/admin/api/workflow-transition-requests/%s.json?action=approve', $workflowTransitionRequest->getId()),
+        );
 
         $response = $this->client->getResponse();
         $this->assertSame(400, $response->getStatusCode());

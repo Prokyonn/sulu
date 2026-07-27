@@ -18,7 +18,6 @@ use Sulu\Content\Application\RequestWorkflow\Validator\ValidationContext;
 use Sulu\Content\Application\RequestWorkflow\Validator\ValidationFailure;
 use Sulu\Content\Application\RequestWorkflow\Validator\ValidationResult;
 use Sulu\Content\Domain\Model\WorkflowTransitionRequest\WorkflowTransitionRequestReviewerStatusEnum;
-use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 
 /**
  * Requires N distinct user approvals (default 1). Rejections are non-blocking feedback and do not
@@ -33,24 +32,14 @@ final class UserApprovalsValidator implements RequestWorkflowValidatorInterface
         return self::KEY;
     }
 
-    public function configure(NodeBuilder $builder): void
-    {
-        $builder
-            ->arrayNode(self::KEY)
-                ->addDefaultsIfNotSet()
-                ->children()
-                    ->integerNode('count')->min(1)->defaultValue(1)->end()
-                ->end()
-            ->end();
-    }
-
     public function check(ValidationContext $context): ValidationResult
     {
-        /** @var array{count: int} $config */
+        /** @var array{count?: int} $config */
         $config = $context->validatorConfig;
         // Prefer the count snapshotted onto the request at creation so the gate stays stable even if
         // the workflow config changes mid-review; fall back to live config when no snapshot exists.
-        $required = $context->request->getRequiredApprovalCount() ?? $config['count'];
+        // An unconfigured count means one approval, never zero — that would auto-approve.
+        $required = $context->request->getRequiredApprovalCount() ?? $config['count'] ?? 1;
 
         $approvals = 0;
         foreach ($context->request->getReviewers() as $reviewer) {

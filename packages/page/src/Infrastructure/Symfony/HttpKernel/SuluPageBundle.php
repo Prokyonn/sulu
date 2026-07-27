@@ -362,7 +362,6 @@ final class SuluPageBundle extends AbstractBundle
                 new Reference('sulu_content.content_view_builder_factory'),
                 new Reference('sulu_activity.activity_list_view_builder_factory'),
                 new Reference('sulu_admin.teaser_provider_pool'),
-                new Reference('sulu_content.request_workflow_registry', ContainerInterface::NULL_ON_INVALID_REFERENCE),
             ])
             ->tag('sulu.context', ['context' => 'admin'])
             ->tag('sulu.admin');
@@ -439,6 +438,7 @@ final class SuluPageBundle extends AbstractBundle
                 new Reference('sulu_core.webspace.webspace_manager'),
                 new Reference('sulu_security.security_checker'),
                 new Reference('sulu_content.workflow_transition_request_list_enhancer'),
+                new Reference('sulu_content.bypass_review_authorizer'),
                 param('sulu_core.is_single_locale'),
             ])
             ->tag('sulu.context', ['context' => 'admin']);

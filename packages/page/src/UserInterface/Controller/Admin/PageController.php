@@ -30,6 +30,7 @@ use Sulu\Component\Security\SecuredControllerInterface;
 use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
 use Sulu\Component\Webspace\Webspace;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Content\Application\Security\BypassReviewAuthorizerInterface;
 use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestListEnhancerInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
@@ -80,6 +81,7 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
         private WebspaceManagerInterface $webspaceManager,
         private SecurityCheckerInterface $securityChecker,
         private WorkflowTransitionRequestListEnhancerInterface $workflowTransitionRequestListEnhancer,
+        private BypassReviewAuthorizerInterface $bypassReviewAuthorizer,
         private bool $isSingleLocale = false,
     ) {
         // TODO controller should not need more then Repository, MessageBus, Serializer
@@ -364,9 +366,14 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
             return $this->handle(new Envelope($message, [new EnableFlushStamp()]));
         }
 
-        // Bypass authorization is enforced in WorkflowTransitionRequestPublishGuardSubscriber.
-        $force = $request->query->getBoolean('force', false);
-        $message = new ApplyWorkflowTransitionPageMessage(['uuid' => $uuid], $this->getLocale($request), $action, $force);
+        // `bypassReview` is deliberately not `force`: `force` already means "overwrite despite
+        // concurrent changes" for a save, and must not double as a review bypass.
+        $bypassReview = $request->query->getBoolean('bypassReview', false);
+        if ($bypassReview) {
+            $this->bypassReviewAuthorizer->assertCanBypass(PageInterface::RESOURCE_KEY, $uuid);
+        }
+
+        $message = new ApplyWorkflowTransitionPageMessage(['uuid' => $uuid], $this->getLocale($request), $action, $bypassReview);
 
         /** @see \Sulu\Page\Application\MessageHandler\ApplyWorkflowTransitionPageMessageHandler */
         /** @var PageInterface|null */

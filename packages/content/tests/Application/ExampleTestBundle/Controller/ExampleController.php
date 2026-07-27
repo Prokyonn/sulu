@@ -26,6 +26,7 @@ use Sulu\Component\Rest\ListBuilder\PaginatedRepresentation;
 use Sulu\Component\Rest\RestHelperInterface;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
+use Sulu\Content\Application\Security\BypassReviewAuthorizerInterface;
 use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestListEnhancerInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
@@ -49,6 +50,7 @@ class ExampleController extends AbstractRestController
         private EntityManagerInterface $entityManager,
         private ExampleRepository $exampleRepository,
         private WorkflowTransitionRequestListEnhancerInterface $workflowTransitionRequestListEnhancer,
+        private BypassReviewAuthorizerInterface $bypassReviewAuthorizer,
     ) {
         parent::__construct($viewHandler, $tokenStorage);
     }
@@ -359,18 +361,20 @@ class ExampleController extends AbstractRestController
     }
 
     /**
-     * Builds the workflow context for transitions. Forwards the `?force=true` flag as
-     * FORCE_CONTEXT_KEY; the publish guard subscriber checks LIVE permission before honoring it.
+     * Builds the workflow context for transitions. Mirrors the real controllers: `?bypassReview=true`
+     * is authorized here (LIVE permission required) and then forwarded as FORCE_CONTEXT_KEY.
      *
      * @return array<string, mixed>
      */
     private function resolveWorkflowContext(Request $request, string $resourceId, string $transitionName): array
     {
-        if ($request->query->getBoolean('force', false)) {
-            return [ContentWorkflowInterface::FORCE_CONTEXT_KEY => true];
+        if (!$request->query->getBoolean('bypassReview', false)) {
+            return [];
         }
 
-        return [];
+        $this->bypassReviewAuthorizer->assertCanBypass(Example::RESOURCE_KEY, $resourceId);
+
+        return [ContentWorkflowInterface::FORCE_CONTEXT_KEY => true];
     }
 
     /**

@@ -18,7 +18,6 @@ use Doctrine\Common\Collections\Collection;
 use Sulu\Component\Persistence\Model\AuditableInterface;
 use Sulu\Component\Persistence\Model\AuditableTrait;
 use Sulu\Component\Security\Authentication\UserInterface;
-use Sulu\Content\Application\RequestWorkflow\RequestWorkflow;
 use Sulu\Content\Domain\Exception\SelfReviewNotAllowedException;
 use Sulu\Content\Domain\Exception\WorkflowTransitionRequestCancelNotAllowedException;
 use Sulu\Content\Domain\Exception\WorkflowTransitionRequestClosedException;
@@ -27,6 +26,8 @@ use Symfony\Component\Uid\Uuid;
 class WorkflowTransitionRequest implements AuditableInterface
 {
     use AuditableTrait;
+
+    public const DEFAULT_WORKFLOW_NAME = 'default';
 
     private string $id;
 
@@ -53,7 +54,7 @@ class WorkflowTransitionRequest implements AuditableInterface
         private readonly string $resourceKey,
         private readonly string $resourceId,
         private readonly string $locale,
-        string $workflowName = RequestWorkflow::DEFAULT_NAME,
+        string $workflowName = self::DEFAULT_WORKFLOW_NAME,
     ) {
         $this->id = Uuid::v7()->toRfc4122();
         $this->requestedAt = new \DateTimeImmutable();

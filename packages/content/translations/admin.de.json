@@ -56,7 +56,7 @@
     "sulu_content.workflow_transition_request.closed": "Diese Veröffentlichungsanfrage ist bereits abgeschlossen und kann nicht mehr bearbeitet werden.",
     "sulu_content.workflow_transition_request.duplicate_active": "Für diesen Inhalt existiert bereits eine aktive Veröffentlichungsanfrage.",
     "sulu_content.workflow_transition_request.excerpt_required.missing": "Excerpt-Felder vor der Veröffentlichung erforderlich: {fields}.",
-    "sulu_content.workflow_transition_request.in_progress": "Für diesen Inhalt existiert eine aktive Veröffentlichungsanfrage. Bitte schließen Sie diese ab, bevor Sie weitere Änderungen speichern.",
+    "sulu_content.content_in_review": "Dieser Inhalt befindet sich in Prüfung und kann nicht bearbeitet werden. Bitte veröffentlichen, ablehnen oder brechen Sie die Prüfung ab, bevor Sie Änderungen speichern.",
     "sulu_content.workflow_transition_request.missing_authenticated_user": "Sie müssen angemeldet sein, um diese Aktion auszuführen.",
     "sulu_content.workflow_transition_request.locked_snackbar": "Dieser Inhalt wurde zur Veröffentlichung angefragt. Um weiter zu bearbeiten, brich die Anfrage ab.",
     "sulu_content.workflow_transition_request.publish_blocked_no_request": "Veröffentlichung blockiert: Bitte zuerst eine Veröffentlichungsanfrage erstellen und genehmigen lassen.",

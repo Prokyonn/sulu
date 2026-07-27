@@ -97,9 +97,6 @@ class SuluContentBundleTest extends AbstractExtensionTestCase
                 'content_resolver' => [
                     'max_depth' => 5,
                 ],
-                'workflow_transition_request' => [
-                    'publish_guard' => false,
-                ],
                 'request_workflows' => [],
             ],
         ], [
@@ -135,26 +132,18 @@ class SuluContentBundleTest extends AbstractExtensionTestCase
         $this->assertEquals(new Reference('doctrine.orm.entity_manager'), $repositoryDefinition->getArgument(0));
     }
 
-    public function testLoadWithPublishGuardEnabled(): void
-    {
-        $this->container->setParameter('kernel.environment', 'test');
-        $this->container->setParameter('kernel.build_dir', \dirname(__DIR__, 4) . '/Application/var/cache/builddir');
-
-        $this->load(['workflow_transition_request' => ['publish_guard' => true]]);
-
-        $this->assertContainerBuilderHasService('sulu_content.workflow_transition_request_publish_guard_subscriber');
-        $this->assertContainerBuilderHasService('sulu_content.workflow_transition_request_aware_content_manager');
-    }
-
-    public function testLoadWithPublishGuardDisabledByDefault(): void
+    public function testLoadRegistersWorkflowTransitionRequestSubscribers(): void
     {
         $this->container->setParameter('kernel.environment', 'test');
         $this->container->setParameter('kernel.build_dir', \dirname(__DIR__, 4) . '/Application/var/cache/builddir');
 
         $this->load();
 
-        $this->assertFalse($this->container->hasDefinition('sulu_content.workflow_transition_request_publish_guard_subscriber'));
-        $this->assertFalse($this->container->hasDefinition('sulu_content.workflow_transition_request_aware_content_manager'));
+        // The subscribers are always registered; with no `request_workflows` configured the resolver
+        // returns null for every content, so they never create or enforce a request.
+        $this->assertContainerBuilderHasService('sulu_content.workflow_transition_request_publish_guard_subscriber');
+        $this->assertContainerBuilderHasService('sulu_content.workflow_transition_request_publish_transition_subscriber');
+        $this->assertContainerBuilderHasService('sulu_content.workflow_transition_request_transition_subscriber');
     }
 
     public function testPrepend(): void

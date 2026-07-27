@@ -15,6 +15,7 @@ namespace Sulu\Content\Application\RequestWorkflow;
 
 use Sulu\Content\Application\RequestWorkflow\Validator\Builtin\UserApprovalsValidator;
 use Sulu\Content\Application\RequestWorkflow\Validator\RequestWorkflowValidatorInterface;
+use Sulu\Content\Domain\Model\WorkflowTransitionRequest\WorkflowTransitionRequest;
 
 /**
  * Resolved configuration for a single named workflow. Built once at container compile-time
@@ -22,16 +23,27 @@ use Sulu\Content\Application\RequestWorkflow\Validator\RequestWorkflowValidatorI
  */
 final class RequestWorkflow
 {
-    public const DEFAULT_NAME = 'default';
+    public const DEFAULT_NAME = WorkflowTransitionRequest::DEFAULT_WORKFLOW_NAME;
 
     /**
      * @param list<array{validator: RequestWorkflowValidatorInterface, config: array<string, mixed>}> $validators
+     * @param list<string> $resources resource keys this workflow covers as the implicit default; empty means all
      */
     public function __construct(
         public readonly string $name,
         public readonly ?string $label,
         public readonly array $validators,
+        public readonly array $resources = [],
     ) {
+    }
+
+    /**
+     * Whether this workflow covers the given resource key. An empty `resources` list means the
+     * workflow is not restricted to specific resources.
+     */
+    public function appliesToResource(string $resourceKey): bool
+    {
+        return [] === $this->resources || \in_array($resourceKey, $this->resources, true);
     }
 
     /**
@@ -45,7 +57,9 @@ final class RequestWorkflow
                 /** @var array{count?: int} $config */
                 $config = $entry['config'];
 
-                return $config['count'] ?? 0;
+                // Fall back to a single approval rather than zero: a configured approval gate
+                // without an explicit count must never auto-approve.
+                return $config['count'] ?? 1;
             }
         }
 

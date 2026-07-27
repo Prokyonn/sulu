@@ -19,6 +19,7 @@ use Sulu\Bundle\ContactBundle\Entity\Contact;
 use Sulu\Bundle\SecurityBundle\Entity\User;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Content\Domain\Exception\WorkflowTransitionRequestCancelNotAllowedException;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Content\Domain\Repository\WorkflowTransitionRequestRepositoryInterface;
@@ -110,7 +111,7 @@ class WorkflowTransitionRequestAdditionalScenariosTest extends SuluTestCase
         );
     }
 
-    public function testCancelByNonCreatorReturns403(): void
+    public function testCancelByNonCreatorIsRejected(): void
     {
         $example = $this->createExampleAtDraft();
         $dimensionAttributes = ['stage' => DimensionContentInterface::STAGE_DRAFT, 'locale' => 'en'];
@@ -123,36 +124,46 @@ class WorkflowTransitionRequestAdditionalScenariosTest extends SuluTestCase
         );
         static::getEntityManager()->flush();
 
-        $request = $this->workflowTransitionRequestRepository->getOneBy([
-            'resourceKey' => Example::RESOURCE_KEY,
-            'resourceId' => (string) $example->getId(),
-            'locale' => 'en',
-            'active' => true,
-        ]);
+        // Switch the token to somebody who did not create the request, then drive the same
+        // `cancel_review_draft` transition the admin snackbar uses.
+        $otherUser = $this->createRequestCreator('other_canceller');
+        static::getContainer()->get('security.token_storage')->setToken(new UsernamePasswordToken($otherUser, 'test', []));
 
-        // Cancel via HTTP — the http client is authenticated as the test user, NOT the creator.
-        $this->client->request(
-            'POST',
-            \sprintf('/admin/api/workflow-transition-requests/%s.json?action=cancel', $request->getId()),
+        $this->expectException(WorkflowTransitionRequestCancelNotAllowedException::class);
+        $this->contentManager->applyTransition(
+            $example,
+            $dimensionAttributes,
+            WorkflowInterface::WORKFLOW_TRANSITION_CANCEL_REVIEW_DRAFT,
         );
+    }
 
-        $response = $this->client->getResponse();
-        $this->assertSame(
-            403,
-            $response->getStatusCode(),
-            \sprintf(
-                'Expected 403 for non-creator cancel but got %d. Body: %s',
-                $response->getStatusCode(),
-                (string) $response->getContent(),
-            ),
+    public function testCancelByCreatorClosesTheRequest(): void
+    {
+        $example = $this->createExampleAtDraft();
+        $dimensionAttributes = ['stage' => DimensionContentInterface::STAGE_DRAFT, 'locale' => 'en'];
+
+        $this->contentManager->applyTransition(
+            $example,
+            $dimensionAttributes,
+            WorkflowInterface::WORKFLOW_TRANSITION_REQUEST_FOR_REVIEW_DRAFT,
         );
+        static::getEntityManager()->flush();
 
-        /** @var array{detail?: string} $content */
-        $content = \json_decode((string) $response->getContent(), true);
-        $this->assertStringContainsString(
-            'cancel',
-            \strtolower($content['detail'] ?? ''),
-            'Expected translatable error mentioning cancel',
+        $this->contentManager->applyTransition(
+            $example,
+            $dimensionAttributes,
+            WorkflowInterface::WORKFLOW_TRANSITION_CANCEL_REVIEW_DRAFT,
+        );
+        static::getEntityManager()->flush();
+
+        $this->assertNull(
+            $this->workflowTransitionRequestRepository->findOneBy([
+                'resourceKey' => Example::RESOURCE_KEY,
+                'resourceId' => (string) $example->getId(),
+                'locale' => 'en',
+                'active' => true,
+            ]),
+            'Cancelling through the content transition must close the request.',
         );
     }
 
@@ -172,7 +183,7 @@ class WorkflowTransitionRequestAdditionalScenariosTest extends SuluTestCase
 
         $this->client->request(
             'POST',
-            \sprintf('/admin/api/examples/%d?action=publish&locale=en&force=true', $example->getId()),
+            \sprintf('/admin/api/examples/%d?action=publish&locale=en&bypassReview=true', $example->getId()),
         );
 
         $response = $this->client->getResponse();
@@ -216,7 +227,7 @@ class WorkflowTransitionRequestAdditionalScenariosTest extends SuluTestCase
 
         $this->client->request(
             'POST',
-            \sprintf('/admin/api/examples/%d?action=publish&locale=en&force=true', $example->getId()),
+            \sprintf('/admin/api/examples/%d?action=publish&locale=en&bypassReview=true', $example->getId()),
         );
 
         $response = $this->client->getResponse();
@@ -358,7 +369,7 @@ class WorkflowTransitionRequestAdditionalScenariosTest extends SuluTestCase
         return $example;
     }
 
-    private function createRequestCreator(): User
+    private function createRequestCreator(string $username = 'request_creator'): User
     {
         $entityManager = static::getEntityManager();
 
@@ -368,7 +379,7 @@ class WorkflowTransitionRequestAdditionalScenariosTest extends SuluTestCase
         $entityManager->persist($contact);
 
         $user = new User();
-        $user->setUsername('request_creator');
+        $user->setUsername($username);
         $user->setPassword('test');
         $user->setSalt('salt');
         $user->setLocale('en');

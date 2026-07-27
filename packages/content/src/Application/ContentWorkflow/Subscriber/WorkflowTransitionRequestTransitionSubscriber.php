@@ -16,7 +16,6 @@ namespace Sulu\Content\Application\ContentWorkflow\Subscriber;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Component\Security\Authentication\UserInterface;
-use Sulu\Content\Application\RequestWorkflow\RequestWorkflow;
 use Sulu\Content\Application\RequestWorkflow\RequestWorkflowResolverInterface;
 use Sulu\Content\Domain\Exception\DuplicateActiveWorkflowTransitionRequestException;
 use Sulu\Content\Domain\Exception\MissingAuthenticatedUserException;
@@ -59,6 +58,12 @@ class WorkflowTransitionRequestTransitionSubscriber implements EventSubscriberIn
             return;
         }
 
+        $workflow = $this->requestWorkflowResolver->resolveForContent($dimensionContent);
+        if (null === $workflow) {
+            // No workflow covers this content, so the review transition carries no request.
+            return;
+        }
+
         if (null !== $this->workflowTransitionRequestRepository->findOneBy([
             'resourceKey' => $resourceKey,
             'resourceId' => $resourceId,
@@ -68,13 +73,8 @@ class WorkflowTransitionRequestTransitionSubscriber implements EventSubscriberIn
             throw new DuplicateActiveWorkflowTransitionRequestException($resourceKey, $resourceId, $locale);
         }
 
-        $workflow = $this->requestWorkflowResolver->resolveForContent($dimensionContent);
-        $workflowName = null !== $workflow ? $workflow->name : RequestWorkflow::DEFAULT_NAME;
-
-        $workflowTransitionRequest = new WorkflowTransitionRequest($resourceKey, $resourceId, $locale, $workflowName);
-        if (null !== $workflow) {
-            $workflowTransitionRequest->setRequiredApprovalCount($workflow->getRequiredApprovalCount());
-        }
+        $workflowTransitionRequest = new WorkflowTransitionRequest($resourceKey, $resourceId, $locale, $workflow->name);
+        $workflowTransitionRequest->setRequiredApprovalCount($workflow->getRequiredApprovalCount());
         $workflowTransitionRequest->setCreator($this->resolveUser());
         $this->workflowTransitionRequestRepository->add($workflowTransitionRequest);
 

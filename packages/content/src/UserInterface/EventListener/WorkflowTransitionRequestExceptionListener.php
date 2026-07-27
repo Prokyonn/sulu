@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Sulu\Content\UserInterface\EventListener;
 
+use Sulu\Content\Domain\Exception\ContentInReviewException;
 use Sulu\Content\Domain\Exception\DuplicateActiveWorkflowTransitionRequestException;
 use Sulu\Content\Domain\Exception\MissingAuthenticatedUserException;
 use Sulu\Content\Domain\Exception\SelfReviewNotAllowedException;
 use Sulu\Content\Domain\Exception\WorkflowTransitionRequestCancelNotAllowedException;
 use Sulu\Content\Domain\Exception\WorkflowTransitionRequestClosedException;
-use Sulu\Content\Domain\Exception\WorkflowTransitionRequestInProgressException;
 use Sulu\Content\Domain\Exception\WorkflowTransitionRequestNotApprovedException;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -52,8 +52,8 @@ final class WorkflowTransitionRequestExceptionListener
             $throwable instanceof SelfReviewNotAllowedException,
             $throwable instanceof WorkflowTransitionRequestCancelNotAllowedException => new TranslatableHttpException(403, $throwable),
             $throwable instanceof WorkflowTransitionRequestClosedException => new TranslatableHttpException(400, $throwable),
+            $throwable instanceof ContentInReviewException,
             $throwable instanceof DuplicateActiveWorkflowTransitionRequestException,
-            $throwable instanceof WorkflowTransitionRequestInProgressException,
             $throwable instanceof WorkflowTransitionRequestNotApprovedException => new TranslatableHttpException(409, $throwable),
             default => null,
         };
