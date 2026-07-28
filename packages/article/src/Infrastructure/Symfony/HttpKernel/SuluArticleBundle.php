@@ -313,6 +313,7 @@ final class SuluArticleBundle extends AbstractBundle
                 new Reference('sulu_core.doctrine_rest_helper'),
                 new Reference('sulu_content.workflow_transition_request_list_enhancer'),
                 new Reference('sulu_content.bypass_review_authorizer'),
+                new Reference('sulu_content.content_review_lock'),
                 param('sulu_core.is_single_locale'),
             ])
             ->tag('sulu.context', ['context' => 'admin']);

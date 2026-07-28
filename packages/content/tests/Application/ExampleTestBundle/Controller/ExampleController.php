@@ -27,6 +27,7 @@ use Sulu\Component\Rest\RestHelperInterface;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Content\Application\Security\BypassReviewAuthorizerInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\ContentReviewLockInterface;
 use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestListEnhancerInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
@@ -51,6 +52,7 @@ class ExampleController extends AbstractRestController
         private ExampleRepository $exampleRepository,
         private WorkflowTransitionRequestListEnhancerInterface $workflowTransitionRequestListEnhancer,
         private BypassReviewAuthorizerInterface $bypassReviewAuthorizer,
+        private ContentReviewLockInterface $contentReviewLock,
     ) {
         parent::__construct($viewHandler, $tokenStorage);
     }
@@ -328,17 +330,31 @@ class ExampleController extends AbstractRestController
             throw new NotFoundHttpException();
         }
 
-        /** @var ExampleDimensionContent $dimensionContent */
-        $dimensionContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
-        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $dimensionContent->getWorkflowPlace()) {
-            $dimensionContent = $this->contentManager->applyTransition(
-                $example,
-                $dimensionAttributes,
-                WorkflowInterface::WORKFLOW_TRANSITION_CREATE_DRAFT
-            );
-        }
+        // Mirrors the real controllers: a request that only resolves a review carries a read-only
+        // form, so its content payload must not be written back.
+        $shouldPersist = $this->contentReviewLock->shouldPersistContent(
+            Example::RESOURCE_KEY,
+            (string) $id,
+            $request->query->getString('locale'),
+            $request->query->get('action'),
+        );
 
-        $this->entityManager->flush();
+        if ($shouldPersist) {
+            /** @var ExampleDimensionContent $dimensionContent */
+            $dimensionContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
+            if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $dimensionContent->getWorkflowPlace()) {
+                $dimensionContent = $this->contentManager->applyTransition(
+                    $example,
+                    $dimensionAttributes,
+                    WorkflowInterface::WORKFLOW_TRANSITION_CREATE_DRAFT
+                );
+            }
+
+            $this->entityManager->flush();
+        } else {
+            /** @var ExampleDimensionContent $dimensionContent */
+            $dimensionContent = $this->contentManager->resolve($example, $dimensionAttributes);
+        }
 
         if ('publish' === $request->query->get('action')) {
             $context = $this->resolveWorkflowContext(

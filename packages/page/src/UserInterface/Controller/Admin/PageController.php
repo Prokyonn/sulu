@@ -31,6 +31,7 @@ use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
 use Sulu\Component\Webspace\Webspace;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Content\Application\Security\BypassReviewAuthorizerInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\ContentReviewLockInterface;
 use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestListEnhancerInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
@@ -82,6 +83,7 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
         private SecurityCheckerInterface $securityChecker,
         private WorkflowTransitionRequestListEnhancerInterface $workflowTransitionRequestListEnhancer,
         private BypassReviewAuthorizerInterface $bypassReviewAuthorizer,
+        private ContentReviewLockInterface $contentReviewLock,
         private bool $isSingleLocale = false,
     ) {
         // TODO controller should not need more then Repository, MessageBus, Serializer
@@ -236,9 +238,16 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
 
     public function putAction(Request $request, string $id): Response // TODO route should be a uuid?
     {
-        $message = new ModifyPageMessage(['uuid' => $id], $this->getData($request));
-        /** @see \Sulu\Page\Application\MessageHandler\ModifyPageMessageHandler */
-        $this->handle(new Envelope($message, [new EnableFlushStamp()]));
+        if ($this->contentReviewLock->shouldPersistContent(
+            PageInterface::RESOURCE_KEY,
+            $id,
+            $this->getLocale($request),
+            $request->query->get('action'),
+        )) {
+            $message = new ModifyPageMessage(['uuid' => $id], $this->getData($request));
+            /** @see \Sulu\Page\Application\MessageHandler\ModifyPageMessageHandler */
+            $this->handle(new Envelope($message, [new EnableFlushStamp()]));
+        }
 
         $this->handleAction($request, $id);
 

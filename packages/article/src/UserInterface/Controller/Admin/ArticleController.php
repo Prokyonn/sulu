@@ -34,6 +34,7 @@ use Sulu\Component\Rest\RestHelperInterface;
 use Sulu\Component\Security\SecuredControllerInterface;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Content\Application\Security\BypassReviewAuthorizerInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\ContentReviewLockInterface;
 use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestListEnhancerInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
@@ -67,6 +68,7 @@ final class ArticleController implements SecuredControllerInterface
         private RestHelperInterface $restHelper,
         private WorkflowTransitionRequestListEnhancerInterface $workflowTransitionRequestListEnhancer,
         private BypassReviewAuthorizerInterface $bypassReviewAuthorizer,
+        private ContentReviewLockInterface $contentReviewLock,
         private bool $isSingleLocale = false,
     ) {
         $this->messageBus = $messageBus;
@@ -270,9 +272,16 @@ final class ArticleController implements SecuredControllerInterface
 
     public function putAction(Request $request, string $id): Response // TODO route should be a uuid?
     {
-        $message = new ModifyArticleMessage(['uuid' => $id], $this->getData($request));
-        /** @see \Sulu\Article\Application\MessageHandler\ModifyArticleMessageHandler */
-        $this->handle(new Envelope($message, [new EnableFlushStamp()]));
+        if ($this->contentReviewLock->shouldPersistContent(
+            ArticleInterface::RESOURCE_KEY,
+            $id,
+            $this->getLocale($request),
+            $request->query->get('action'),
+        )) {
+            $message = new ModifyArticleMessage(['uuid' => $id], $this->getData($request));
+            /** @see \Sulu\Article\Application\MessageHandler\ModifyArticleMessageHandler */
+            $this->handle(new Envelope($message, [new EnableFlushStamp()]));
+        }
 
         $this->handleAction($request, $id);
 

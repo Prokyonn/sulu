@@ -14,20 +14,28 @@ declare(strict_types=1);
 namespace Sulu\Page\Tests\Functional\Integration;
 
 use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Sulu\Page\Domain\Model\Page;
 use Sulu\Page\Domain\Model\PageInterface;
+use Sulu\Page\Tests\Application\ReviewEnabledKernel;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 /**
- * Content sitting in a review place must not accept draft saves. The rule lives in the content
- * workflow — there is no `edit` transition out of `review`/`review_draft` — so this exercises the
- * real admin save route rather than a seam no shipped content type uses.
+ * The admin submits every toolbar action as one request carrying the whole form plus an action, and
+ * the controller persists before applying the action. These tests pin both halves of that: content
+ * saves are refused while a review is open, and the transitions that end a review still get through.
  */
 #[CoversNothing]
+#[RunTestsInSeparateProcesses]
 class PageInReviewTest extends SuluTestCase
 {
     protected KernelBrowser $client;
+
+    protected static function getKernelClass(): string
+    {
+        return ReviewEnabledKernel::class;
+    }
 
     protected function setUp(): void
     {
@@ -39,7 +47,80 @@ class PageInReviewTest extends SuluTestCase
         self::purgeDatabase();
     }
 
-    public function testSaveDraftIsRejectedWhilePageIsInReview(): void
+    public function testDraftSaveIsRejectedWhileInReview(): void
+    {
+        $id = $this->createPageInReview();
+
+        $this->put($id, ['action' => 'draft'], 'Edited While In Review');
+
+        $response = $this->client->getResponse();
+        $this->assertSame(409, $response->getStatusCode(), (string) $response->getContent());
+
+        /** @var array{detail?: string} $content */
+        $content = \json_decode((string) $response->getContent(), true);
+        $this->assertStringContainsString('in review', (string) ($content['detail'] ?? ''));
+    }
+
+    public function testCancelReviewIsAllowedAndClearsTheLock(): void
+    {
+        $id = $this->createPageInReview();
+
+        $this->put($id, ['action' => 'cancel_review'], 'Ignored Payload');
+        $this->assertHttpStatusCode(200, $this->client->getResponse());
+
+        /** @var array{workflowPlace: string, _locked: bool, activeWorkflowTransitionRequest: mixed, title: string} $content */
+        $content = \json_decode((string) $this->client->getResponse()->getContent(), true);
+        $this->assertSame('unpublished', $content['workflowPlace']);
+        $this->assertFalse($content['_locked']);
+        $this->assertNull($content['activeWorkflowTransitionRequest']);
+
+        // The read-only payload sent alongside the transition must not have been written.
+        $this->assertSame('Page In Review', $content['title']);
+    }
+
+    public function testDraftSaveIsAllowedAgainAfterCancel(): void
+    {
+        $id = $this->createPageInReview();
+
+        $this->put($id, ['action' => 'cancel_review'], 'Ignored Payload');
+        $this->assertHttpStatusCode(200, $this->client->getResponse());
+
+        $this->put($id, ['action' => 'draft'], 'Edited After Cancel');
+        $this->assertHttpStatusCode(200, $this->client->getResponse());
+
+        /** @var array{title: string} $content */
+        $content = \json_decode((string) $this->client->getResponse()->getContent(), true);
+        $this->assertSame('Edited After Cancel', $content['title']);
+    }
+
+    public function testDraftSaveIsAllowedWhenNoReviewIsOpen(): void
+    {
+        $id = $this->createPage();
+
+        $this->put($id, ['action' => 'draft'], 'Edited Normally');
+        $this->assertHttpStatusCode(200, $this->client->getResponse());
+    }
+
+    /**
+     * @param array<string, string> $query
+     */
+    private function put(string $id, array $query, string $title): void
+    {
+        $this->client->request(
+            'PUT',
+            \sprintf('/admin/api/pages/%s?%s', $id, \http_build_query($query + ['locale' => 'en', 'webspace' => 'sulu-io'])),
+            [],
+            [],
+            [],
+            (string) \json_encode([
+                'template' => 'default',
+                'title' => $title,
+                'url' => '/page-in-review',
+            ]),
+        );
+    }
+
+    private function createPage(): string
     {
         $homepage = $this->createHomepage();
 
@@ -59,75 +140,26 @@ class PageInReviewTest extends SuluTestCase
 
         /** @var array{id: string} $content */
         $content = \json_decode((string) $this->client->getResponse()->getContent(), true);
-        $id = $content['id'];
 
-        $this->client->request('POST', \sprintf('/admin/api/pages/%s?locale=en&action=request_for_review', $id));
-        $this->assertHttpStatusCode(200, $this->client->getResponse());
-
-        /** @var array{workflowPlace: string} $reviewed */
-        $reviewed = \json_decode((string) $this->client->getResponse()->getContent(), true);
-        $this->assertSame('review', $reviewed['workflowPlace']);
-
-        $this->client->request(
-            'PUT',
-            \sprintf('/admin/api/pages/%s?locale=en', $id),
-            [],
-            [],
-            [],
-            (string) \json_encode([
-                'template' => 'default',
-                'title' => 'Edited While In Review',
-                'url' => '/page-in-review',
-            ]),
-        );
-
-        $response = $this->client->getResponse();
-        $this->assertSame(
-            409,
-            $response->getStatusCode(),
-            \sprintf(
-                'Expected 409 when saving a draft of a page in review, got %d. Body: %s',
-                $response->getStatusCode(),
-                (string) $response->getContent(),
-            ),
-        );
+        return $content['id'];
     }
 
-    public function testSaveDraftIsAcceptedWhilePageIsNotInReview(): void
+    private function createPageInReview(): string
     {
-        $homepage = $this->createHomepage();
+        $id = $this->createPage();
 
         $this->client->request(
             'POST',
-            \sprintf('/admin/api/pages?locale=en&parentId=%s&webspace=sulu-io', $homepage->getId()),
-            [],
-            [],
-            [],
-            (string) \json_encode([
-                'template' => 'default',
-                'title' => 'Editable Page',
-                'url' => '/editable-page',
-            ]),
+            \sprintf('/admin/api/pages/%s?locale=en&action=request_for_review', $id),
         );
-        $this->assertHttpStatusCode(201, $this->client->getResponse());
-
-        /** @var array{id: string} $content */
-        $content = \json_decode((string) $this->client->getResponse()->getContent(), true);
-
-        $this->client->request(
-            'PUT',
-            \sprintf('/admin/api/pages/%s?locale=en', $content['id']),
-            [],
-            [],
-            [],
-            (string) \json_encode([
-                'template' => 'default',
-                'title' => 'Edited Normally',
-                'url' => '/editable-page',
-            ]),
-        );
-
         $this->assertHttpStatusCode(200, $this->client->getResponse());
+
+        /** @var array{workflowPlace: string, _locked: bool} $content */
+        $content = \json_decode((string) $this->client->getResponse()->getContent(), true);
+        $this->assertSame('review', $content['workflowPlace']);
+        $this->assertTrue($content['_locked'], 'A workflow must be configured for pages in this kernel.');
+
+        return $id;
     }
 
     private function createHomepage(): PageInterface

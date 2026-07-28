@@ -33,6 +33,8 @@ use Sulu\Content\Application\Security\BypassReviewAuthorizer;
 use Sulu\Content\Application\Security\BypassReviewAuthorizerInterface;
 use Sulu\Content\Application\Security\WorkflowTransitionRequestSecurityContextResolver;
 use Sulu\Content\Application\Security\WorkflowTransitionRequestSecurityContextResolverInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\ContentReviewLock;
+use Sulu\Content\Application\WorkflowTransitionRequest\ContentReviewLockInterface;
 use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestListEnhancer;
 use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestListEnhancerInterface;
 use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestViewFactory;
@@ -157,6 +159,12 @@ return static function(ContainerConfigurator $container) {
         ])
         ->tag('sulu_content.normalizer', ['priority' => 0])
         ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->set('sulu_content.content_review_lock', ContentReviewLock::class)
+        ->args([new Reference('sulu_content.workflow_transition_request_repository')])
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->alias(ContentReviewLockInterface::class, 'sulu_content.content_review_lock');
 
     $services->set('sulu_content.workflow_transition_request_list_enhancer', WorkflowTransitionRequestListEnhancer::class)
         ->args([

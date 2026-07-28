@@ -21,6 +21,7 @@ use Sulu\Component\Rest\RestHelperInterface;
 use Sulu\Component\Security\SecuredControllerInterface;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Content\Application\Security\BypassReviewAuthorizerInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\ContentReviewLockInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Messenger\Infrastructure\Symfony\Messenger\FlushMiddleware\EnableFlushStamp;
@@ -68,6 +69,7 @@ final class SnippetController implements SecuredControllerInterface
         private DoctrineListBuilderFactoryInterface $listBuilderFactory,
         private RestHelperInterface $restHelper,
         private BypassReviewAuthorizerInterface $bypassReviewAuthorizer,
+        private ContentReviewLockInterface $contentReviewLock,
         private array $snippetAreas = [],
         private bool $isSingleLocale = false,
     ) {
@@ -245,9 +247,16 @@ final class SnippetController implements SecuredControllerInterface
 
     public function putAction(Request $request, string $id): Response // TODO route should be a uuid?
     {
-        $message = new ModifySnippetMessage(['uuid' => $id], $this->getData($request));
-        /** @see \Sulu\Snippet\Application\MessageHandler\ModifySnippetMessageHandler */
-        $this->handle(new Envelope($message, [new EnableFlushStamp()]));
+        if ($this->contentReviewLock->shouldPersistContent(
+            SnippetInterface::RESOURCE_KEY,
+            $id,
+            $this->getLocale($request),
+            $request->query->get('action'),
+        )) {
+            $message = new ModifySnippetMessage(['uuid' => $id], $this->getData($request));
+            /** @see \Sulu\Snippet\Application\MessageHandler\ModifySnippetMessageHandler */
+            $this->handle(new Envelope($message, [new EnableFlushStamp()]));
+        }
 
         $this->handleAction($request, $id);
 

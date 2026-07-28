@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Content\Application\ContentDataMapper\DataMapper;
 
 use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
-use Sulu\Content\Domain\Exception\ContentInReviewException;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 
@@ -81,9 +80,9 @@ class WorkflowDataMapper implements DataMapperInterface
         // therefore we only want to copy the published property from the draft to the live dimension
 
         if (DimensionContentInterface::STAGE_LIVE !== $object->getStage()) {
-            if (WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED !== $object->getWorkflowPlace()) {
-                $this->assertNotInReview($object);
-
+            if (WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED !== $object->getWorkflowPlace()
+                && !$this->isInReview($object)
+            ) {
                 $this->contentWorkflow->apply(
                     $object->getResource(),
                     $object::getEffectiveDimensionAttributes(['locale' => $object->getLocale()]),
@@ -105,26 +104,22 @@ class WorkflowDataMapper implements DataMapperInterface
     }
 
     /**
-     * The content workflow has no `edit` transition out of a review place, so applying one would
-     * fail with an UndefinedTransitionException. Report the frozen draft as such instead.
+     * Content under review keeps its place: the workflow defines no `edit` transition out of
+     * `review`/`review_draft`, and the transition that ends the review will set the next place
+     * itself. Persists that reach this point during a review carry no content change — either a
+     * review-resolving transition or a preview render. Rejecting a genuine edit is the job of
+     * {@see \Sulu\Content\Application\WorkflowTransitionRequest\ContentReviewLockInterface},
+     * which runs where the caller's intent is still known.
      *
      * @template T of DimensionContentInterface
      *
      * @param WorkflowInterface&T $object
      */
-    private function assertNotInReview(WorkflowInterface $object): void
+    private function isInReview(WorkflowInterface $object): bool
     {
-        if (!\in_array($object->getWorkflowPlace(), [
+        return \in_array($object->getWorkflowPlace(), [
             WorkflowInterface::WORKFLOW_PLACE_REVIEW,
             WorkflowInterface::WORKFLOW_PLACE_REVIEW_DRAFT,
-        ], true)) {
-            return;
-        }
-
-        throw new ContentInReviewException(
-            $object::getResourceKey(),
-            (string) $object->getResource()->getId(),
-            (string) $object->getLocale(),
-        );
+        ], true);
     }
 }
