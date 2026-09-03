@@ -13,16 +13,16 @@ declare(strict_types=1);
 
 namespace Sulu\Content\Application\ContentDataMapper\DataMapper;
 
-use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 
+/**
+ * Maps workflow data onto dimension content. Deliberately does not apply the `edit` transition:
+ * that is a persistence concern and lives in {@see \Sulu\Content\Application\ContentPersister\ContentPersister},
+ * so mapping-only callers such as the preview do not move content out of its current place.
+ */
 class WorkflowDataMapper implements DataMapperInterface
 {
-    public function __construct(private ContentWorkflowInterface $contentWorkflow)
-    {
-    }
-
     public function map(
         DimensionContentInterface $unlocalizedDimensionContent,
         DimensionContentInterface $localizedDimensionContent,
@@ -80,14 +80,6 @@ class WorkflowDataMapper implements DataMapperInterface
         // therefore we only want to copy the published property from the draft to the live dimension
 
         if (DimensionContentInterface::STAGE_LIVE !== $object->getStage()) {
-            if (WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED !== $object->getWorkflowPlace()) {
-                $this->contentWorkflow->apply(
-                    $object->getResource(),
-                    $object::getEffectiveDimensionAttributes(['locale' => $object->getLocale()]),
-                    $object::getWorkflowTransitionEdit()
-                );
-            }
-
             return;
         }
 

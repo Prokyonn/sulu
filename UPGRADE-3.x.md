@@ -10,6 +10,13 @@ stored permission masks keep their meaning, no bit is renumbered. Existing roles
 set, so nobody can act on a review request until you grant it: add the `review` column in the role
 permission matrix for every security context that should be reviewable.
 
+### BC breaks
+
+- `Sulu\Content\Application\ContentPersister\ContentPersister::__construct` gained a
+  `ContentWorkflowInterface` argument.
+- `Sulu\Content\Application\ContentDataMapper\DataMapper\WorkflowDataMapper::__construct` lost its
+  `ContentWorkflowInterface` argument: the `edit` transition moved to the persister.
+
 ## 3.0.9
 
 ### Widened webspace, slug and template key column lengths

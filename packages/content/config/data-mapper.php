@@ -48,7 +48,6 @@ return static function(ContainerConfigurator $container) {
         ->tag('sulu_content.data_mapper', ['priority' => 32]);
 
     $services->set('sulu_content.workflow_data_mapper', WorkflowDataMapper::class)
-        ->args([new Reference('sulu_content.content_workflow')])
         ->tag('sulu_content.data_mapper', ['priority' => 24]);
 
     $services->set('sulu_content.webspace_data_mapper', WebspaceDataMapper::class)

@@ -120,6 +120,7 @@ return static function(ContainerConfigurator $container) {
         ->args([
             new Reference('sulu_content.dimension_content_collection_factory'),
             new Reference('sulu_content.content_merger'),
+            new Reference('sulu_content.content_workflow'),
         ]);
 
     $services->alias(ContentPersisterInterface::class, 'sulu_content.content_persister');
