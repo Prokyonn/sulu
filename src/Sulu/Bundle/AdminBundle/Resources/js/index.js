@@ -104,6 +104,7 @@ import {
 import {textEditorRegistry} from './containers/TextEditor';
 import Form, {
     formToolbarActionRegistry,
+    BypassReviewAndPublishToolbarAction as FormBypassReviewAndPublishToolbarAction,
     CopyToolbarAction as FormCopyToolbarAction,
     CopyLocaleToolbarAction as FormCopyLocaleToolbarAction,
     DeleteDraftToolbarAction as FormDeleteDraftToolbarAction,
@@ -111,6 +112,8 @@ import Form, {
     DropdownToolbarAction as FormDropdownToolbarAction,
     SaveToolbarAction as FormSaveToolbarAction,
     PublishToolbarAction as FormPublishToolbarAction,
+    RequestForPublishToolbarAction as FormRequestForPublishToolbarAction,
+    ReviewWorkflowTransitionRequestToolbarAction as FormReviewWorkflowTransitionRequestToolbarAction,
     SaveWithFormDialogToolbarAction as FormSaveWithFormDialogToolbarAction,
     SaveWithPublishingToolbarAction as FormSaveWithPublishingToolbarAction,
     SetUnpublishedToolbarAction as FormSetUnpublishedToolbarAction,
@@ -357,6 +360,18 @@ function registerFormToolbarActions() {
     formToolbarActionRegistry.add('sulu_admin.toggler', FormTogglerToolbarAction);
     formToolbarActionRegistry.add('sulu_admin.update_form_store', FormUpdateFormStoreToolbarAction);
     formToolbarActionRegistry.add('sulu_admin.reload_form_store', FormReloadFormStoreToolbarAction);
+    formToolbarActionRegistry.add(
+        'sulu_content.request_for_publish',
+        FormRequestForPublishToolbarAction
+    );
+    formToolbarActionRegistry.add(
+        'sulu_content.review_workflow_transition_request',
+        FormReviewWorkflowTransitionRequestToolbarAction
+    );
+    formToolbarActionRegistry.add(
+        'sulu_content.bypass_review_and_publish',
+        FormBypassReviewAndPublishToolbarAction
+    );
 }
 
 function registerListToolbarActions() {

@@ -63,6 +63,7 @@ return static function(ContainerConfigurator $container) {
             '%sulu_content.content_settings_forms%',
             '%sulu_content.content_excerpt_forms%',
             '%sulu_content.content_seo_forms%',
+            new Reference('sulu_content.request_workflow_registry', ContainerInterface::NULL_ON_INVALID_REFERENCE),
         ])
         ->tag('sulu.context', ['context' => 'admin']);
 

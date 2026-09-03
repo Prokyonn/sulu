@@ -24,6 +24,8 @@ use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistryInterf
 use Sulu\Component\Security\Authorization\PermissionTypes;
 use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 use Sulu\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
+use Sulu\Content\Application\RequestWorkflow\RequestWorkflow;
+use Sulu\Content\Application\RequestWorkflow\RequestWorkflowRegistryInterface;
 use Sulu\Content\Domain\Model\ExcerptInterface;
 use Sulu\Content\Domain\Model\SeoInterface;
 use Sulu\Content\Domain\Model\ShadowInterface;
@@ -48,8 +50,103 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         private SecurityCheckerInterface $securityChecker,
         private array $settingsForms,
         private array $excerptForms = [],
-        private array $seoForms = []
+        private array $seoForms = [],
+        private ?RequestWorkflowRegistryInterface $requestWorkflowRegistry = null,
     ) {
+    }
+
+    /**
+     * The `save` dropdown is shown while no request is active, `approval` takes over once one is open.
+     *
+     * @return array{save: DropdownToolbarAction, approval: DropdownToolbarAction}
+     */
+    public function getWorkflowTransitionRequestToolbarActions(
+        string $resourceKey,
+        string $saveVisibleCondition = '(!_permissions || _permissions.edit)',
+        string $publishVisibleCondition = '(!_permissions || _permissions.live)',
+        string $reviewVisibleCondition = '(!_permissions || _permissions.review)',
+    ): array {
+        $noActiveRequest = '!activeWorkflowTransitionRequest';
+        $hasActiveRequest = '!!activeWorkflowTransitionRequest';
+        $isApproved = 'activeWorkflowTransitionRequest && activeWorkflowTransitionRequest.status == "approved"';
+
+        // Only content under a workflow carries `workflowTransitionRequestEnabled`, so a missing flag
+        // means "no workflow" everywhere except on the create form, which has no content to ask and
+        // lets the default workflow decide, as far as it covers this resource. `!id` is what tells the
+        // two apart: saved content always carries its id.
+        $registry = $this->requestWorkflowRegistry;
+        $defaultApplies = null !== $registry
+            && $registry->has(RequestWorkflow::DEFAULT_NAME)
+            && $registry->get(RequestWorkflow::DEFAULT_NAME)->appliesToResource($resourceKey);
+        $workflowEnabled = $defaultApplies
+            ? '(!!workflowTransitionRequestEnabled || !id)'
+            : '!!workflowTransitionRequestEnabled';
+        $noWorkflow = $defaultApplies
+            ? '(!workflowTransitionRequestEnabled && !!id)'
+            : '!workflowTransitionRequestEnabled';
+
+        return [
+            'save' => new DropdownToolbarAction(
+                'sulu_admin.save',
+                'su-save',
+                [
+                    new ToolbarAction(
+                        'sulu_admin.save',
+                        [
+                            'label' => 'sulu_admin.save_draft',
+                            'options' => ['action' => 'draft'],
+                            'visible_condition' => '(' . $saveVisibleCondition . ') && ' . $noActiveRequest,
+                        ]
+                    ),
+                    new ToolbarAction(
+                        'sulu_content.request_for_publish',
+                        [
+                            'visible_condition' => '(' . $saveVisibleCondition . ') && ' . $noActiveRequest . ' && ' . $workflowEnabled,
+                        ]
+                    ),
+                    new ToolbarAction(
+                        'sulu_admin.save',
+                        [
+                            'label' => 'sulu_admin.save_publish',
+                            'options' => ['action' => 'publish'],
+                            'visible_condition' => '(' . $saveVisibleCondition . ') && (' . $publishVisibleCondition . ') && ' . $noActiveRequest . ' && ' . $noWorkflow,
+                        ]
+                    ),
+                    new ToolbarAction(
+                        'sulu_admin.publish',
+                        [
+                            'visible_condition' => '(' . $publishVisibleCondition . ') && ' . $noActiveRequest . ' && ' . $noWorkflow,
+                        ]
+                    ),
+                ]
+            ),
+            'approval' => new DropdownToolbarAction(
+                'sulu_content.approval',
+                'su-save',
+                [
+                    new ToolbarAction(
+                        'sulu_content.review_workflow_transition_request',
+                        [
+                            'visible_condition' => '(' . $reviewVisibleCondition . ') && ' . $hasActiveRequest,
+                        ]
+                    ),
+                    new ToolbarAction(
+                        'sulu_admin.publish',
+                        [
+                            'visible_condition' => '(' . $publishVisibleCondition . ') && ' . $hasActiveRequest,
+                            'disabled_condition' => '!(' . $isApproved . ')',
+                        ]
+                    ),
+                    new ToolbarAction(
+                        'sulu_content.bypass_review_and_publish',
+                        [
+                            'visible_condition' => '(' . $publishVisibleCondition . ') && ' . $hasActiveRequest,
+                            'disabled_condition' => $isApproved,
+                        ]
+                    ),
+                ]
+            ),
+        ];
     }
 
     public function getDefaultToolbarActions(

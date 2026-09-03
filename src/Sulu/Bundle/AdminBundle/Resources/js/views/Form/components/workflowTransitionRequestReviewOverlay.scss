@@ -1,0 +1,219 @@
+@import '../../../containers/Application/colors.scss';
+
+$overlayWidth: 660px;
+$overlayContentHeight: 436px;
+
+.body {
+    box-sizing: border-box;
+    height: $overlayContentHeight;
+    overflow: auto;
+    padding: 24px;
+    width: $overlayWidth;
+}
+
+.comment-body {
+    box-sizing: border-box;
+    height: $overlayContentHeight;
+    padding: 24px 40px;
+    width: $overlayWidth;
+}
+
+.comment-label {
+    color: $scorpion;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.comment-field {
+    margin-top: 8px;
+
+    textarea {
+        font-size: 14px;
+        height: 140px;
+        padding: 12px;
+        resize: none;
+    }
+}
+
+.card {
+    background: $white;
+    border: 1px solid $iron;
+    border-radius: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    align-items: flex-start;
+    border-bottom: 1px solid $iron;
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 20px;
+}
+
+.header-text {
+    color: $charade;
+    font-size: 14px;
+    line-height: 1.4;
+
+    strong {
+        font-weight: 600;
+    }
+}
+
+.header-date {
+    color: $raven;
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+.header-count {
+    color: $seaGreen;
+    flex: 0 0 auto;
+    font-size: 13px;
+    font-weight: 600;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+.header-rejected {
+    color: $cardinal;
+    margin-left: 10px;
+}
+
+.row {
+    border-bottom: 1px solid $iron;
+    padding: 12px 20px;
+}
+
+.row-main {
+    align-items: center;
+    display: flex;
+    gap: 14px;
+}
+
+.row-main-expanded {
+    align-items: flex-start;
+}
+
+.row-icon {
+    align-items: center;
+    border-radius: 50%;
+    box-sizing: border-box;
+    display: inline-flex;
+    flex: 0 0 24px;
+    height: 24px;
+    justify-content: center;
+    width: 24px;
+}
+
+.row-glyph {
+    color: $white;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.row-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.row-title {
+    color: $charade;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.row-caption {
+    color: $raven;
+    font-size: 13px;
+    margin-top: 2px;
+}
+
+.row-comment {
+    background-color: $zircon;
+    border: 1px solid $iron;
+    border-radius: 6px;
+    color: $tuna;
+    font-size: 13px;
+    line-height: 20px;
+    margin-top: 10px;
+    padding: 12px 14px;
+    white-space: pre-line;
+}
+
+.row-retry {
+    color: $blueZodiac;
+    flex: 0 0 auto;
+    font-size: 13px;
+}
+
+.row-chevron {
+    color: $blueZodiac;
+    cursor: pointer;
+    flex: 0 0 auto;
+    font-size: 20px;
+    line-height: 1;
+    transition: transform 150ms;
+}
+
+.row-chevron-open {
+    transform: rotate(180deg);
+}
+
+.approved {
+    background-color: $seaGreen;
+}
+
+.rejected {
+    background-color: $cardinal;
+}
+
+.pending {
+    background-color: transparent;
+    border: 2px solid $hokeyPokey;
+
+    .row-glyph {
+        color: $hokeyPokey;
+        font-size: 8px;
+    }
+}
+
+.empty,
+.notice {
+    color: $raven;
+    font-size: 13px;
+    margin: 0;
+    padding: 12px 20px;
+}
+
+.footer-actions {
+    display: flex;
+    gap: 12px;
+    margin-left: auto;
+}
+
+.reject-button,
+.confirm-button {
+    font-size: 14px;
+    line-height: 34px;
+    padding: 0 16px;
+}
+
+.reject-button {
+    background: $white;
+    border-color: $silver;
+    color: $blueZodiac;
+    min-width: 112px;
+
+    &:disabled {
+        color: $silverChalice;
+    }
+}
+
+.confirm-button {
+    min-width: 120px;
+}

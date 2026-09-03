@@ -176,6 +176,8 @@ The admin action posts `?action=bypass_publish`; the Page, Article and Snippet c
   `ContentWorkflowInterface` argument.
 - `Sulu\Content\Application\ContentDataMapper\DataMapper\WorkflowDataMapper::__construct` lost its
   `ContentWorkflowInterface` argument: the `edit` transition moved to the persister.
+- `Sulu\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactoryInterface` gained
+  `getWorkflowTransitionRequestToolbarActions()`.
 - `RequestWorkflowValidatorInterface` and `RequestWorkflowPrevalidatorInterface` gained
   `public static function getKey(): string`.
 - Admin JS form toolbar actions must extend `AbstractFormToolbarAction`: the form now calls

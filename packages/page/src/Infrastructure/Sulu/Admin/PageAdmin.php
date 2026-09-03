@@ -88,37 +88,20 @@ class PageAdmin extends Admin
         $editPagePublishVisibleCondition = '(!_permissions || _permissions.live)';
         $publishVisibleCondition = '(' . $createPagePublishVisibleCondition . ') || (' . $editPagePublishVisibleCondition . ')';
 
-        $saveWithPublishingDropdown = new DropdownToolbarAction(
-            'sulu_admin.save',
-            'su-save',
-            [
-                new ToolbarAction(
-                    'sulu_admin.save',
-                    [
-                        'label' => 'sulu_admin.save_draft',
-                        'options' => ['action' => 'draft'],
-                        'visible_condition' => $saveVisibleCondition,
-                    ]
-                ),
-                new ToolbarAction(
-                    'sulu_admin.save',
-                    [
-                        'label' => 'sulu_admin.save_publish',
-                        'options' => ['action' => 'publish'],
-                        'visible_condition' => '(' . $saveVisibleCondition . ') && (' . $publishVisibleCondition . ')',
-                    ]
-                ),
-                new ToolbarAction(
-                    'sulu_admin.publish',
-                    [
-                        'visible_condition' => $publishVisibleCondition,
-                    ]
-                ),
-            ]
+        $createPageReviewVisibleCondition = '!_permissions && (!__webspace || __webspace._permissions.review)';
+        $editPageReviewVisibleCondition = '(!_permissions || _permissions.review)';
+        $reviewVisibleCondition = '(' . $createPageReviewVisibleCondition . ') || (' . $editPageReviewVisibleCondition . ')';
+
+        $workflowToolbarActions = $this->contentViewBuilderFactory->getWorkflowTransitionRequestToolbarActions(
+            PageInterface::RESOURCE_KEY,
+            $saveVisibleCondition,
+            $publishVisibleCondition,
+            $reviewVisibleCondition,
         );
 
         $formToolbarActionsWithType = [
-            'save' => $saveWithPublishingDropdown,
+            'save' => $workflowToolbarActions['save'],
+            'approval' => $workflowToolbarActions['approval'],
             'type' => new ToolbarAction(
                 'sulu_admin.type',
                 [
@@ -174,7 +157,7 @@ class PageAdmin extends Admin
         ];
 
         $formToolbarActionsWithoutType = [
-            $saveWithPublishingDropdown,
+            $workflowToolbarActions['save'],
         ];
 
         $routerAttributesToFormRequest = ['parentId', 'webspace'];

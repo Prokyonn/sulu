@@ -10,8 +10,10 @@ import {default as FormContainer, ResourceFormStore, resourceFormStoreFactory} f
 import {withToolbar} from '../../containers/Toolbar';
 import ResourceStore from '../../stores/ResourceStore';
 import CollaborationStore from '../../stores/CollaborationStore';
+import userStore from '../../stores/userStore';
 import {translate} from '../../utils/Translator';
 import {Route} from '../../services/Router';
+import WorkflowTransitionRequestTimeline from './components/WorkflowTransitionRequestTimeline';
 import formToolbarActionRegistry from './registries/formToolbarActionRegistry';
 import AbstractFormToolbarAction from './toolbarActions/AbstractFormToolbarAction';
 import formStyles from './form.scss';
@@ -507,6 +509,16 @@ class Form extends React.Component<Props> {
         this.form = form;
     };
 
+    handleWorkflowTransitionRequestCancel = () => {
+        const cancelTransition = this.resourceFormStore.data.workflowPlace === 'review_draft'
+            ? 'cancel_review_draft'
+            : 'cancel_review';
+
+        // Every field is disabled while the request is open, so a draft that violates the schema could
+        // never be cancelled if the cancel went through the schema validation.
+        this.save({action: cancelTransition, skipValidation: true});
+    };
+
     render() {
         const {
             route: {
@@ -592,14 +604,31 @@ export default withToolbar(Form, function() {
     const icons = [];
     const formData = this.resourceFormStore.data;
 
-    if (formData.hasOwnProperty('publishedState') || formData.hasOwnProperty('published')) {
-        const {publishedState, published} = formData;
-        icons.push(
+    if (formData.hasOwnProperty('publishedState') || formData.hasOwnProperty('published')
+        || formData.hasOwnProperty('workflowPlace')
+    ) {
+        const {publishedState, published, workflowPlace} = formData;
+        const activeWorkflowTransitionRequest = formData.activeWorkflowTransitionRequest;
+
+        const indicator = (
             <PublishIndicator
                 draft={publishedState === undefined ? false : !publishedState}
-                key="publish"
                 published={published === undefined ? false : !!published}
+                state={workflowPlace}
             />
+        );
+
+        icons.push(
+            activeWorkflowTransitionRequest
+                ? (
+                    <WorkflowTransitionRequestTimeline
+                        key="publish"
+                        request={activeWorkflowTransitionRequest}
+                    >
+                        {indicator}
+                    </WorkflowTransitionRequestTimeline>
+                )
+                : React.cloneElement(indicator, {key: 'publish'})
         );
     }
 
@@ -612,6 +641,34 @@ export default withToolbar(Form, function() {
     }
     warnings.push(...this.warnings);
 
+    if (this.resourceFormStore.locked) {
+        const activeWorkflowTransitionRequest = formData.activeWorkflowTransitionRequest;
+        const status = activeWorkflowTransitionRequest && activeWorkflowTransitionRequest.status;
+
+        const message = status === 'approved'
+            ? translate('sulu_content.workflow_transition_request.banner_approved')
+            : translate('sulu_content.workflow_transition_request.banner_pending');
+
+        // The server only lets the creator cancel their own request and answers everyone else with a 403.
+        const createdByCurrentUser = !!activeWorkflowTransitionRequest
+            && String(activeWorkflowTransitionRequest.createdBy?.id) === String(userStore.user?.id);
+
+        warnings.push({
+            actions: createdByCurrentUser
+                ? [{
+                    label: translate('sulu_content.workflow_transition_request.cancel_request_action'),
+                    onClick: this.handleWorkflowTransitionRequestCancel,
+                }]
+                : [],
+            message,
+        });
+    }
+
+    // Only the last warning is rendered, and closing it pops from this.warnings, so the close
+    // action must disappear as soon as another source appended a warning after those.
+    const displayedWarningClosable = this.warnings.length > 0
+        && warnings[warnings.length - 1] === this.warnings[this.warnings.length - 1];
+
     return {
         backButton,
         errors,
@@ -620,6 +677,6 @@ export default withToolbar(Form, function() {
         icons,
         showSuccess,
         warnings,
-        onWarningCloseClick: this.warnings.length > 0 ? this.handleWarningCloseClick : undefined,
+        onWarningCloseClick: displayedWarningClosable ? this.handleWarningCloseClick : undefined,
     };
 });

@@ -2328,3 +2328,33 @@ test('Should throw an error if no formKey is passed', () => {
     const Form = require('../Form').default;
     expect(() => shallow(<Form resourceStore={resourceStore} route={route} router={router} />)).toThrow(/"formKey"/);
 });
+
+test('Should cancel a workflow transition request without validating the form', () => {
+    const Form = require('../Form').default;
+    const ResourceStore = require('../../../stores/ResourceStore').default;
+    const resourceStore = new ResourceStore('snippet', 1, {locale: observable.box('de')});
+    resourceStore.data = {workflowPlace: 'review_draft'};
+
+    const route = {
+        options: {
+            formKey: 'snippets',
+            locales: [],
+            toolbarActions: [],
+        },
+    };
+    const router = {
+        addUpdateRouteHook: jest.fn(),
+        restore: jest.fn(),
+        bind: jest.fn(),
+        route,
+        attributes: {},
+    };
+    const form = mount(<Form resourceStore={resourceStore} route={route} router={router} />);
+    const resourceFormStore = form.instance().resourceFormStore;
+    resourceFormStore.save = jest.fn().mockReturnValue(Promise.resolve());
+
+    form.instance().handleWorkflowTransitionRequestCancel();
+
+    // every field is disabled while the request is open, so an invalid draft could never be cancelled
+    expect(resourceFormStore.save).toHaveBeenCalledWith({action: 'cancel_review_draft', skipValidation: true});
+});
