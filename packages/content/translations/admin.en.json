@@ -48,5 +48,8 @@
     "sulu_content.changelog": "Changelog",
     "sulu_content.workflow_transition_request.cancel_not_allowed": "Only the user who requested the review can cancel it.",
     "sulu_content.workflow_transition_request.closed": "This workflow transition request has already been closed and cannot be modified.",
-    "sulu_content.workflow_transition_request.self_review_not_allowed": "You cannot review a workflow transition request you created yourself."
+    "sulu_content.workflow_transition_request.excerpt_required.missing": "Excerpt fields required before requesting a review: {fields}.",
+    "sulu_content.workflow_transition_request.self_review_not_allowed": "You cannot review a workflow transition request you created yourself.",
+    "sulu_content.workflow_transition_request.seo_required.missing": "SEO fields required before requesting a review: {fields}.",
+    "sulu_content.workflow_transition_request.no_workflow": "No review workflow applies to this template."
 }

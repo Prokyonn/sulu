@@ -15,16 +15,21 @@ namespace Sulu\Content\Infrastructure\Symfony\HttpKernel;
 
 use Sulu\Content\Application\PropertyResolver\Resolver\PropertyResolverInterface;
 use Sulu\Content\Application\PropertyResolver\Resolver\PropertyResolverMetadataAwareInterface;
+use Sulu\Content\Application\RequestWorkflow\Prevalidator\RequestWorkflowPrevalidatorInterface;
+use Sulu\Content\Application\RequestWorkflow\Validator\RequestWorkflowValidatorInterface;
 use Sulu\Content\Application\ResourceLoader\Loader\ResourceLoaderInterface;
+use Sulu\Content\Domain\Exception\NoRequestWorkflowException;
 use Sulu\Content\Domain\Exception\SelfReviewNotAllowedException;
 use Sulu\Content\Domain\Exception\ShadowSourceNotPublishedException;
 use Sulu\Content\Domain\Exception\WorkflowTransitionRequestCancelNotAllowedException;
 use Sulu\Content\Domain\Exception\WorkflowTransitionRequestClosedException;
+use Sulu\Content\Domain\Exception\WorkflowTransitionRequestPrevalidationFailedException;
 use Sulu\Content\Infrastructure\Doctrine\EventListener\RouteCleanupListener;
 use Sulu\Content\Infrastructure\Symfony\HttpKernel\Compiler\ExcerptFormPass;
 use Sulu\Content\Infrastructure\Symfony\HttpKernel\Compiler\ResourceLoaderCacheCompilerPass;
 use Sulu\Content\Infrastructure\Symfony\HttpKernel\Compiler\SeoFormPass;
 use Sulu\Content\Infrastructure\Symfony\HttpKernel\Compiler\SettingsFormPass;
+use Sulu\Content\Infrastructure\Symfony\HttpKernel\Compiler\ValidateRequestWorkflowsPass;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -48,6 +53,39 @@ final class SuluContentBundle extends AbstractBundle
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->scalarNode('max_depth')->defaultValue(5)->end()
+                    ->end()
+                ->end()
+                // Named review workflows, keyed by name. Declaring none keeps publishing direct.
+                // `none` is reserved for the template opt-out tag and must not be used as a name.
+                ->arrayNode('request_workflows')
+                    ->useAttributeAsKey('name')
+                    ->normalizeKeys(false)
+                    ->arrayPrototype()
+                        ->children()
+                            // Resource keys the `default` workflow covers for untagged templates, empty means all.
+                            // Only `default` reads it, a named workflow is selected by its template tag and refuses it.
+                            ->arrayNode('resources')
+                                ->scalarPrototype()->end()
+                                ->defaultValue([])
+                            ->end()
+                            // Sync gates keyed by prevalidator key, a failure aborts `request_for_review`.
+                            ->arrayNode('prevalidators')
+                                ->normalizeKeys(false)
+                                ->variablePrototype()->end()
+                                ->defaultValue([])
+                            ->end()
+                            // Checks keyed by validator key, run over the message bus once the request exists.
+                            ->arrayNode('validators')
+                                ->normalizeKeys(false)
+                                ->variablePrototype()->end()
+                                ->defaultValue([])
+                            ->end()
+                            // Approvals needed, a passed validator counts as one of them.
+                            ->integerNode('required_approvals')
+                                ->min(0)
+                                ->defaultValue(1)
+                            ->end()
+                        ->end()
                     ->end()
                 ->end()
             ->end()
@@ -80,6 +118,10 @@ final class SuluContentBundle extends AbstractBundle
 
         $builder->getDefinition('sulu_content.content_resolver')
             ->setArgument('$maxDepth', $contentResolverConfig['max_depth']);
+
+        /** @var array<string, array{resources?: list<string>, validators?: array<string, array<string, mixed>>, prevalidators?: array<string, array<string, mixed>>, required_approvals?: int}> $requestWorkflowsConfig */
+        $requestWorkflowsConfig = $config['request_workflows'] ?? [];
+        $builder->setParameter('sulu_content.request_workflows', $requestWorkflowsConfig);
 
         $services->set('sulu_content.doctrine_route_cleanup_listener')
             ->class(RouteCleanupListener::class)
@@ -148,6 +190,8 @@ final class SuluContentBundle extends AbstractBundle
                             SelfReviewNotAllowedException::class => 403,
                             WorkflowTransitionRequestCancelNotAllowedException::class => 403,
                             WorkflowTransitionRequestClosedException::class => 400,
+                            WorkflowTransitionRequestPrevalidationFailedException::class => 422,
+                            NoRequestWorkflowException::class => 422,
                         ],
                     ],
                 ]
@@ -172,6 +216,7 @@ final class SuluContentBundle extends AbstractBundle
         $container->addCompilerPass(new ExcerptFormPass());
         $container->addCompilerPass(new SeoFormPass());
         $container->addCompilerPass(new ResourceLoaderCacheCompilerPass());
+        $container->addCompilerPass(new ValidateRequestWorkflowsPass());
 
         $container->registerForAutoconfiguration(ResourceLoaderInterface::class)
             ->addTag('sulu_content.resource_loader');
@@ -182,5 +227,12 @@ final class SuluContentBundle extends AbstractBundle
         // ensure metadata-aware property resolvers are also tagged
         $container->registerForAutoconfiguration(PropertyResolverMetadataAwareInterface::class)
             ->addTag('sulu_content.property_resolver');
+
+        // the locators index these by their static getKey(), so no tag attribute is needed
+        $container->registerForAutoconfiguration(RequestWorkflowValidatorInterface::class)
+            ->addTag('sulu_content.request_workflow_validator');
+
+        $container->registerForAutoconfiguration(RequestWorkflowPrevalidatorInterface::class)
+            ->addTag('sulu_content.request_workflow_prevalidator');
     }
 }

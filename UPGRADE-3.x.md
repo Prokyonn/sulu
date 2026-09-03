@@ -20,6 +20,111 @@ stored permission masks keep their meaning, no bit is renumbered. Existing roles
 set, so nobody can act on a review request until you grant it: add the `review` column in the role
 permission matrix for every security context that should be reviewable.
 
+### Request workflow configuration
+
+`sulu_content.request_workflows.*` declares the named review workflows. Declaring one is what turns
+the review flow on, there is no separate switch. Without any entry the resolver returns no workflow
+and publishing stays direct.
+
+```yaml
+sulu_content:
+    request_workflows:
+        default:
+            resources: ['pages', 'articles']
+            required_approvals: 3
+            prevalidators:
+                seo_required:
+                    fields: ['title', 'description']
+                excerpt_required:
+                    fields: ['title']
+            validators:
+                # The key of your own validator, returned by its static getKey().
+                my_project_check: ~
+```
+
+Which workflow applies to a content is decided in three steps:
+
+1. The template tag `<tag name="sulu_content.request_workflow" workflow="blog"/>` selects that
+   workflow by name. It always wins, the workflow's `resources` list is not consulted.
+   `workflow="none"` opts the template out of review, so no workflow named `none` may be declared.
+2. Without a tag the `default` workflow applies, if it is declared and its `resources` list is empty
+   or contains the content's resource key.
+3. Otherwise no workflow applies and the content publishes directly.
+
+`resources` is read for the `default` workflow only, so declaring it on a named workflow throws: a
+named workflow is chosen by its template tag, not by resource key.
+
+`request_for_review` on a content that resolves to no workflow is refused with a 422, the content
+stays where it is. The create form offers only "Save as draft"; the review action appears after the
+first save, once the template decides.
+
+`required_approvals` counts validators as well as people: a workflow with one validator and
+`required_approvals: 3` needs the validator plus two human approvals. `0` approves a request the
+moment it is created.
+
+`prevalidators` are synchronous rules checked while `request_for_review` is applied. A failing one
+aborts the transition, so no `WorkflowTransitionRequest` is created and the admin gets a 422 naming
+every field that is still missing, in one line.
+
+`validators` run over the message bus once the request exists and review it like a person does:
+`check()` returns `ValidationDecision::approve(?string $comment)` or
+`ValidationDecision::reject(string $comment)`, the comment is plain text and is shown next to the
+reviewers' comments. An approval counts as one approval. A rejection never blocks the request, it is
+a comment that simply does not count. A reviewer with the `review` permission can run a validator
+again from the review overlay, which resets its row to pending and dispatches the check once more.
+
+A custom validator or prevalidator implements
+`Sulu\Content\Application\RequestWorkflow\Validator\RequestWorkflowValidatorInterface` or
+`...\Prevalidator\RequestWorkflowPrevalidatorInterface`. Both interfaces require a static
+`getKey()`, and autoconfiguration registers the class with that key, so a project needs no service
+definition and no tag at all:
+
+```php
+final class MyProjectCheck implements RequestWorkflowValidatorInterface
+{
+    public static function getKey(): string
+    {
+        return 'my_project_check';
+    }
+
+    public function check(ValidationContext $context): ValidationDecision
+    {
+        return ValidationDecision::approve();
+    }
+}
+```
+
+The key is the only name the check has: it is what the workflow config references, what the reviewer
+row stores and what the retry action sends. It has to be unique across all validators, and across all
+prevalidators. A service tag with a `key` attribute still wins over `getKey()`, which is how a project
+replaces a built-in check with its own. Validators no longer need the `sulu.context: admin` tag: they
+are registered in every container, but only the admin uses them.
+
+The review overlay labels a validator row with the translation key
+`sulu_content.workflow_transition_request.validators.<key>` and falls back to the raw key when no
+catalogue provides it, so add that key to your project's `admin` catalogue to give the check a name
+an editor understands.
+
+To run validators asynchronously, route
+`Sulu\Content\Application\Message\ValidateWorkflowTransitionRequestMessage` to a transport and run a
+worker with `bin/adminconsole messenger:consume`. The validators only exist in the admin context, so
+the website console cannot run them. A check that never answers blocks nothing.
+
+A validator that throws is handled differently depending on where it runs. On a worker the exception
+escapes the handler, so the transport's `retry_strategy` applies and a check that failed on a network
+hiccup gets its retries; only when they are used up is its row stored as a rejection with the comment
+`Check failed: <exception message>`. Validators that already answered keep their verdict, so a retry
+re-runs the failed one only. Inside the author's request, where there is nothing to retry, the
+rejection is stored right away. Either way the manual retry action stays available.
+
+### Request workflow configuration errors are reported at cache:clear
+
+A compiler pass checks the workflow configuration while the admin container is built, so a typo
+surfaces at `bin/adminconsole cache:clear` instead of when an editor sends content to review. It
+reports every template tag `sulu_content.request_workflow` naming a workflow that is not configured,
+every validator and prevalidator key in the configuration that no service registers, and every key
+that two services claim.
+
 ### New `bypass_publish` workflow transition
 
 `Sulu\Content\Domain\Model\WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH` publishes content
@@ -46,6 +151,8 @@ The admin action posts `?action=bypass_publish`; the Page, Article and Snippet c
   `ContentWorkflowInterface` argument.
 - `Sulu\Content\Application\ContentDataMapper\DataMapper\WorkflowDataMapper::__construct` lost its
   `ContentWorkflowInterface` argument: the `edit` transition moved to the persister.
+- `RequestWorkflowValidatorInterface` and `RequestWorkflowPrevalidatorInterface` gained
+  `public static function getKey(): string`.
 
 ## 3.0.9
 
