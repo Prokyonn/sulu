@@ -74,6 +74,27 @@ class SnippetCacheInvalidationSubscriberTest extends TestCase
         $this->subscriber->onWorkflowTransition($event);
     }
 
+    public function testInvalidateTagOnBypassPublish(): void
+    {
+        $snippet = new Snippet('snippet-uuid-bypass');
+
+        $event = new SnippetWorkflowTransitionAppliedEvent(
+            $snippet,
+            WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH,
+            'en'
+        );
+
+        $this->contentAggregator->aggregate($snippet, [
+            'locale' => 'en',
+            'stage' => 'live',
+        ])->willThrow(ContentNotFoundException::class);
+
+        $this->cacheManager->invalidateTag('snippet-uuid-bypass')
+            ->shouldBeCalled();
+
+        $this->subscriber->onWorkflowTransition($event);
+    }
+
     public function testInvalidateTagOnUnpublish(): void
     {
         $snippet = new Snippet('snippet-uuid-789');

@@ -127,7 +127,7 @@ class InitializeHomepageCommand extends Command
         $message = new ApplyWorkflowTransitionPageMessage(
             identifier: ['uuid' => $uuid],
             locale: $locale,
-            transitionName: WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
+            transitionName: WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH,
         );
 
         /** @see ApplyWorkflowTransitionPageMessageHandler */

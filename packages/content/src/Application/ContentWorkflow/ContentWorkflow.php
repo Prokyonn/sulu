@@ -113,25 +113,16 @@ class ContentWorkflow implements ContentWorkflowInterface
     {
         $definitionBuilder = new DefinitionBuilder();
 
-        //                                                           unpublish
-        //                   +--------------------------------------------------------------------------------------------+
-        //                   |                                                                                            |
-        //                   |                              publish                                                       |
-        //                   |     +--------------------------------------------------------+                             |
-        //                   |     |                                                        |                             |
-        //                   |     |                       unpublish                        |           publish           |
-        //                   |     |     +----------------------------------------------+   |   +---------------------+   |
-        //                   V     |     V                                              |   V   V                     |   |
-        // +-----+          +-------------+  request for review  +--------+           +------------+  remove draft  +-------+  request draft for review   +---------------+
-        // |     |  create  |             |--------------------->|        |  publish  |            |<---------------|       |---------------------------->|               |
-        // | New |--------->| Unpublished |                      | Review |---------->| Published  |                | draft |                             | Review draft  |
-        // |     |          |             |<---------------------|        |           |            |--------------->|       |<----------------------------|               |
-        // +-----+          +-------------+       reject         +--------+           +------------+      edit      +-------+        reject draft         +---------------+
-        //                     A   |                                                    A   |    A                    A    |                                      |
-        //                     +---+                                                    +---+    |                    +----+                                      |
-        //                     edit                                                    publish   |                     edit                                       |
-        //                                                                                       |                          publish                               |
-        //                                                                                       +----------------------------------------------------------------+
+        // +-----+   create   +-------------+    request for review    +--------+  publish   +-----------+  remove draft  +-------+  request draft for review  +--------------+
+        // |     |            |             |------------------------->|        |            |           |<---------------|       |--------------------------->|              |
+        // | New |----------->| Unpublished |                          | Review |----------->| Published |                | Draft |                            | Review draft |
+        // |     |            |             |<-------------------------|        |            |           |--------------->|       |<---------------------------|              |
+        // +-----+            +-------------+  reject / cancel review  +--------+            +-----------+      edit      +-------+   reject / cancel draft    +--------------+
+        //
+        // Not drawn, these edges would cross the row:
+        // publish and bypass publish:  from every place to published
+        // unpublish:                   from published and draft to unpublished
+        // edit:                        unpublished -> unpublished, draft -> draft
 
         // Configures places
         $definition = $definitionBuilder
@@ -188,6 +179,33 @@ class ContentWorkflow implements ContentWorkflowInterface
                 WorkflowInterface::WORKFLOW_PLACE_REVIEW_DRAFT,
                 WorkflowInterface::WORKFLOW_PLACE_PUBLISHED
             ))
+            // Publish without the workflow-transition-request guard. Mirrors every `publish` edge so
+            // system publishes and the authorized "bypass review" action work from any place.
+            ->addTransition(new Transition(
+                WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH,
+                WorkflowInterface::WORKFLOW_PLACE_PUBLISHED,
+                WorkflowInterface::WORKFLOW_PLACE_PUBLISHED
+            ))
+            ->addTransition(new Transition(
+                WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH,
+                WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED,
+                WorkflowInterface::WORKFLOW_PLACE_PUBLISHED
+            ))
+            ->addTransition(new Transition(
+                WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH,
+                WorkflowInterface::WORKFLOW_PLACE_REVIEW,
+                WorkflowInterface::WORKFLOW_PLACE_PUBLISHED
+            ))
+            ->addTransition(new Transition(
+                WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH,
+                WorkflowInterface::WORKFLOW_PLACE_DRAFT,
+                WorkflowInterface::WORKFLOW_PLACE_PUBLISHED
+            ))
+            ->addTransition(new Transition(
+                WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH,
+                WorkflowInterface::WORKFLOW_PLACE_REVIEW_DRAFT,
+                WorkflowInterface::WORKFLOW_PLACE_PUBLISHED
+            ))
             // Unpublish published
             ->addTransition(new Transition(
                 WorkflowInterface::WORKFLOW_TRANSITION_UNPUBLISH,
@@ -226,6 +244,18 @@ class ContentWorkflow implements ContentWorkflowInterface
             // Reject a review of a draft
             ->addTransition(new Transition(
                 WorkflowInterface::WORKFLOW_TRANSITION_REJECT_DRAFT,
+                WorkflowInterface::WORKFLOW_PLACE_REVIEW_DRAFT,
+                WorkflowInterface::WORKFLOW_PLACE_DRAFT
+            ))
+            // Cancel a review (creator-initiated; mirrors reject but originates from the request creator)
+            ->addTransition(new Transition(
+                WorkflowInterface::WORKFLOW_TRANSITION_CANCEL_REVIEW,
+                WorkflowInterface::WORKFLOW_PLACE_REVIEW,
+                WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED
+            ))
+            // Cancel a review of a draft (creator-initiated; mirrors reject_draft)
+            ->addTransition(new Transition(
+                WorkflowInterface::WORKFLOW_TRANSITION_CANCEL_REVIEW_DRAFT,
                 WorkflowInterface::WORKFLOW_PLACE_REVIEW_DRAFT,
                 WorkflowInterface::WORKFLOW_PLACE_DRAFT
             ))

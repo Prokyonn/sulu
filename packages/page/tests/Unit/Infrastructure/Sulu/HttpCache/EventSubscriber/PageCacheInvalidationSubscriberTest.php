@@ -103,6 +103,34 @@ class PageCacheInvalidationSubscriberTest extends TestCase
         $this->subscriber->onWorkflowTransition($event);
     }
 
+    public function testInvalidateTagOnBypassPublish(): void
+    {
+        $page = new Page('page-uuid-bypass');
+        $page->setWebspaceKey('sulu_io');
+
+        $event = new PageWorkflowTransitionAppliedEvent(
+            $page,
+            WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH,
+            'en'
+        );
+
+        $this->routeRepository->findBy([
+            'resourceKey' => PageInterface::RESOURCE_KEY,
+            'resourceId' => 'page-uuid-bypass',
+            'locale' => 'en',
+        ])->willReturn([]);
+
+        $this->contentAggregator->aggregate($page, [
+            'locale' => 'en',
+            'stage' => 'live',
+        ])->willThrow(ContentNotFoundException::class);
+
+        $this->cacheManager->invalidateTag('page-uuid-bypass')
+            ->shouldBeCalled();
+
+        $this->subscriber->onWorkflowTransition($event);
+    }
+
     public function testInvalidatePathsOnPublish(): void
     {
         $page = new Page('page-uuid-123');

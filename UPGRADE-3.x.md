@@ -10,6 +10,26 @@ stored permission masks keep their meaning, no bit is renumbered. Existing roles
 set, so nobody can act on a review request until you grant it: add the `review` column in the role
 permission matrix for every security context that should be reviewable.
 
+### New `bypass_publish` workflow transition
+
+`Sulu\Content\Domain\Model\WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH` publishes content
+without consulting the workflow transition request guard: it publishes like `publish`, only the review
+guard does not listen to it. It closes the active request the same way `publish` does.
+
+Use it for system-driven publishes (CLI commands, fixtures, migrations) and for authorized "publish anyway" actions:
+
+```php
+$this->contentWorkflow->apply(
+    $entity,
+    ['locale' => 'en'],
+    WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH,
+);
+```
+
+The admin action posts `?action=bypass_publish`; the Page, Article and Snippet controllers authorize it through `BypassReviewAuthorizerInterface` (LIVE permission) before applying it.
+
+**Implementers of a custom `WorkflowInterface` content workflow:** add the transition to your definition if you want system publishes to bypass review.
+
 ### BC breaks
 
 - `Sulu\Content\Application\ContentPersister\ContentPersister::__construct` gained a

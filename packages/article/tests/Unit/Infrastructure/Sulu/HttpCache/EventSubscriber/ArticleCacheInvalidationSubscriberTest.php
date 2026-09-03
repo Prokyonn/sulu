@@ -113,6 +113,33 @@ class ArticleCacheInvalidationSubscriberTest extends TestCase
         $this->subscriber->onWorkflowTransition($event);
     }
 
+    public function testInvalidateTagOnBypassPublish(): void
+    {
+        $article = new Article('article-uuid-bypass');
+
+        $event = new ArticleWorkflowTransitionAppliedEvent(
+            $article,
+            WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH,
+            'en'
+        );
+
+        $this->routeRepository->findBy([
+            'resourceKey' => ArticleInterface::RESOURCE_KEY,
+            'resourceId' => 'article-uuid-bypass',
+            'locale' => 'en',
+        ])->willReturn([]);
+
+        $this->contentAggregator->aggregate($article, [
+            'locale' => 'en',
+            'stage' => 'live',
+        ])->willThrow(ContentNotFoundException::class);
+
+        $this->cacheManager->invalidateTag('article-uuid-bypass')
+            ->shouldBeCalled();
+
+        $this->subscriber->onWorkflowTransition($event);
+    }
+
     public function testInvalidatePathsOnPublish(): void
     {
         $article = new Article('article-uuid-123');

@@ -57,6 +57,7 @@ class PageCacheInvalidationSubscriber implements EventSubscriberInterface
 
         if (!\in_array($event->getWorkflowTransitionName(), [
             WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH,
+            WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH,
             WorkflowInterface::WORKFLOW_TRANSITION_UNPUBLISH,
         ])) {
             return;

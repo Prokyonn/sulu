@@ -33,6 +33,11 @@ interface WorkflowInterface
 
     public const WORKFLOW_TRANSITION_PUBLISH = 'publish';
 
+    // Publishes without consulting the workflow transition request guard. Used by system-driven
+    // publishes (CLI commands, fixtures) and by the "Bypass review and publish" admin action, which
+    // the controllers authorize before applying it.
+    public const WORKFLOW_TRANSITION_BYPASS_PUBLISH = 'bypass_publish';
+
     public const WORKFLOW_TRANSITION_UNPUBLISH = 'unpublish';
 
     public const WORKFLOW_TRANSITION_CREATE_DRAFT = 'create_draft';
@@ -44,6 +49,10 @@ interface WorkflowInterface
     public const WORKFLOW_TRANSITION_REQUEST_FOR_REVIEW_DRAFT = 'request_for_review_draft';
 
     public const WORKFLOW_TRANSITION_REJECT_DRAFT = 'reject_draft';
+
+    public const WORKFLOW_TRANSITION_CANCEL_REVIEW = 'cancel_review';
+
+    public const WORKFLOW_TRANSITION_CANCEL_REVIEW_DRAFT = 'cancel_review_draft';
 
     public const WORKFLOW_DEFAULT_NAME = 'content_workflow';
 

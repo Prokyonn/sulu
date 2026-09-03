@@ -53,6 +53,7 @@ class PublishTransitionSubscriberTest extends TestCase
 
         $this->assertSame([
             'workflow.content_workflow.transition.publish' => 'onPublish',
+            'workflow.content_workflow.transition.bypass_publish' => 'onPublish',
         ], $contentPublishSubscriber::getSubscribedEvents());
     }
 
