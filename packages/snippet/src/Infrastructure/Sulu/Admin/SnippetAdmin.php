@@ -202,6 +202,7 @@ class SnippetAdmin extends Admin
                         PermissionTypes::EDIT,
                         PermissionTypes::DELETE,
                         PermissionTypes::LIVE,
+                        PermissionTypes::REVIEW,
                     ],
                 ],
             ],

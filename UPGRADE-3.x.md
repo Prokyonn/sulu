@@ -1,5 +1,15 @@
 # Upgrade
 
+## 3.1.0
+
+### New `review` permission type
+
+`Sulu\Component\Security\Authorization\PermissionTypes::REVIEW` adds a `review` permission bit (128,
+above the existing bits) needed to approve, reject or retry a workflow transition request. Existing
+stored permission masks keep their meaning, no bit is renumbered. Existing roles do not have `review`
+set, so nobody can act on a review request until you grant it: add the `review` column in the role
+permission matrix for every security context that should be reviewable.
+
 ## 3.0.9
 
 ### Widened webspace, slug and template key column lengths
