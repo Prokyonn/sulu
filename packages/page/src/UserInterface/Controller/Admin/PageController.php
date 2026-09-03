@@ -559,6 +559,8 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
         }
 
         foreach ($rows as &$row) {
+            // Preserve the original workflow place for the PublishIndicator's `state` prop.
+            $row['workflowPlace'] = $row['publishedState'] ?? null;
             // TODO this should be handled by the listbuilder
             $row['publishedState'] = WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $row['publishedState'];
 

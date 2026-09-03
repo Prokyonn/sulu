@@ -40,7 +40,8 @@
                             "publishedState": false,
                             "linkProvider": null,
                             "hasChildren": true,
-                            "_hasPermissions": false
+                            "_hasPermissions": false,
+                            "workflowPlace": "@string@||@null@"
                         },
                         {
                             "id": "@string@",
@@ -81,13 +82,16 @@
                                         "publishedState": false,
                                         "linkProvider": null,
                                         "hasChildren": false,
-                                        "_hasPermissions": false
+                                        "_hasPermissions": false,
+                                        "workflowPlace": "@string@||@null@"
                                     }
                                 ]
-                            }
+                            },
+                            "workflowPlace": "@string@||@null@"
                         }
                     ]
-                }
+                },
+                "workflowPlace": "@string@||@null@"
             }
         ]
     }

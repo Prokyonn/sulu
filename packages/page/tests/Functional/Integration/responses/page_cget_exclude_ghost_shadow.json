@@ -40,10 +40,12 @@
                             "shadowLocale": null,
                             "template": "default",
                             "title": "Test Page",
-                            "webspaceKey": "sulu-io"
+                            "webspaceKey": "sulu-io",
+                            "workflowPlace": "@string@||@null@"
                         }
                     ]
-                }
+                },
+                "workflowPlace": "@string@||@null@"
             }
         ]
     }

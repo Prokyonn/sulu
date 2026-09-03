@@ -20,7 +20,8 @@
                 "_hasPermissions": false,
                 "_embedded": {
                     "pages": []
-                }
+                },
+                "workflowPlace": "@string@||@null@"
             }
         ]
     }

@@ -133,8 +133,11 @@ final class ArticleController implements SecuredControllerInterface
         /** @var array{_embedded: array{articles: mixed[][]}} $list */
         $list = $listRepresentation->toArray();
         foreach ($list['_embedded']['articles'] as &$item) {
+            // Preserve the original workflow place for the PublishIndicator's `state` prop.
+            $item['workflowPlace'] = $item['publishedState'] ?? null;
             $item['publishedState'] = WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === ($item['publishedState'] ?? null);
         }
+        unset($item);
 
         return new JsonResponse($this->normalizer->normalize(
             $list, // TODO maybe a listener should automatically do that for `sulu_admin` context

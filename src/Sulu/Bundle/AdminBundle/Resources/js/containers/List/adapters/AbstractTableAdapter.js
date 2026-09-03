@@ -54,17 +54,25 @@ export default class AbstractTableAdapter extends AbstractAdapter {
                         />
                     );
                 } else {
-                    if (item.publishedState !== undefined || item.published !== undefined) {
+                    if (item.publishedState !== undefined || item.published !== undefined
+                        || item.workflowPlace !== undefined
+                    ) {
                         const draft = !item.publishedState;
                         const published = !!item.published;
 
-                        if (draft || !published) {
+                        // A fully published item gets no indicator, it would be noise on the common case.
+                        const hasInterestingState = item.workflowPlace !== undefined
+                            ? item.workflowPlace !== 'published'
+                            : (draft || !published);
+
+                        if (hasInterestingState) {
                             indicators.push(
                                 <PublishIndicator
                                     className={abstractTableAdapterStyles.publishIndicator}
                                     draft={draft}
                                     key="publish"
                                     published={published}
+                                    state={item.workflowPlace}
                                 />
                             );
                         }

@@ -178,6 +178,8 @@ The admin action posts `?action=bypass_publish`; the Page, Article and Snippet c
   `ContentWorkflowInterface` argument: the `edit` transition moved to the persister.
 - `RequestWorkflowValidatorInterface` and `RequestWorkflowPrevalidatorInterface` gained
   `public static function getKey(): string`.
+- The `draft` dot of the `PublishIndicator` is grey instead of yellow, yellow now means "in review".
+  This changes the list and form indicators of every project.
 
 ## 3.0.9
 

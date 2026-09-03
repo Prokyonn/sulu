@@ -147,8 +147,11 @@ final class SnippetController implements SecuredControllerInterface
         /** @var array{_embedded: array{snippets: mixed[][]}} $list */
         $list = $listRepresentation->toArray();
         foreach ($list['_embedded']['snippets'] as &$item) {
+            // Preserve the original workflow place for the PublishIndicator's `state` prop.
+            $item['workflowPlace'] = $item['publishedState'] ?? null;
             $item['publishedState'] = WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === ($item['publishedState'] ?? null);
         }
+        unset($item);
 
         return new JsonResponse($this->normalizer->normalize(
             $list, // TODO maybe a listener should automatically do that for `sulu_admin` context
