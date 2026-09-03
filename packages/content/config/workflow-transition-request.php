@@ -13,6 +13,15 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Sulu\Content\Application\ContentWorkflow\Subscriber\WorkflowTransitionRequestCancelTransitionSubscriber;
+use Sulu\Content\Application\ContentWorkflow\Subscriber\WorkflowTransitionRequestPublishGuardSubscriber;
+use Sulu\Content\Application\ContentWorkflow\Subscriber\WorkflowTransitionRequestPublishTransitionSubscriber;
+use Sulu\Content\Application\ContentWorkflow\Subscriber\WorkflowTransitionRequestTransitionSubscriber;
+use Sulu\Content\Application\MessageHandler\ApproveWorkflowTransitionRequestMessageHandler;
+use Sulu\Content\Application\MessageHandler\RejectWorkflowTransitionRequestMessageHandler;
+use Sulu\Content\Application\MessageHandler\ValidateWorkflowTransitionRequestFailureListener;
+use Sulu\Content\Application\MessageHandler\ValidateWorkflowTransitionRequestMessageHandler;
+use Sulu\Content\Application\MessageHandler\WorkerState;
 use Sulu\Content\Application\RequestWorkflow\Prevalidator\Builtin\ExcerptRequiredPrevalidator;
 use Sulu\Content\Application\RequestWorkflow\Prevalidator\Builtin\SeoRequiredPrevalidator;
 use Sulu\Content\Application\RequestWorkflow\RequestWorkflowRegistry;
@@ -22,7 +31,11 @@ use Sulu\Content\Application\RequestWorkflow\RequestWorkflowResolverInterface;
 use Sulu\Content\Domain\Repository\WorkflowTransitionRequestRepositoryInterface;
 use Sulu\Content\Infrastructure\Doctrine\EventListener\CascadeDeleteWorkflowTransitionRequestListener;
 use Sulu\Content\Infrastructure\Doctrine\Repository\WorkflowTransitionRequestRepository;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
+use Symfony\Component\Messenger\Event\WorkerStartedEvent;
+use Symfony\Component\Messenger\Event\WorkerStoppedEvent;
 
 return static function(ContainerConfigurator $container) {
     $services = $container->services();
@@ -60,7 +73,75 @@ return static function(ContainerConfigurator $container) {
 
     $services->alias(RequestWorkflowResolverInterface::class, 'sulu_content.request_workflow_resolver');
 
+    $services->set('sulu_content.workflow_transition_request_transition_subscriber', WorkflowTransitionRequestTransitionSubscriber::class)
+        ->args([
+            new Reference('sulu_content.workflow_transition_request_repository'),
+            new Reference('security.token_storage'),
+            new Reference('sulu_content.request_workflow_resolver'),
+            new Reference('sulu_message_bus'),
+            new Reference('translator'),
+        ])
+        ->tag('kernel.event_subscriber')
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->set('sulu_content.workflow_transition_request_cancel_transition_subscriber', WorkflowTransitionRequestCancelTransitionSubscriber::class)
+        ->args([
+            new Reference('sulu_content.workflow_transition_request_repository'),
+            new Reference('security.token_storage'),
+        ])
+        ->tag('kernel.event_subscriber')
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->set('sulu_content.workflow_transition_request_publish_guard_subscriber', WorkflowTransitionRequestPublishGuardSubscriber::class)
+        ->args([
+            new Reference('sulu_content.workflow_transition_request_repository'),
+            new Reference('sulu_content.request_workflow_resolver'),
+        ])
+        ->tag('kernel.event_subscriber')
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->set('sulu_content.workflow_transition_request_publish_transition_subscriber', WorkflowTransitionRequestPublishTransitionSubscriber::class)
+        ->args([new Reference('sulu_content.workflow_transition_request_repository')])
+        ->tag('kernel.event_subscriber')
+        ->tag('sulu.context', ['context' => 'admin']);
+
     $services->set('sulu_content.workflow_transition_request_cascade_delete_listener', CascadeDeleteWorkflowTransitionRequestListener::class)
         ->tag('doctrine.event_listener', ['event' => 'onFlush'])
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->set('sulu_content.approve_workflow_transition_request_handler', ApproveWorkflowTransitionRequestMessageHandler::class)
+        ->args([
+            new Reference('sulu_content.workflow_transition_request_repository'),
+            new Reference('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE),
+        ])
+        ->tag('messenger.message_handler')
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->set('sulu_content.reject_workflow_transition_request_handler', RejectWorkflowTransitionRequestMessageHandler::class)
+        ->args([
+            new Reference('sulu_content.workflow_transition_request_repository'),
+            new Reference('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE),
+        ])
+        ->tag('messenger.message_handler')
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->set('sulu_content.validate_workflow_transition_request_handler', ValidateWorkflowTransitionRequestMessageHandler::class)
+        ->args([
+            new Reference('sulu_content.workflow_transition_request_repository'),
+            new Reference('sulu_content.request_workflow_registry'),
+            new Reference('logger'),
+            new Reference('sulu_content.worker_state'),
+        ])
+        ->tag('messenger.message_handler')
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->set('sulu_content.worker_state', WorkerState::class)
+        ->tag('kernel.event_listener', ['event' => WorkerStartedEvent::class, 'method' => 'onWorkerStarted'])
+        ->tag('kernel.event_listener', ['event' => WorkerStoppedEvent::class, 'method' => 'onWorkerStopped'])
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->set('sulu_content.validate_workflow_transition_request_failure_listener', ValidateWorkflowTransitionRequestFailureListener::class)
+        ->args([new Reference('sulu_content.workflow_transition_request_repository')])
+        ->tag('kernel.event_listener', ['event' => WorkerMessageFailedEvent::class])
         ->tag('sulu.context', ['context' => 'admin']);
 };
