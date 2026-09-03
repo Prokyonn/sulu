@@ -79,6 +79,7 @@ class FOSJSRoutingControllerTest extends SuluTestCase
             'sulu_contact.get_contact_medias',
             'sulu_contact.get_contacts',
             'sulu_content.get_versions',
+            'sulu_content.get_workflow_transition_request',
             'sulu_custom_url.cget_webspace_custom-urls',
             'sulu_custom_url.get_webspace_custom-urls',
             'sulu_custom_url.get_webspace_custom-urls_routes',

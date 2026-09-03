@@ -2,6 +2,22 @@
 
 ## 3.1.0
 
+### Register `SuluContentBundle` admin API routes
+
+The workflow transition request endpoints (`sulu_content.get_workflow_transition_request`, `sulu_content.post_workflow_transition_request`) live in `@SuluContentBundle/config/routing_admin_api.yaml`. The bundle does not auto-register them, so the file must be imported from your application's admin routing config. Without this import, the admin UI throws `Error: The route "sulu_content.get_workflow_transition_request" does not exist.` when reviewing a publish request.
+
+Add the following entry to `config/routes/sulu_admin.yaml`:
+
+```diff
+ sulu_article_api:
+     resource: "@SuluArticleBundle/config/routing_admin_api.yaml"
+     prefix: /admin/api
+
++sulu_content_api:
++    resource: "@SuluContentBundle/config/routing_admin_api.yaml"
++    prefix: /admin/api
+```
+
 ### New workflow transition request tables
 
 The review flow stores its requests in `wt_workflow_transition_requests` and the reviewers, people and
