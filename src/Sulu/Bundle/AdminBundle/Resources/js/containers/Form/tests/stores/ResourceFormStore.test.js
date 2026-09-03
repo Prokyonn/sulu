@@ -149,6 +149,17 @@ test('Set dirty flag from ResourceStore', () => {
     expect(resourceFormStore.dirty).toEqual(true);
 });
 
+test('Read locked flag from the _locked field of the ResourceStore data', () => {
+    const resourceStore = new ResourceStore('snippets', '1', {locale: observable.box('en')});
+    const resourceFormStore = new ResourceFormStore(resourceStore, 'snippets');
+
+    expect(resourceFormStore.locked).toEqual(false);
+
+    resourceStore.data._locked = true;
+
+    expect(resourceFormStore.locked).toEqual(true);
+});
+
 test('Create data object for schema with sections', () => {
     const metadata = {
         section1: {
@@ -1218,6 +1229,32 @@ test('Save the store should call the resourceStore save function with the passed
     expect(resourceFormStore.resourceStore.save)
         .toHaveBeenCalledWith({option: 'value', option1: 'value1', option2: 'value2'});
     resourceFormStore.destroy();
+});
+
+test('Save the store with the skipValidation option should save invalid data without sending the option', (done) => {
+    const jsonSchemaPromise = Promise.resolve({
+        type: 'object',
+        required: ['title'],
+    });
+    metadataStore.getJsonSchema.mockReturnValue(jsonSchemaPromise);
+
+    const resourceStore = new ResourceStore('snippets', '3');
+    const resourceFormStore = new ResourceFormStore(resourceStore, 'snippets');
+
+    resourceStore.data = observable({});
+    when(
+        () => !resourceFormStore.schemaLoading,
+        (): void => {
+            resourceFormStore.save({action: 'cancel_review'})
+                .catch(() => {
+                    // a locked form cannot be corrected, so the cancel must not go through the schema
+                    resourceFormStore.save({action: 'cancel_review', skipValidation: true});
+                    expect(resourceStore.save).toHaveBeenCalledWith({action: 'cancel_review'});
+                    resourceFormStore.destroy();
+                    done();
+                });
+        }
+    );
 });
 
 test('Save the store should reject if request has failed', (done) => {

@@ -586,7 +586,7 @@ export default withToolbar(Form, function() {
         : undefined;
 
     const items = this.toolbarActions
-        .map((toolbarAction) => toolbarAction.getToolbarItemConfig())
+        .map((toolbarAction) => toolbarAction.getLockAwareToolbarItemConfig())
         .filter((item) => item != null);
 
     const icons = [];

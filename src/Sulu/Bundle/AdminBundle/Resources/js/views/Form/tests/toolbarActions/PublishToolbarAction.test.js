@@ -37,7 +37,7 @@ jest.mock('../../../../containers/Form/stores/ResourceFormStore', () => (
 jest.mock('../../../../services/Router', () => jest.fn());
 
 jest.mock('../../../../views/Form', () => jest.fn(function() {
-    this.submit = jest.fn();
+    this.save = jest.fn();
 }));
 
 function createPublishToolbarAction(options = {}) {
@@ -112,7 +112,26 @@ test('Return empty item config if passed visible_condition is not met', () => {
     expect(publishToolbarAction.getToolbarItemConfig()).toEqual(undefined);
 });
 
-test('Submit form with correct options when button is clicked', () => {
+test('Return item config with disabled button if passed disabled_condition is met', () => {
+    const publishToolbarAction = createPublishToolbarAction({
+        disabled_condition: '!(activeWorkflowTransitionRequest.status == "approved")',
+    });
+    publishToolbarAction.resourceFormStore.resourceStore.dirty = false;
+    publishToolbarAction.resourceFormStore.resourceStore.data.publishedState = false;
+    publishToolbarAction.resourceFormStore.resourceStore.data.activeWorkflowTransitionRequest = {status: 'pending'};
+
+    expect(publishToolbarAction.getToolbarItemConfig()).toEqual(expect.objectContaining({
+        disabled: true,
+    }));
+
+    publishToolbarAction.resourceFormStore.resourceStore.data.activeWorkflowTransitionRequest = {status: 'approved'};
+
+    expect(publishToolbarAction.getToolbarItemConfig()).toEqual(expect.objectContaining({
+        disabled: false,
+    }));
+});
+
+test('Save without schema validation when the button is clicked, because the locked form cannot be fixed', () => {
     const publishToolbarAction = createPublishToolbarAction();
     const toolbarItemConfig = publishToolbarAction.getToolbarItemConfig();
 
@@ -122,5 +141,5 @@ test('Submit form with correct options when button is clicked', () => {
 
     toolbarItemConfig.onClick();
 
-    expect(publishToolbarAction.form.submit).toHaveBeenCalledWith({action: 'publish'});
+    expect(publishToolbarAction.form.save).toHaveBeenCalledWith({action: 'publish', skipValidation: true});
 });
