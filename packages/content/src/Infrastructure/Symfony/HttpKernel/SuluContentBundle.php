@@ -18,6 +18,7 @@ use Sulu\Content\Application\PropertyResolver\Resolver\PropertyResolverMetadataA
 use Sulu\Content\Application\RequestWorkflow\Prevalidator\RequestWorkflowPrevalidatorInterface;
 use Sulu\Content\Application\RequestWorkflow\Validator\RequestWorkflowValidatorInterface;
 use Sulu\Content\Application\ResourceLoader\Loader\ResourceLoaderInterface;
+use Sulu\Content\Domain\Exception\ContentInReviewException;
 use Sulu\Content\Domain\Exception\DuplicateActiveWorkflowTransitionRequestException;
 use Sulu\Content\Domain\Exception\MissingAuthenticatedUserException;
 use Sulu\Content\Domain\Exception\NoRequestWorkflowException;
@@ -194,6 +195,7 @@ final class SuluContentBundle extends AbstractBundle
                             SelfReviewNotAllowedException::class => 403,
                             WorkflowTransitionRequestCancelNotAllowedException::class => 403,
                             WorkflowTransitionRequestClosedException::class => 400,
+                            ContentInReviewException::class => 409,
                             DuplicateActiveWorkflowTransitionRequestException::class => 409,
                             WorkflowTransitionRequestNotApprovedException::class => 409,
                             WorkflowTransitionRequestPrevalidationFailedException::class => 422,

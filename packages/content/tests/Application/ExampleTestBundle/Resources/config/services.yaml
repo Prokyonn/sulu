@@ -22,6 +22,8 @@ services:
             - '@sulu_content.content_manager'
             - '@doctrine.orm.entity_manager'
             - '@example_test.example_repository'
+            - '@sulu_content.bypass_review_authorizer'
+            - '@sulu_content.content_review_lock'
         tags:
             - { name: sulu.context, context: admin }
 
@@ -111,6 +113,15 @@ services:
     Sulu\Bundle\ReferenceBundle\Application\MessageHandler\RefreshReferenceMessageHandler:
         alias: sulu_reference.refresh_reference_message_handler
         public: true
+
+    example_test.example_security_context_provider:
+        class: Sulu\Content\Application\Security\StaticResourceSecurityContextProvider
+        arguments:
+            - 'examples'
+            - 'sulu.example.examples'
+        tags:
+            - { name: 'sulu_content.workflow_transition_request_security_context_provider' }
+            - { name: 'sulu.context', context: 'admin' }
 
     # No tag on purpose: implementing the interface is what registers a validator, and its key comes
     # from the class' static getKey().

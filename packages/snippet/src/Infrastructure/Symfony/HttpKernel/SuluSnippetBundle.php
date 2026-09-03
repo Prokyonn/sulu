@@ -16,6 +16,7 @@ namespace Sulu\Snippet\Infrastructure\Symfony\HttpKernel;
 use Sulu\Bundle\HttpCacheBundle\ReferenceStore\ReferenceStore;
 use Sulu\Bundle\PersistenceBundle\DependencyInjection\PersistenceExtensionTrait;
 use Sulu\Bundle\PersistenceBundle\PersistenceBundleTrait;
+use Sulu\Content\Application\Security\StaticResourceSecurityContextProvider;
 use Sulu\Snippet\Application\Mapper\SnippetContentMapper;
 use Sulu\Snippet\Application\Mapper\SnippetMapperInterface;
 use Sulu\Snippet\Application\MessageHandler\ApplyWorkflowTransitionSnippetMessageHandler;
@@ -226,6 +227,15 @@ final class SuluSnippetBundle extends AbstractBundle
             ])
             ->tag('messenger.message_handler');
 
+        $services->set('sulu_snippet.workflow_transition_request_security_context_provider')
+            ->class(StaticResourceSecurityContextProvider::class)
+            ->args([
+                SnippetInterface::RESOURCE_KEY,
+                SnippetAdmin::SECURITY_CONTEXT,
+            ])
+            ->tag('sulu_content.workflow_transition_request_security_context_provider')
+            ->tag('sulu.context', ['context' => 'admin']);
+
         // Mapper service
         $services->set('sulu_snippet.snippet_content_mapper')
             ->class(SnippetContentMapper::class)
@@ -316,6 +326,8 @@ final class SuluSnippetBundle extends AbstractBundle
                 new Reference('sulu_core.list_builder.field_descriptor_factory'),
                 new Reference('sulu_core.doctrine_list_builder_factory'),
                 new Reference('sulu_core.doctrine_rest_helper'),
+                new Reference('sulu_content.bypass_review_authorizer'),
+                new Reference('sulu_content.content_review_lock'),
                 param(SnippetAreaCompilerPass::SNIPPET_AREA_PARAM),
                 param('sulu_core.is_single_locale'),
             ])

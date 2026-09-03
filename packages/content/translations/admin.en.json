@@ -50,6 +50,7 @@
     "sulu_content.workflow_transition_request.closed": "This workflow transition request has already been closed and cannot be modified.",
     "sulu_content.workflow_transition_request.duplicate_active": "An active workflow transition request already exists for this content.",
     "sulu_content.workflow_transition_request.excerpt_required.missing": "Excerpt fields required before requesting a review: {fields}.",
+    "sulu_content.content_in_review": "This content is in review and cannot be edited. Publish, reject or cancel the review before saving changes.",
     "sulu_content.workflow_transition_request.missing_authenticated_user": "You must be signed in to perform this action.",
     "sulu_content.workflow_transition_request.publish_blocked_no_request": "Publishing is blocked: please create a workflow transition request and have it approved before publishing.",
     "sulu_content.workflow_transition_request.publish_blocked_not_approved": "Publishing is blocked: the active workflow transition request must be approved before publishing.",

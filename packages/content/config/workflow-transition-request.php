@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Sulu\Content\Application\ContentNormalizer\Normalizer\WorkflowTransitionRequestNormalizer;
 use Sulu\Content\Application\ContentWorkflow\Subscriber\WorkflowTransitionRequestCancelTransitionSubscriber;
 use Sulu\Content\Application\ContentWorkflow\Subscriber\WorkflowTransitionRequestPublishGuardSubscriber;
 use Sulu\Content\Application\ContentWorkflow\Subscriber\WorkflowTransitionRequestPublishTransitionSubscriber;
@@ -28,6 +29,14 @@ use Sulu\Content\Application\RequestWorkflow\RequestWorkflowRegistry;
 use Sulu\Content\Application\RequestWorkflow\RequestWorkflowRegistryInterface;
 use Sulu\Content\Application\RequestWorkflow\RequestWorkflowResolver;
 use Sulu\Content\Application\RequestWorkflow\RequestWorkflowResolverInterface;
+use Sulu\Content\Application\Security\BypassReviewAuthorizer;
+use Sulu\Content\Application\Security\BypassReviewAuthorizerInterface;
+use Sulu\Content\Application\Security\WorkflowTransitionRequestSecurityContextResolver;
+use Sulu\Content\Application\Security\WorkflowTransitionRequestSecurityContextResolverInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\ContentReviewLock;
+use Sulu\Content\Application\WorkflowTransitionRequest\ContentReviewLockInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestViewFactory;
+use Sulu\Content\Application\WorkflowTransitionRequest\WorkflowTransitionRequestViewFactoryInterface;
 use Sulu\Content\Domain\Repository\WorkflowTransitionRequestRepositoryInterface;
 use Sulu\Content\Infrastructure\Doctrine\EventListener\CascadeDeleteWorkflowTransitionRequestListener;
 use Sulu\Content\Infrastructure\Doctrine\Repository\WorkflowTransitionRequestRepository;
@@ -72,6 +81,11 @@ return static function(ContainerConfigurator $container) {
         ->tag('sulu.context', ['context' => 'admin']);
 
     $services->alias(RequestWorkflowResolverInterface::class, 'sulu_content.request_workflow_resolver');
+
+    $services->set('sulu_content.workflow_transition_request_view_factory', WorkflowTransitionRequestViewFactory::class)
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->alias(WorkflowTransitionRequestViewFactoryInterface::class, 'sulu_content.workflow_transition_request_view_factory');
 
     $services->set('sulu_content.workflow_transition_request_transition_subscriber', WorkflowTransitionRequestTransitionSubscriber::class)
         ->args([
@@ -144,4 +158,34 @@ return static function(ContainerConfigurator $container) {
         ->args([new Reference('sulu_content.workflow_transition_request_repository')])
         ->tag('kernel.event_listener', ['event' => WorkerMessageFailedEvent::class])
         ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->set('sulu_content.workflow_transition_request_normalizer', WorkflowTransitionRequestNormalizer::class)
+        ->args([
+            new Reference('sulu_content.workflow_transition_request_repository'),
+            new Reference('sulu_content.request_workflow_resolver'),
+            new Reference('sulu_content.workflow_transition_request_view_factory'),
+        ])
+        ->tag('sulu_content.normalizer', ['priority' => 0])
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->set('sulu_content.content_review_lock', ContentReviewLock::class)
+        ->args([new Reference('sulu_content.workflow_transition_request_repository')])
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->alias(ContentReviewLockInterface::class, 'sulu_content.content_review_lock');
+
+    $services->set('sulu_content.workflow_transition_request_security_context_resolver', WorkflowTransitionRequestSecurityContextResolver::class)
+        ->args([tagged_iterator('sulu_content.workflow_transition_request_security_context_provider')])
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->alias(WorkflowTransitionRequestSecurityContextResolverInterface::class, 'sulu_content.workflow_transition_request_security_context_resolver');
+
+    $services->set('sulu_content.bypass_review_authorizer', BypassReviewAuthorizer::class)
+        ->args([
+            new Reference('sulu_content.workflow_transition_request_security_context_resolver'),
+            new Reference('sulu_security.security_checker'),
+        ])
+        ->tag('sulu.context', ['context' => 'admin']);
+
+    $services->alias(BypassReviewAuthorizerInterface::class, 'sulu_content.bypass_review_authorizer');
 };

@@ -33,6 +33,8 @@ use Sulu\Component\Rest\ListBuilder\PaginatedRepresentation;
 use Sulu\Component\Rest\RestHelperInterface;
 use Sulu\Component\Security\SecuredControllerInterface;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Content\Application\Security\BypassReviewAuthorizerInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\ContentReviewLockInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Messenger\Infrastructure\Symfony\Messenger\FlushMiddleware\EnableFlushStamp;
@@ -63,6 +65,8 @@ final class ArticleController implements SecuredControllerInterface
         private FieldDescriptorFactoryInterface $fieldDescriptorFactory,
         private DoctrineListBuilderFactoryInterface $listBuilderFactory,
         private RestHelperInterface $restHelper,
+        private BypassReviewAuthorizerInterface $bypassReviewAuthorizer,
+        private ContentReviewLockInterface $contentReviewLock,
         private bool $isSingleLocale = false,
     ) {
         $this->messageBus = $messageBus;
@@ -229,9 +233,16 @@ final class ArticleController implements SecuredControllerInterface
 
     public function putAction(Request $request, string $id): Response // TODO route should be a uuid?
     {
-        $message = new ModifyArticleMessage(['uuid' => $id], $this->getData($request));
-        /** @see \Sulu\Article\Application\MessageHandler\ModifyArticleMessageHandler */
-        $this->handle(new Envelope($message, [new EnableFlushStamp()]));
+        if ($this->contentReviewLock->shouldPersistContent(
+            ArticleInterface::RESOURCE_KEY,
+            $id,
+            $this->getLocale($request),
+            $request->query->get('action'),
+        )) {
+            $message = new ModifyArticleMessage(['uuid' => $id], $this->getData($request));
+            /** @see \Sulu\Article\Application\MessageHandler\ModifyArticleMessageHandler */
+            $this->handle(new Envelope($message, [new EnableFlushStamp()]));
+        }
 
         $this->handleAction($request, $id);
 
@@ -298,10 +309,13 @@ final class ArticleController implements SecuredControllerInterface
         }
 
         if ('copy_locale' === $action) {
+            $destLocale = (string) $request->query->get('dest');
+            $this->contentReviewLock->assertNotInReview(ArticleInterface::RESOURCE_KEY, $uuid, $destLocale);
+
             $message = new CopyLocaleArticleMessage(
                 ['uuid' => $uuid],
                 (string) ($request->query->get('src') ?: $request->query->get('locale')),
-                (string) $request->query->get('dest'),
+                $destLocale,
             );
 
             /** @see \Sulu\Article\Application\MessageHandler\CopyLocaleArticleMessageHandler */
@@ -322,6 +336,8 @@ final class ArticleController implements SecuredControllerInterface
                 throw new \InvalidArgumentException('The "version" query parameter is required for restoring a version.');
             }
 
+            $this->contentReviewLock->assertNotInReview(ArticleInterface::RESOURCE_KEY, $uuid, $this->getLocale($request));
+
             $message = new RestoreArticleVersionMessage(
                 ['uuid' => $uuid],
                 $version,
@@ -333,6 +349,10 @@ final class ArticleController implements SecuredControllerInterface
             /** @var ArticleInterface|null */
             return $this->handle(new Envelope($message, [new EnableFlushStamp()]));
         }
+        if (WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH === $action) {
+            $this->bypassReviewAuthorizer->assertCanBypass(ArticleInterface::RESOURCE_KEY, $uuid);
+        }
+
         $message = new ApplyWorkflowTransitionArticleMessage(['uuid' => $uuid], $this->getLocale($request), $action);
 
         /** @see \Sulu\Article\Application\MessageHandler\ApplyWorkflowTransitionArticleMessageHandler */

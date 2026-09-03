@@ -20,6 +20,8 @@ use Sulu\Component\Rest\ListBuilder\PaginatedRepresentation;
 use Sulu\Component\Rest\RestHelperInterface;
 use Sulu\Component\Security\SecuredControllerInterface;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Content\Application\Security\BypassReviewAuthorizerInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\ContentReviewLockInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Messenger\Infrastructure\Symfony\Messenger\FlushMiddleware\EnableFlushStamp;
@@ -66,6 +68,8 @@ final class SnippetController implements SecuredControllerInterface
         private FieldDescriptorFactoryInterface $fieldDescriptorFactory,
         private DoctrineListBuilderFactoryInterface $listBuilderFactory,
         private RestHelperInterface $restHelper,
+        private BypassReviewAuthorizerInterface $bypassReviewAuthorizer,
+        private ContentReviewLockInterface $contentReviewLock,
         private array $snippetAreas = [],
         private bool $isSingleLocale = false,
     ) {
@@ -243,9 +247,16 @@ final class SnippetController implements SecuredControllerInterface
 
     public function putAction(Request $request, string $id): Response // TODO route should be a uuid?
     {
-        $message = new ModifySnippetMessage(['uuid' => $id], $this->getData($request));
-        /** @see \Sulu\Snippet\Application\MessageHandler\ModifySnippetMessageHandler */
-        $this->handle(new Envelope($message, [new EnableFlushStamp()]));
+        if ($this->contentReviewLock->shouldPersistContent(
+            SnippetInterface::RESOURCE_KEY,
+            $id,
+            $this->getLocale($request),
+            $request->query->get('action'),
+        )) {
+            $message = new ModifySnippetMessage(['uuid' => $id], $this->getData($request));
+            /** @see \Sulu\Snippet\Application\MessageHandler\ModifySnippetMessageHandler */
+            $this->handle(new Envelope($message, [new EnableFlushStamp()]));
+        }
 
         $this->handleAction($request, $id);
 
@@ -312,10 +323,13 @@ final class SnippetController implements SecuredControllerInterface
         }
 
         if ('copy_locale' === $action) {
+            $destLocale = (string) $request->query->get('dest');
+            $this->contentReviewLock->assertNotInReview(SnippetInterface::RESOURCE_KEY, $uuid, $destLocale);
+
             $message = new CopyLocaleSnippetMessage(
                 ['uuid' => $uuid],
                 (string) ($request->query->get('src') ?: $request->query->get('locale')),
-                (string) $request->query->get('dest')
+                $destLocale
             );
 
             /** @see \Sulu\Snippet\Application\MessageHandler\CopyLocaleSnippetMessageHandler */
@@ -336,6 +350,8 @@ final class SnippetController implements SecuredControllerInterface
                 throw new \InvalidArgumentException('The "version" query parameter is required for restoring a version.');
             }
 
+            $this->contentReviewLock->assertNotInReview(SnippetInterface::RESOURCE_KEY, $uuid, $this->getLocale($request));
+
             $message = new RestoreSnippetVersionMessage(
                 ['uuid' => $uuid],
                 $version,
@@ -347,6 +363,10 @@ final class SnippetController implements SecuredControllerInterface
             /** @var SnippetInterface|null */
             return $this->handle(new Envelope($message, [new EnableFlushStamp()]));
         } else {
+            if (WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH === $action) {
+                $this->bypassReviewAuthorizer->assertCanBypass(SnippetInterface::RESOURCE_KEY, $uuid);
+            }
+
             $message = new ApplyWorkflowTransitionSnippetMessage(['uuid' => $uuid], $this->getLocale($request), $action);
 
             /** @see \Sulu\Snippet\Application\MessageHandler\ApplyWorkflowTransitionSnippetMessageHandler */

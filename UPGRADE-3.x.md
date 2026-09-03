@@ -125,6 +125,15 @@ reports every template tag `sulu_content.request_workflow` naming a workflow tha
 every validator and prevalidator key in the configuration that no service registers, and every key
 that two services claim.
 
+### Content is locked while a review is open
+
+While a request is open the content is read-only for everyone: `PUT` on the resource, the
+`copy_locale` action for every destination locale and the `restore` action all answer 409. Only the
+transitions that end a review get through (`publish`, `bypass_publish`, `reject`, `reject_draft`,
+`cancel_review`, `cancel_review_draft`), and they carry no content changes. Because of the lock the
+publish guard no longer re-evaluates content-dependent rules before publishing, it only asserts the
+request was approved.
+
 ### New `bypass_publish` workflow transition
 
 `Sulu\Content\Domain\Model\WorkflowInterface::WORKFLOW_TRANSITION_BYPASS_PUBLISH` publishes content

@@ -81,6 +81,7 @@ use Sulu\Page\Infrastructure\Sulu\Search\Visitor\WebsitePageReindexTaxonomyEnhan
 use Sulu\Page\Infrastructure\Sulu\Search\WebsitePageIndexListener;
 use Sulu\Page\Infrastructure\Sulu\Search\WebsitePageReindexProvider;
 use Sulu\Page\Infrastructure\Sulu\Security\PageDescendantSecurityListener;
+use Sulu\Page\Infrastructure\Sulu\Security\PageSecurityContextProvider;
 use Sulu\Page\Infrastructure\Sulu\Security\PageSecurityListener;
 use Sulu\Page\Infrastructure\Sulu\Sitemap\PagesSitemapProvider;
 use Sulu\Page\Infrastructure\Sulu\Trash\PageTrashItemHandler;
@@ -260,6 +261,14 @@ final class SuluPageBundle extends AbstractBundle
             ])
             ->tag('messenger.message_handler');
 
+        $services->set('sulu_page.workflow_transition_request_security_context_provider')
+            ->class(PageSecurityContextProvider::class)
+            ->args([
+                new Reference('sulu_page.page_repository'),
+            ])
+            ->tag('sulu_content.workflow_transition_request_security_context_provider')
+            ->tag('sulu.context', ['context' => 'admin']);
+
         // Mapper service
         $services->set('sulu_page.page_content_mapper')
             ->class(PageContentMapper::class)
@@ -431,6 +440,8 @@ final class SuluPageBundle extends AbstractBundle
                 new Reference('security.token_storage'),
                 new Reference('sulu_core.webspace.webspace_manager'),
                 new Reference('sulu_security.security_checker'),
+                new Reference('sulu_content.bypass_review_authorizer'),
+                new Reference('sulu_content.content_review_lock'),
                 param('sulu_core.is_single_locale'),
             ])
             ->tag('sulu.context', ['context' => 'admin']);

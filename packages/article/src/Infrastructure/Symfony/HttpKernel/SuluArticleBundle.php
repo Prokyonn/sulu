@@ -70,6 +70,7 @@ use Sulu\Article\UserInterface\Controller\Admin\ArticleController;
 use Sulu\Bundle\HttpCacheBundle\ReferenceStore\ReferenceStore;
 use Sulu\Bundle\PersistenceBundle\DependencyInjection\PersistenceExtensionTrait;
 use Sulu\Bundle\PersistenceBundle\PersistenceBundleTrait;
+use Sulu\Content\Application\Security\StaticResourceSecurityContextProvider;
 use Sulu\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -244,6 +245,15 @@ final class SuluArticleBundle extends AbstractBundle
             ])
             ->tag('messenger.message_handler');
 
+        $services->set('sulu_article.workflow_transition_request_security_context_provider')
+            ->class(StaticResourceSecurityContextProvider::class)
+            ->args([
+                ArticleInterface::RESOURCE_KEY,
+                ArticleAdmin::SECURITY_CONTEXT,
+            ])
+            ->tag('sulu_content.workflow_transition_request_security_context_provider')
+            ->tag('sulu.context', ['context' => 'admin']);
+
         $services->set('sulu_article.article_content_mapper')
             ->class(ArticleContentMapper::class)
             ->args([
@@ -306,6 +316,8 @@ final class SuluArticleBundle extends AbstractBundle
                 new Reference('sulu_core.list_builder.field_descriptor_factory'),
                 new Reference('sulu_core.doctrine_list_builder_factory'),
                 new Reference('sulu_core.doctrine_rest_helper'),
+                new Reference('sulu_content.bypass_review_authorizer'),
+                new Reference('sulu_content.content_review_lock'),
                 param('sulu_core.is_single_locale'),
             ])
             ->tag('sulu.context', ['context' => 'admin']);
