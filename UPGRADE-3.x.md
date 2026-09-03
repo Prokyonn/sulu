@@ -2,6 +2,16 @@
 
 ## 3.1.0
 
+### New workflow transition request tables
+
+The review flow stores its requests in `wt_workflow_transition_requests` and the reviewers, people and
+validators alike, in `wt_workflow_transition_request_reviewers`. Run the new migration to apply the
+schema change:
+
+```bash
+bin/console doctrine:migrations:migrate
+```
+
 ### New `review` permission type
 
 `Sulu\Component\Security\Authorization\PermissionTypes::REVIEW` adds a `review` permission bit (128,

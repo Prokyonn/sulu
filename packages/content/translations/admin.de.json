@@ -45,5 +45,8 @@
     "sulu_content.schedules_label": "Zeitfenster zuweisen",
     "sulu_content.schedules_description": "Der Block wird nur angezeigt, wenn mindestens einer der Bedingungen erfüllt wird.",
     "sulu_content.add_schedule": "Zeitfenster hinzufügen",
-    "sulu_content.changelog": "Änderungshistorie"
+    "sulu_content.changelog": "Änderungshistorie",
+    "sulu_content.workflow_transition_request.cancel_not_allowed": "Nur die Person, die die Prüfung angefragt hat, kann sie abbrechen.",
+    "sulu_content.workflow_transition_request.closed": "Diese Veröffentlichungsanfrage ist bereits abgeschlossen und kann nicht mehr bearbeitet werden.",
+    "sulu_content.workflow_transition_request.self_review_not_allowed": "Sie können eine selbst erstellte Veröffentlichungsanfrage nicht selbst prüfen."
 }
