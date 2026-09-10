@@ -70,6 +70,8 @@ alone: `live` does not imply it.
 
 - The permission mask meaning "everything" is 255, not 127: `PermissionTypes::REVIEW` occupies bit
   128. Code comparing a mask against 127 to mean full access has to be updated.
+- The `draft` dot of the `PublishIndicator` is grey instead of yellow, yellow now means "in review".
+  This changes the list and form indicators of every project.
 - `ApplyWorkflowTransitionPageMessageHandler::__construct` and its article and snippet siblings gained
   an optional `WorkflowTransitionAuthorizerInterface` argument.
 ## 3.0.9
