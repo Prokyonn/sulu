@@ -5,16 +5,21 @@ import {observer} from 'mobx-react';
 import equals from 'fast-deep-equal';
 import log from 'loglevel';
 import Dialog from '../../components/Dialog';
+import {ERROR_CODE_PRE_VALIDATION_FAILED} from '../../constants';
 import PublishIndicator from '../../components/PublishIndicator';
 import {default as FormContainer, ResourceFormStore, resourceFormStoreFactory} from '../../containers/Form';
 import {withToolbar} from '../../containers/Toolbar';
 import ResourceStore from '../../stores/ResourceStore';
 import CollaborationStore from '../../stores/CollaborationStore';
+import getWorkflowDots from '../../utils/getWorkflowDots';
 import {translate} from '../../utils/Translator';
 import {Route} from '../../services/Router';
+import PreValidationOverlay from './components/PreValidationOverlay';
+import WorkflowTransitionRequestTimeline from './components/WorkflowTransitionRequestTimeline';
 import formToolbarActionRegistry from './registries/formToolbarActionRegistry';
 import AbstractFormToolbarAction from './toolbarActions/AbstractFormToolbarAction';
 import formStyles from './form.scss';
+import type {PreValidationResult} from './components/types';
 import type {ToolbarErrorType} from '../../containers/Toolbar/types';
 import type {AttributeMap, UpdateRouteMethod} from '../../services/Router/types';
 import type {ViewProps} from '../../containers/ViewRenderer';
@@ -40,6 +45,7 @@ class Form extends React.Component<Props> {
     form: ?ElementRef<typeof FormContainer>;
     @observable errors: Array<ToolbarErrorType> = [];
     @observable warnings: Array<ToolbarErrorType> = [];
+    @observable preValidationResults: Array<PreValidationResult> = [];
     showSuccess: IObservableValue<boolean> = observable.box(false);
     @observable toolbarActions: Array<AbstractFormToolbarAction> = [];
     @observable showDirtyWarning: boolean = false;
@@ -423,6 +429,26 @@ class Form extends React.Component<Props> {
                     return;
                 }
 
+                // Every check travels as its own row, so the overlay lists them the way the review
+                // overlay lists reviewers instead of squeezing them into one snackbar line.
+                if (error.code === ERROR_CODE_PRE_VALIDATION_FAILED && error.preValidationResults) {
+                    this.preValidationResults = error.preValidationResults;
+
+                    // A create has to take over the id the error carries, or the retry posts the
+                    // same content again and creates a second resource.
+                    if (!resourceStore.id && error.id) {
+                        resourceStore.set('id', error.id);
+                    }
+
+                    // The content is written before the transition is applied, so a refused
+                    // transition leaves it saved and the store has to catch up: without this the
+                    // next save sends a stale `_hash` and trips the has-changed dialog, and the
+                    // form never learns that a workflow covers it. A no-op without an id.
+                    resourceStore.reload();
+
+                    return;
+                }
+
                 this.errors.push(error.detail || error.title || translate('sulu_admin.form_save_server_error'));
             }));
     };
@@ -465,6 +491,10 @@ class Form extends React.Component<Props> {
         this.errors.push(translate('sulu_admin.form_contains_invalid_values'));
     };
 
+    @action handlePreValidationClose = () => {
+        this.preValidationResults = [];
+    };
+
     @action clearErrors = () => {
         this.errors.splice(0, this.errors.length);
     };
@@ -505,6 +535,16 @@ class Form extends React.Component<Props> {
 
     setFormRef = (form: ?ElementRef<typeof FormContainer>) => {
         this.form = form;
+    };
+
+    handleWorkflowTransitionRequestCancel = () => {
+        const cancelTransition = this.resourceFormStore.data.workflowPlace === 'review_draft'
+            ? 'cancel_review_draft'
+            : 'cancel_review';
+
+        // Every field is disabled while the request is open, so a draft that violates the schema could
+        // never be cancelled if the cancel went through the schema validation.
+        this.save({action: cancelTransition, skipValidation: true});
     };
 
     render() {
@@ -551,6 +591,11 @@ class Form extends React.Component<Props> {
                 >
                     {translate('sulu_admin.has_changed_warning_dialog_text')}
                 </Dialog>
+                <PreValidationOverlay
+                    onClose={this.handlePreValidationClose}
+                    open={this.preValidationResults.length > 0}
+                    results={this.preValidationResults}
+                />
             </div>
         );
     }
@@ -586,20 +631,39 @@ export default withToolbar(Form, function() {
         : undefined;
 
     const items = this.toolbarActions
-        .map((toolbarAction) => toolbarAction.getToolbarItemConfig())
+        .map((toolbarAction) => toolbarAction.getLockAwareToolbarItemConfig())
         .filter((item) => item != null);
 
     const icons = [];
     const formData = this.resourceFormStore.data;
 
-    if (formData.hasOwnProperty('publishedState') || formData.hasOwnProperty('published')) {
-        const {publishedState, published} = formData;
-        icons.push(
+    if (formData.hasOwnProperty('publishedState') || formData.hasOwnProperty('published')
+        || formData.hasOwnProperty('workflowPlace')
+    ) {
+        const {publishedState, published, workflowPlace} = formData;
+        const activeWorkflowTransitionRequest = formData.activeWorkflowTransitionRequest;
+
+        const indicator = (
             <PublishIndicator
-                draft={publishedState === undefined ? false : !publishedState}
-                key="publish"
-                published={published === undefined ? false : !!published}
+                {...getWorkflowDots(
+                    workflowPlace,
+                    publishedState === undefined ? false : !publishedState,
+                    published === undefined ? false : !!published
+                )}
             />
+        );
+
+        icons.push(
+            activeWorkflowTransitionRequest
+                ? (
+                    <WorkflowTransitionRequestTimeline
+                        key="publish"
+                        request={activeWorkflowTransitionRequest}
+                    >
+                        {indicator}
+                    </WorkflowTransitionRequestTimeline>
+                )
+                : React.cloneElement(indicator, {key: 'publish'})
         );
     }
 
@@ -612,6 +676,36 @@ export default withToolbar(Form, function() {
     }
     warnings.push(...this.warnings);
 
+    if (this.resourceFormStore.locked) {
+        const activeWorkflowTransitionRequest = formData.activeWorkflowTransitionRequest;
+        const status = activeWorkflowTransitionRequest && activeWorkflowTransitionRequest.status;
+
+        const message = status === 'approved'
+            ? translate('sulu_content.workflow_transition_request.banner_approved')
+            : translate('sulu_content.workflow_transition_request.banner_pending');
+
+        // Cancelling frees the content for editing again, so like the server it takes the edit
+        // permission. Articles and snippets carry no `_permissions`, so a missing map grants.
+        const canCancel = !!activeWorkflowTransitionRequest
+            && (!formData._permissions || !!formData._permissions.edit);
+
+        warnings.push({
+            actions: canCancel
+                ? [{
+                    label: translate('sulu_content.workflow_transition_request.cancel_request_action'),
+                    onClick: this.handleWorkflowTransitionRequestCancel,
+                }]
+                : [],
+            message,
+            title: translate('sulu_content.workflow_transition_request.banner_title'),
+        });
+    }
+
+    // Only the last warning is rendered, and closing it pops from this.warnings, so the close
+    // action must disappear as soon as another source appended a warning after those.
+    const displayedWarningClosable = this.warnings.length > 0
+        && warnings[warnings.length - 1] === this.warnings[this.warnings.length - 1];
+
     return {
         backButton,
         errors,
@@ -620,6 +714,6 @@ export default withToolbar(Form, function() {
         icons,
         showSuccess,
         warnings,
-        onWarningCloseClick: this.warnings.length > 0 ? this.handleWarningCloseClick : undefined,
+        onWarningCloseClick: displayedWarningClosable ? this.handleWarningCloseClick : undefined,
     };
 });

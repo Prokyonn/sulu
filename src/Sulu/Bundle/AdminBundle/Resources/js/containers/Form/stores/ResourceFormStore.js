@@ -221,11 +221,13 @@ export default class ResourceFormStore extends AbstractFormStore implements Form
     }
 
     @action save(options: Object = {}): Promise<Object> {
-        if (!this.validate()) {
+        const {skipValidation, ...requestOptions} = options;
+
+        if (!skipValidation && !this.validate()) {
             return Promise.reject('Errors occured when trying to save the data from the FormStore');
         }
 
-        return this.resourceStore.save({...this.options, ...options}).then((response) => {
+        return this.resourceStore.save({...this.options, ...requestOptions}).then((response) => {
             const {modifiedFields} = this;
             modifiedFields.splice(0, modifiedFields.length);
             return response;
@@ -327,6 +329,11 @@ export default class ResourceFormStore extends AbstractFormStore implements Form
 
     set dirty(dirty: boolean) {
         this.resourceStore.dirty = dirty;
+    }
+
+    /** True when the backend marked this resource read-only, e.g. by an active transition request. */
+    @computed get locked(): boolean {
+        return !!this.data._locked;
     }
 
     @action setSchemaLoading(schemaLoading: boolean) {
