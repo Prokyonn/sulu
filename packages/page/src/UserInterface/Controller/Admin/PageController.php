@@ -30,6 +30,8 @@ use Sulu\Component\Security\SecuredControllerInterface;
 use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
 use Sulu\Component\Webspace\Webspace;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\ContentReviewLockInterface;
+use Sulu\Content\Domain\Exception\WorkflowTransitionRequestPreValidationFailedException;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Messenger\Infrastructure\Symfony\Messenger\FlushMiddleware\EnableFlushStamp;
@@ -79,6 +81,7 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
         private WebspaceManagerInterface $webspaceManager,
         private SecurityCheckerInterface $securityChecker,
         private bool $isSingleLocale = false,
+        private ?ContentReviewLockInterface $contentReviewLock = null,
     ) {
         // TODO controller should not need more then Repository, MessageBus, Serializer
     }
@@ -223,7 +226,13 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
         $page = $this->handle(new Envelope($message, [new EnableFlushStamp()]));
         $uuid = $page->getUuid();
 
-        $this->handleAction($request, $uuid);
+        try {
+            $this->handleAction($request, $uuid);
+        } catch (WorkflowTransitionRequestPreValidationFailedException $exception) {
+            // The page is created and flushed by now, so the id has to reach the client or the next
+            // save posts the same content again and creates a second page.
+            throw $exception->withResourceId($uuid);
+        }
 
         $response = $this->getAction($request, $uuid);
 
@@ -232,9 +241,16 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
 
     public function putAction(Request $request, string $id): Response // TODO route should be a uuid?
     {
-        $message = new ModifyPageMessage(['uuid' => $id], $this->getData($request));
-        /** @see \Sulu\Page\Application\MessageHandler\ModifyPageMessageHandler */
-        $this->handle(new Envelope($message, [new EnableFlushStamp()]));
+        if (null === $this->contentReviewLock || $this->contentReviewLock->shouldPersistContent(
+            PageInterface::RESOURCE_KEY,
+            $id,
+            $this->getLocale($request),
+            $request->query->get('action'),
+        )) {
+            $message = new ModifyPageMessage(['uuid' => $id], $this->getData($request));
+            /** @see \Sulu\Page\Application\MessageHandler\ModifyPageMessageHandler */
+            $this->handle(new Envelope($message, [new EnableFlushStamp()]));
+        }
 
         $this->handleAction($request, $id);
 
@@ -305,6 +321,10 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
             $srcLocale = (string) ($request->query->get('src') ?: $request->query->get('locale'));
             $destLocales = \array_filter(\array_map('trim', \explode(',', (string) $request->query->get('dest'))));
 
+            foreach ($destLocales as $destLocale) {
+                $this->contentReviewLock?->assertNotInReview(PageInterface::RESOURCE_KEY, $uuid, $destLocale);
+            }
+
             $result = null;
             foreach ($destLocales as $destLocale) {
                 $message = new CopyLocalePageMessage(
@@ -349,6 +369,8 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
             if (!$version) {
                 throw new \InvalidArgumentException('The "version" query parameter is required for restoring a version.');
             }
+
+            $this->contentReviewLock?->assertNotInReview(PageInterface::RESOURCE_KEY, $uuid, $this->getLocale($request));
 
             $message = new RestorePageVersionMessage(
                 ['uuid' => $uuid],
@@ -538,6 +560,8 @@ final class PageController implements SecuredControllerInterface, SecuredObjectC
         }
 
         foreach ($rows as &$row) {
+            // Keep the raw place, the indicator dots need it and `publishedState` becomes a boolean below.
+            $row['workflowPlace'] = $row['publishedState'] ?? null;
             // TODO this should be handled by the listbuilder
             $row['publishedState'] = WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $row['publishedState'];
 

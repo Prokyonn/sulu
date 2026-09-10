@@ -16,6 +16,7 @@ namespace Sulu\Snippet\Infrastructure\Symfony\HttpKernel;
 use Sulu\Bundle\HttpCacheBundle\ReferenceStore\ReferenceStore;
 use Sulu\Bundle\PersistenceBundle\DependencyInjection\PersistenceExtensionTrait;
 use Sulu\Bundle\PersistenceBundle\PersistenceBundleTrait;
+use Sulu\Content\Infrastructure\Sulu\Security\ResourceSecurityContextProvider;
 use Sulu\Snippet\Application\Mapper\SnippetContentMapper;
 use Sulu\Snippet\Application\Mapper\SnippetMapperInterface;
 use Sulu\Snippet\Application\MessageHandler\ApplyWorkflowTransitionSnippetMessageHandler;
@@ -177,6 +178,7 @@ final class SuluSnippetBundle extends AbstractBundle
                 new Reference('sulu_snippet.snippet_repository'),
                 new Reference('sulu_content.content_workflow'),
                 new Reference('sulu_activity.domain_event_collector'),
+                new Reference('sulu_content.workflow_transition_authorizer', ContainerInterface::NULL_ON_INVALID_REFERENCE),
             ])
             ->tag('messenger.message_handler');
 
@@ -225,6 +227,16 @@ final class SuluSnippetBundle extends AbstractBundle
                 new Reference('sulu_activity.domain_event_collector'),
             ])
             ->tag('messenger.message_handler');
+
+        $services->set('sulu_snippet.workflow_transition_request_security_context_provider')
+            ->class(ResourceSecurityContextProvider::class)
+            ->args([
+                new Reference('doctrine.orm.entity_manager'),
+                '%sulu.model.snippet.class%',
+                SnippetAdmin::SECURITY_CONTEXT,
+            ])
+            ->tag('sulu_content.workflow_transition_request_security_context_provider', ['resource-key' => SnippetInterface::RESOURCE_KEY])
+            ->tag('sulu.context', ['context' => 'admin']);
 
         // Mapper service
         $services->set('sulu_snippet.snippet_content_mapper')
@@ -322,6 +334,7 @@ final class SuluSnippetBundle extends AbstractBundle
                 new Reference('sulu_core.doctrine_rest_helper'),
                 param(SnippetAreaCompilerPass::SNIPPET_AREA_PARAM),
                 param('sulu_core.is_single_locale'),
+                new Reference('sulu_content.content_review_lock'),
             ])
             ->tag('sulu.context', ['context' => 'admin']);
 

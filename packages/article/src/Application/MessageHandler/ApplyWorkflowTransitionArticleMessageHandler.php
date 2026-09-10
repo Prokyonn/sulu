@@ -18,7 +18,9 @@ use Sulu\Article\Domain\Model\ArticleInterface;
 use Sulu\Article\Domain\Repository\ArticleRepositoryInterface;
 use Sulu\Bundle\ActivityBundle\Application\Collector\DomainEventCollectorInterface;
 use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
+use Sulu\Content\Application\Security\WorkflowTransitionAuthorizerInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Content\Infrastructure\Doctrine\DimensionContentQueryEnhancer;
 
 /**
@@ -32,6 +34,7 @@ final class ApplyWorkflowTransitionArticleMessageHandler
         private ContentWorkflowInterface $contentWorkflow,
         private EntityManagerInterface $entityManager,
         private DomainEventCollectorInterface $domainEventCollector,
+        private ?WorkflowTransitionAuthorizerInterface $workflowTransitionAuthorizer = null,
     ) {
     }
 
@@ -49,6 +52,17 @@ final class ApplyWorkflowTransitionArticleMessageHandler
             $this->entityManager->refresh($article);
 
             $article = $this->loadArticle($message, [$locale, ...$relatedLocales]);
+        }
+
+        // Authorized here so every caller of the bus is covered; null outside the admin context.
+        // Relies on the message staying synchronous: on a worker there is no token to check.
+        if (WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH === $message->getTransitionName()) {
+            $this->workflowTransitionAuthorizer?->assertCanPublish(ArticleInterface::RESOURCE_KEY, $article->getUuid(), $message->getLocale());
+        } elseif (\in_array($message->getTransitionName(), [
+            WorkflowInterface::WORKFLOW_TRANSITION_REJECT,
+            WorkflowInterface::WORKFLOW_TRANSITION_REJECT_DRAFT,
+        ], true)) {
+            $this->workflowTransitionAuthorizer?->assertCanReject(ArticleInterface::RESOURCE_KEY, $article->getUuid(), $message->getLocale());
         }
 
         $this->contentWorkflow->apply(

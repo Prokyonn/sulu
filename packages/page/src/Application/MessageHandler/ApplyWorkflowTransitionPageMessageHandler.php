@@ -14,7 +14,9 @@ namespace Sulu\Page\Application\MessageHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ActivityBundle\Application\Collector\DomainEventCollectorInterface;
 use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
+use Sulu\Content\Application\Security\WorkflowTransitionAuthorizerInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Content\Infrastructure\Doctrine\DimensionContentQueryEnhancer;
 use Sulu\Page\Application\Message\ApplyWorkflowTransitionPageMessage;
 use Sulu\Page\Domain\Event\PageWorkflowTransitionAppliedEvent;
@@ -32,6 +34,7 @@ final class ApplyWorkflowTransitionPageMessageHandler
         private ContentWorkflowInterface $contentWorkflow,
         private EntityManagerInterface $entityManager,
         private DomainEventCollectorInterface $domainEventCollector,
+        private ?WorkflowTransitionAuthorizerInterface $workflowTransitionAuthorizer = null,
     ) {
     }
 
@@ -49,6 +52,17 @@ final class ApplyWorkflowTransitionPageMessageHandler
             $this->entityManager->refresh($page);
 
             $page = $this->loadPage($message, [$locale, ...$relatedLocales]);
+        }
+
+        // Authorized here so every caller of the bus is covered; null outside the admin context.
+        // Relies on the message staying synchronous: on a worker there is no token to check.
+        if (WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH === $message->getTransitionName()) {
+            $this->workflowTransitionAuthorizer?->assertCanPublish(PageInterface::RESOURCE_KEY, $page->getUuid(), $locale);
+        } elseif (\in_array($message->getTransitionName(), [
+            WorkflowInterface::WORKFLOW_TRANSITION_REJECT,
+            WorkflowInterface::WORKFLOW_TRANSITION_REJECT_DRAFT,
+        ], true)) {
+            $this->workflowTransitionAuthorizer?->assertCanReject(PageInterface::RESOURCE_KEY, $page->getUuid(), $locale);
         }
 
         $this->contentWorkflow->apply(
