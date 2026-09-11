@@ -61,7 +61,8 @@
                                         "publishedState": false,
                                         "linkProvider": null,
                                         "hasChildren": false,
-                                        "_hasPermissions": false
+                                        "_hasPermissions": false,
+                                        "workflowPlace": "@string@||@null@"
                                     },
                                     {
                                         "id": "@string@",
@@ -81,7 +82,8 @@
                                         "publishedState": false,
                                         "linkProvider": null,
                                         "hasChildren": false,
-                                        "_hasPermissions": false
+                                        "_hasPermissions": false,
+                                        "workflowPlace": "@string@||@null@"
                                     },
                                     {
                                         "id": "@string@",
@@ -101,7 +103,8 @@
                                         "publishedState": false,
                                         "linkProvider": null,
                                         "hasChildren": false,
-                                        "_hasPermissions": false
+                                        "_hasPermissions": false,
+                                        "workflowPlace": "@string@||@null@"
                                     },
                                     {
                                         "version" : 0,
@@ -121,13 +124,16 @@
                                         "template": "default",
                                         "title": "Test Page",
                                         "webspaceKey": "sulu-io",
-                                        "_hasPermissions": false
+                                        "_hasPermissions": false,
+                                        "workflowPlace": "@string@||@null@"
                                     }
                                 ]
-                            }
+                            },
+                            "workflowPlace": "@string@||@null@"
                         }
                     ]
-                }
+                },
+                "workflowPlace": "@string@||@null@"
             }
         ]
     }

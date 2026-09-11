@@ -61,7 +61,8 @@
                                         "version" : 0,
                                         "linkProvider": null,
                                         "hasChildren": false,
-                                        "_hasPermissions": false
+                                        "_hasPermissions": false,
+                                        "workflowPlace": "@string@||@null@"
                                     },
                                     {
                                         "id": "@string@",
@@ -81,7 +82,8 @@
                                         "version" : 0,
                                         "linkProvider": null,
                                         "hasChildren": false,
-                                        "_hasPermissions": false
+                                        "_hasPermissions": false,
+                                        "workflowPlace": "@string@||@null@"
                                     },
                                     {
                                         "id": "@string@",
@@ -101,13 +103,16 @@
                                         "version" : 0,
                                         "linkProvider": null,
                                         "hasChildren": false,
-                                        "_hasPermissions": false
+                                        "_hasPermissions": false,
+                                        "workflowPlace": "@string@||@null@"
                                     }
                                 ]
-                            }
+                            },
+                            "workflowPlace": "@string@||@null@"
                         }
                     ]
-                }
+                },
+                "workflowPlace": "@string@||@null@"
             }
         ]
     }

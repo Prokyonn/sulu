@@ -25,6 +25,9 @@ use Sulu\Component\Rest\ListBuilder\Metadata\FieldDescriptorFactoryInterface;
 use Sulu\Component\Rest\ListBuilder\PaginatedRepresentation;
 use Sulu\Component\Rest\RestHelperInterface;
 use Sulu\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Content\Application\Security\WorkflowTransitionAuthorizerInterface;
+use Sulu\Content\Application\WorkflowTransitionRequest\ContentReviewLockInterface;
+use Sulu\Content\Domain\Exception\WorkflowTransitionRequestPreValidationFailedException;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Content\Tests\Application\ExampleTestBundle\Entity\Example;
@@ -46,6 +49,8 @@ class ExampleController extends AbstractRestController
         private ContentManagerInterface $contentManager,
         private EntityManagerInterface $entityManager,
         private ExampleRepository $exampleRepository,
+        private WorkflowTransitionAuthorizerInterface $workflowTransitionAuthorizer,
+        private ContentReviewLockInterface $contentReviewLock,
     ) {
         parent::__construct($viewHandler, $tokenStorage);
     }
@@ -140,12 +145,19 @@ class ExampleController extends AbstractRestController
         $this->entityManager->persist($example);
         $this->entityManager->flush();
 
-        if ('publish' === $request->query->get('action')) {
-            $dimensionContent = $this->contentManager->applyTransition(
-                $example,
-                $dimensionAttributes,
-                WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
-            );
+        $publishTransition = $this->resolvePublishTransition($request, (string) $example->getId());
+        if (null !== $publishTransition) {
+            try {
+                $dimensionContent = $this->contentManager->applyTransition(
+                    $example,
+                    $dimensionAttributes,
+                    $publishTransition,
+                );
+            } catch (WorkflowTransitionRequestPreValidationFailedException $exception) {
+                // The example is created and flushed by now, so the id has to reach the client or the
+                // next save posts the same content again and creates a second example.
+                throw $exception->withResourceId((string) $example->getId());
+            }
 
             $this->entityManager->flush();
         }
@@ -159,7 +171,7 @@ class ExampleController extends AbstractRestController
     public function postTriggerAction(string $id, Request $request): Response
     {
         $dimensionAttributes = $this->getDimensionAttributes($request);
-        $action = $request->query->get('action');
+        $action = $request->query->getString('action');
 
         // For workflow operations that copy/modify across locales or versions, load ALL dimension contents
         if (\in_array($action, ['copy_locale', 'restore', 'unpublish', 'remove_draft'], true)) {
@@ -180,6 +192,12 @@ class ExampleController extends AbstractRestController
 
         switch ($action) {
             case 'copy_locale':
+                $this->contentReviewLock->assertNotInReview(
+                    Example::RESOURCE_KEY,
+                    (string) $example->getId(),
+                    $request->query->getString('dest'),
+                );
+
                 $dimensionContent = $this->contentManager->copy(
                     $example,
                     [
@@ -217,6 +235,12 @@ class ExampleController extends AbstractRestController
 
                 return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
             case 'restore':
+                $this->contentReviewLock->assertNotInReview(
+                    Example::RESOURCE_KEY,
+                    (string) $example->getId(),
+                    $request->query->getString('locale'),
+                );
+
                 $version = (int) $request->query->get('version');
                 $dimensionContent = $this->contentManager->copy(
                     $example,
@@ -234,6 +258,31 @@ class ExampleController extends AbstractRestController
                     [
                         'ignoredAttributes' => ['url'],
                     ]
+                );
+
+                $this->entityManager->flush();
+
+                return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
+            case 'publish':
+                $this->workflowTransitionAuthorizer->assertCanPublish(Example::RESOURCE_KEY, (string) $example->getId(), $request->query->getString('locale'));
+
+                $dimensionContent = $this->contentManager->applyTransition(
+                    $example,
+                    $dimensionAttributes,
+                    $action,
+                );
+
+                $this->entityManager->flush();
+
+                return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
+            case WorkflowInterface::WORKFLOW_TRANSITION_REQUEST_FOR_REVIEW:
+            case WorkflowInterface::WORKFLOW_TRANSITION_REQUEST_FOR_REVIEW_DRAFT:
+            case WorkflowInterface::WORKFLOW_TRANSITION_CANCEL_REVIEW:
+            case WorkflowInterface::WORKFLOW_TRANSITION_CANCEL_REVIEW_DRAFT:
+                $dimensionContent = $this->contentManager->applyTransition(
+                    $example,
+                    $dimensionAttributes,
+                    $action,
                 );
 
                 $this->entityManager->flush();
@@ -269,29 +318,62 @@ class ExampleController extends AbstractRestController
             throw new NotFoundHttpException();
         }
 
-        /** @var ExampleDimensionContent $dimensionContent */
-        $dimensionContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
-        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $dimensionContent->getWorkflowPlace()) {
-            $dimensionContent = $this->contentManager->applyTransition(
-                $example,
-                $dimensionAttributes,
-                WorkflowInterface::WORKFLOW_TRANSITION_CREATE_DRAFT
-            );
+        // Mirrors the real controllers: a request that only resolves a review carries a read-only
+        // form, so its content payload must not be written back.
+        $shouldPersist = $this->contentReviewLock->shouldPersistContent(
+            Example::RESOURCE_KEY,
+            (string) $id,
+            $request->query->getString('locale'),
+            $request->query->get('action'),
+        );
+
+        if ($shouldPersist) {
+            /** @var ExampleDimensionContent $dimensionContent */
+            $dimensionContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
+            if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $dimensionContent->getWorkflowPlace()) {
+                $dimensionContent = $this->contentManager->applyTransition(
+                    $example,
+                    $dimensionAttributes,
+                    WorkflowInterface::WORKFLOW_TRANSITION_CREATE_DRAFT
+                );
+            }
+
+            $this->entityManager->flush();
+        } else {
+            /** @var ExampleDimensionContent $dimensionContent */
+            $dimensionContent = $this->contentManager->resolve($example, $dimensionAttributes);
         }
 
-        $this->entityManager->flush();
-
-        if ('publish' === $request->query->get('action')) {
+        $publishTransition = $this->resolvePublishTransition($request, (string) $example->getId());
+        if (null !== $publishTransition) {
             $dimensionContent = $this->contentManager->applyTransition(
                 $example,
                 $dimensionAttributes,
-                WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
+                $publishTransition,
             );
 
             $this->entityManager->flush();
         }
 
         return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
+    }
+
+    /**
+     * Resolves the publish transition from the `action` query parameter, or null when the action is
+     * not a publish. Mirrors the real controllers: both publish actions are authorized here,.
+     */
+    private function resolvePublishTransition(Request $request, string $resourceId): ?string
+    {
+        $action = $request->query->get('action');
+        $locale = $request->query->getString('locale');
+
+        if (WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH !== $action) {
+            return null;
+        }
+
+        $this->workflowTransitionAuthorizer->assertCanPublish(Example::RESOURCE_KEY, $resourceId, $locale);
+
+        return $action;
     }
 
     /**

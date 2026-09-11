@@ -13,7 +13,9 @@ namespace Sulu\Snippet\Application\MessageHandler;
 
 use Sulu\Bundle\ActivityBundle\Application\Collector\DomainEventCollectorInterface;
 use Sulu\Content\Application\ContentWorkflow\ContentWorkflowInterface;
+use Sulu\Content\Application\Security\WorkflowTransitionAuthorizerInterface;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Content\Domain\Model\WorkflowInterface;
 use Sulu\Content\Infrastructure\Doctrine\DimensionContentQueryEnhancer;
 use Sulu\Snippet\Application\Message\ApplyWorkflowTransitionSnippetMessage;
 use Sulu\Snippet\Domain\Event\SnippetWorkflowTransitionAppliedEvent;
@@ -29,7 +31,8 @@ final class ApplyWorkflowTransitionSnippetMessageHandler
     public function __construct(
         private SnippetRepositoryInterface $snippetRepository,
         private ContentWorkflowInterface $contentWorkflow,
-        private DomainEventCollectorInterface $domainEventCollector
+        private DomainEventCollectorInterface $domainEventCollector,
+        private ?WorkflowTransitionAuthorizerInterface $workflowTransitionAuthorizer = null,
     ) {
     }
 
@@ -47,6 +50,17 @@ final class ApplyWorkflowTransitionSnippetMessageHandler
                 ],
             ]
         );
+
+        // Authorized here so every caller of the bus is covered; null outside the admin context.
+        // Relies on the message staying synchronous: on a worker there is no token to check.
+        if (WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH === $message->getTransitionName()) {
+            $this->workflowTransitionAuthorizer?->assertCanPublish(SnippetInterface::RESOURCE_KEY, $snippet->getUuid(), $message->getLocale());
+        } elseif (\in_array($message->getTransitionName(), [
+            WorkflowInterface::WORKFLOW_TRANSITION_REJECT,
+            WorkflowInterface::WORKFLOW_TRANSITION_REJECT_DRAFT,
+        ], true)) {
+            $this->workflowTransitionAuthorizer?->assertCanReject(SnippetInterface::RESOURCE_KEY, $snippet->getUuid(), $message->getLocale());
+        }
 
         $this->contentWorkflow->apply(
             $snippet,

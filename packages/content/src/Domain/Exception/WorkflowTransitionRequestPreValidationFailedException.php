@@ -25,6 +25,7 @@ class WorkflowTransitionRequestPreValidationFailedException extends \RuntimeExce
      */
     public function __construct(
         private readonly array $results,
+        private readonly ?string $resourceId = null,
     ) {
         $failedKeys = [];
         foreach ($results as $result) {
@@ -37,6 +38,15 @@ class WorkflowTransitionRequestPreValidationFailedException extends \RuntimeExce
             'Content did not pass its pre-validators: ' . \implode(', ', $failedKeys),
             self::EXCEPTION_CODE_PRE_VALIDATION_FAILED,
         );
+    }
+
+    /**
+     * The resource exists by the time a create fails its pre-validators, so the id travels with the
+     * error and the admin switches to the edit view instead of creating a second one on the retry.
+     */
+    public function withResourceId(string $resourceId): self
+    {
+        return new self($this->results, $resourceId);
     }
 
     public function getMessageTranslations(): array
@@ -58,6 +68,12 @@ class WorkflowTransitionRequestPreValidationFailedException extends \RuntimeExce
     public function getResponseData(): array
     {
         // Passed checks travel too, so the admin can list what is done beside what is left.
-        return ['preValidationResults' => $this->results];
+        $data = ['preValidationResults' => $this->results];
+
+        if (null !== $this->resourceId) {
+            $data['id'] = $this->resourceId;
+        }
+
+        return $data;
     }
 }

@@ -49,6 +49,17 @@ migration to apply the schema change:
 bin/console doctrine:migrations:migrate
 ```
 
+### Publishing is authorized on the server
+
+Publishing a page, article or snippet used to be gated by the `live` permission in the admin UI only:
+the API accepted `?action=publish` from anyone holding `edit`. `WorkflowTransitionAuthorizer` now checks it in
+`ApplyWorkflowTransitionPageMessageHandler` and its article and snippet siblings, so every caller of
+the bus is covered and a role with `edit` but without `live` gets a 403 where it previously published.
+`?action=reject` is authorized there too and takes `review`, because the security listener maps the
+request to `edit` and an editor could otherwise reject a request they may not review.
+A call with no authenticated user (a command, a fixture, a message consumer) publishes on the system's
+behalf and passes through.
+
 ### Review permission
 
 `PermissionTypes::REVIEW` is new and no existing role carries its bit, so approving and rejecting is
@@ -59,6 +70,8 @@ alone: `live` does not imply it.
 
 - The permission mask meaning "everything" is 255, not 127: `PermissionTypes::REVIEW` occupies bit
   128. Code comparing a mask against 127 to mean full access has to be updated.
+- `ApplyWorkflowTransitionPageMessageHandler::__construct` and its article and snippet siblings gained
+  an optional `WorkflowTransitionAuthorizerInterface` argument.
 ## 3.0.9
 
 ### Widened webspace, slug and template key column lengths

@@ -38,9 +38,11 @@
                     "template" : "default",
                     "version" : 0,
                     "linkProvider": null,
-                    "hasChildren" : false
+                    "hasChildren" : false,
+                    "workflowPlace": "@string@||@null@"
                 } ]
-            }
+            },
+            "workflowPlace": "@string@||@null@"
         } ]
     }
 }
