@@ -125,7 +125,7 @@ class ContentViewBuilderFactoryTest extends TestCase
 
         $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key');
 
-        $this->assertCount(6, $views);
+        $this->assertCount(7, $views);
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[0]);
         $this->assertSame('edit_parent_key.content', $views[0]->getName());
@@ -141,7 +141,7 @@ class ContentViewBuilderFactoryTest extends TestCase
 
         $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key', 'add_parent_key');
 
-        $this->assertCount(7, $views);
+        $this->assertCount(8, $views);
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[0]);
         $this->assertSame('add_parent_key.content', $views[0]->getName());
@@ -199,7 +199,7 @@ class ContentViewBuilderFactoryTest extends TestCase
 
         $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key');
 
-        $this->assertCount(6, $views);
+        $this->assertCount(7, $views);
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[0]);
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[1]);
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[2]);
@@ -227,6 +227,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                     [],
                     [],
+                    [],
                 ],
             ],
             [
@@ -243,6 +244,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                     [],
                     [],
+                    [],
                 ],
             ],
             [
@@ -257,6 +259,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    [],
                     [],
                     [],
                 ],
@@ -287,6 +290,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                     [],
                     [],
+                    [],
                 ],
             ],
             [
@@ -302,6 +306,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    [],
                     [],
                     [],
                 ],
@@ -379,6 +384,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save'],
                     [],
                     [],
+                    [],
                 ],
             ],
             [
@@ -412,6 +418,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save'],
                     ['sulu_admin.save'],
                     ['sulu_admin.save'],
+                    [],
                     [],
                     [],
                 ],
@@ -448,6 +455,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    [],
                     [],
                     [],
                 ],
@@ -489,5 +497,53 @@ class ContentViewBuilderFactoryTest extends TestCase
 
             $this->assertSame($expectedToolbarActions[$index], $toolbarActionTypes);
         }
+    }
+
+    /**
+     * With no request open the guard has nothing to hold, so workflow and non-workflow content share
+     * one plain `publish` route and who may take it is the authorizer's answer, not the toolbar's.
+     */
+    public function testPublishWithoutARequestUsesPlainPublish(): void
+    {
+        $factory = $this->createContentViewBuilder(
+            $this->prophesize(ContentMetadataInspectorInterface::class)->reveal(),
+            $this->prophesize(SecurityCheckerInterface::class)->reveal(),
+        );
+
+        /** @var array<string, mixed> $options */
+        $options = $factory->getWorkflowTransitionRequestToolbarActions('examples', 'example')['save']->getOptions();
+        /** @var list<\Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction> $children */
+        $children = $options['toolbarActions'];
+
+        $publishActions = [];
+        foreach ($children as $child) {
+            if ('sulu_admin.publish' !== $child->getType()) {
+                continue;
+            }
+
+            $childOptions = $child->getOptions();
+            $actionOptions = $childOptions['options'] ?? [];
+            $this->assertIsArray($actionOptions);
+
+            $action = $actionOptions['action'] ?? 'publish';
+            $this->assertIsString($action);
+
+            $visibleCondition = $childOptions['visible_condition'];
+            $this->assertIsString($visibleCondition);
+
+            $publishActions[] = [$action, $visibleCondition];
+        }
+
+        $this->assertCount(1, $publishActions, 'One publish route, whether or not a workflow applies.');
+
+        [$action, $condition] = $publishActions[0];
+        $this->assertSame('publish', $action);
+        $this->assertStringContainsString('_permissions.live', $condition);
+        $this->assertStringContainsString('!activeWorkflowTransitionRequest', $condition);
+        $this->assertStringNotContainsString(
+            'workflowTransitionRequestEnabled',
+            $condition,
+            'The publish route no longer branches on whether a workflow applies.',
+        );
     }
 }
