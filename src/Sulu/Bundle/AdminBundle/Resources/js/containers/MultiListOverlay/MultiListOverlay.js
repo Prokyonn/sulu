@@ -2,6 +2,7 @@
 import React from 'react';
 import {comparer, computed, observable, reaction} from 'mobx';
 import {observer} from 'mobx-react';
+import equals from 'fast-deep-equal';
 import ListStore from '../../containers/List/stores/ListStore';
 import ListOverlay from '../ListOverlay';
 import type {IObservableValue} from 'mobx/lib/mobx';
@@ -43,6 +44,7 @@ class MultiListOverlay extends React.Component<Props> {
     };
 
     listStore: ListStore;
+    preloadedSelectionIds: Array<string | number>;
     page: IObservableValue<number> = observable.box(1);
     excludedIdsDisposer: () => void;
     changeOptionsDisposer: () => *;
@@ -65,6 +67,8 @@ class MultiListOverlay extends React.Component<Props> {
             observableOptions.locale = locale;
         }
 
+        this.preloadedSelectionIds = preSelectedItems.map((preSelectedItem) => preSelectedItem.id);
+
         this.listStore = new ListStore(
             resourceKey,
             listKey,
@@ -72,7 +76,7 @@ class MultiListOverlay extends React.Component<Props> {
             observableOptions,
             options,
             undefined,
-            preloadSelectedItems ? preSelectedItems.map((preSelectedItem) => preSelectedItem.id) : undefined
+            preloadSelectedItems ? this.preloadedSelectionIds : undefined
         );
 
         this.changeOptionsDisposer = reaction(
@@ -86,6 +90,26 @@ class MultiListOverlay extends React.Component<Props> {
             },
             {equals: comparer.structural}
         );
+    }
+
+    componentDidUpdate() {
+        const {open, preloadSelectedItems, preSelectedItems} = this.props;
+
+        if (!open || !preloadSelectedItems) {
+            return;
+        }
+
+        const selectionIds = preSelectedItems.map((preSelectedItem) => preSelectedItem.id);
+
+        if (selectionIds.length === 0 || equals(selectionIds, this.preloadedSelectionIds)) {
+            return;
+        }
+
+        // pre-selected items can arrive after the constructor ran, only a list request with their ids expands the tree
+        this.preloadedSelectionIds = selectionIds;
+        this.listStore.initialSelectionIds = selectionIds;
+        this.listStore.reset();
+        this.listStore.reload();
     }
 
     componentWillUnmount() {

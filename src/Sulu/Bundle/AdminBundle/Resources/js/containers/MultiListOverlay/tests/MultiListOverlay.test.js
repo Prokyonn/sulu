@@ -57,6 +57,7 @@ jest.mock('../../../containers/List/stores/ListStore', () => jest.fn(
         this.select = jest.fn();
         this.clear = jest.fn();
         this.reset = jest.fn();
+        this.reload = jest.fn();
         this.destroy = jest.fn();
         this.selections = [];
         this.selectionIds = [];
@@ -361,6 +362,96 @@ test('Should not add the preSelectedItems to the ListStore if preloadSelectedIte
         undefined,
         undefined
     );
+});
+
+function rerenderMultiListOverlay(rerender: Function, props: Object = {}) {
+    rerender(
+        <MultiListOverlay
+            adapter="table"
+            listKey="snippets"
+            onClose={jest.fn()}
+            onConfirm={jest.fn()}
+            open={false}
+            resourceKey="snippets"
+            title="Selection"
+            {...props}
+        />
+    );
+}
+
+test('Should reload the ListStore with the current preSelectedItems when the overlay is opened', () => {
+    const {rerender} = renderMultiListOverlay({preSelectedItems: []});
+
+    expect(getListStore().initialSelectionIds).toEqual([]);
+
+    rerenderMultiListOverlay(rerender, {preSelectedItems: [{id: 5}, {id: 6}]});
+    expect(getListStore().reset).not.toHaveBeenCalled();
+    expect(getListStore().reload).not.toHaveBeenCalled();
+
+    rerenderMultiListOverlay(rerender, {open: true, preSelectedItems: [{id: 5}, {id: 6}]});
+
+    expect(getListStore().reset).toHaveBeenCalledTimes(1);
+    expect(getListStore().initialSelectionIds).toEqual([5, 6]);
+    expect(getListStore().reload).toHaveBeenCalledTimes(1);
+});
+
+test('Should reload the ListStore when the preSelectedItems arrive while the overlay is already open', () => {
+    const {rerender} = renderMultiListOverlay({open: true});
+
+    rerenderMultiListOverlay(rerender, {open: true, preSelectedItems: [{id: 5}]});
+    rerenderMultiListOverlay(rerender, {open: true, preSelectedItems: [{id: 5}]});
+
+    expect(getListStore().initialSelectionIds).toEqual([5]);
+    expect(getListStore().reload).toHaveBeenCalledTimes(1);
+});
+
+test('Should not reload the ListStore when it was created with the same preSelectedItems', () => {
+    const {rerender} = renderMultiListOverlay({preSelectedItems: [{id: 5}]});
+
+    rerenderMultiListOverlay(rerender, {open: true, preSelectedItems: [{id: 5}]});
+
+    expect(getListStore().reset).not.toHaveBeenCalled();
+    expect(getListStore().reload).not.toHaveBeenCalled();
+});
+
+test('Should not reload the ListStore again when the overlay is reopened with the same preSelectedItems', () => {
+    const {rerender} = renderMultiListOverlay();
+
+    rerenderMultiListOverlay(rerender, {open: true, preSelectedItems: [{id: 5}]});
+    rerenderMultiListOverlay(rerender, {open: false, preSelectedItems: [{id: 5}]});
+    rerenderMultiListOverlay(rerender, {open: true, preSelectedItems: [{id: 5}]});
+
+    expect(getListStore().reload).toHaveBeenCalledTimes(1);
+});
+
+test('Should reload the ListStore when the overlay is reopened with changed preSelectedItems', () => {
+    const {rerender} = renderMultiListOverlay({preSelectedItems: [{id: 5}]});
+
+    rerenderMultiListOverlay(rerender, {open: true, preSelectedItems: [{id: 5}]});
+    rerenderMultiListOverlay(rerender, {open: false, preSelectedItems: [{id: 6}]});
+    rerenderMultiListOverlay(rerender, {open: true, preSelectedItems: [{id: 6}]});
+
+    expect(getListStore().initialSelectionIds).toEqual([6]);
+    expect(getListStore().reload).toHaveBeenCalledTimes(1);
+});
+
+test('Should not reload the ListStore when the overlay is opened without preSelectedItems', () => {
+    const {rerender} = renderMultiListOverlay();
+
+    rerenderMultiListOverlay(rerender, {open: true});
+
+    expect(getListStore().reset).not.toHaveBeenCalled();
+    expect(getListStore().reload).not.toHaveBeenCalled();
+});
+
+test('Should not reload the ListStore on open if preloadSelectedItems is set to false', () => {
+    const {rerender} = renderMultiListOverlay({preloadSelectedItems: false, preSelectedItems: [{id: 5}]});
+
+    rerenderMultiListOverlay(rerender, {open: true, preloadSelectedItems: false, preSelectedItems: [{id: 5}]});
+
+    expect(getListStore().reset).not.toHaveBeenCalled();
+    expect(getListStore().reload).not.toHaveBeenCalled();
+    expect(getListStore().initialSelectionIds).toBeUndefined();
 });
 
 test('Should not fail when preSelectedItems is undefined', () => {
